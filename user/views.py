@@ -41,6 +41,9 @@ def login(request):
 
             user = auth.authenticate(username=username, password=password)
 
+            if user.is_superuser:
+                return HttpResponseRedirect("/admin")
+
             if user is not None and user.is_active:
                 auth.login(request, user)
                 return HttpResponseRedirect(reverse('user:profile', args=[user.id]))
@@ -65,7 +68,7 @@ def profile(request, pk):
 def profile_update(request, pk):
     user = get_object_or_404(User, pk=pk)
     user_profile = get_object_or_404(UserProfile, user=user)
-
+    print(request.method)
     if request.method == "POST":
         form = ProfileForm(request.POST)
 
