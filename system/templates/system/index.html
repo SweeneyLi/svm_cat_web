@@ -5,7 +5,16 @@
     <title>index</title>
 </head>
 <body>
+
 <h1>Welcome to the SVM-based cat recognition system </h1>
 miao~
+
+{% if user %}
+    <p>Hello {{ user }}~miao</p>
+    <a href="{% url 'user:logout' %}">logout</a>
+{% else %}
+    <a href="{% url 'user:login' %}">login</a>
+    <a href="{% url 'user:register' %}">register</a>
+{% endif %}
 </body>
 </html>

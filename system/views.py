@@ -4,5 +4,11 @@ from django.http import HttpResponseRedirect
 
 
 def index(request):
-    return render(request, 'system/index.html')
+
+    if request.user.is_authenticated:
+        user = request.user.username
+    else:
+        user = None
+
+    return render(request, 'system/index.html', {'user': user})
 
