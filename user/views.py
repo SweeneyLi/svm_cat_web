@@ -24,7 +24,7 @@ def register(request):
             user_profile = UserProfile(user=user)
             user_profile.save()
 
-            return HttpResponseRedirect("/user/login/")
+            return HttpResponseRedirect("/accounts/login/")
 
     else:
         form = RegistrationForm()
@@ -90,7 +90,7 @@ def profile_update(request, pk):
 @login_required
 def logout(request):
     auth.logout(request)
-    return HttpResponseRedirect("/user/login/")
+    return HttpResponseRedirect("/accounts/login/")
 
 
 @login_required
@@ -110,7 +110,7 @@ def pwd_change(request, pk):
                 new_password = form.cleaned_data['password2']
                 user.set_password(new_password)
                 user.save()
-                return HttpResponseRedirect("/user/login/")
+                return HttpResponseRedirect("/accounts/login/")
 
             else:
                 return render(request, 'user/pwd_change.html', {'form': form,
