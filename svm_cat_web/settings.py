@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'utils.UserAuthMiddleware.UserAuthMiddle',
 ]
 
 ROOT_URLCONF = 'svm_cat_web.urls'
