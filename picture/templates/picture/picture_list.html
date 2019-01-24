@@ -12,8 +12,8 @@
 <ul>
 {% if latest_picture_list %}
     {% for picture in latest_picture_list %}
-    <li><a href="{% url 'picture:pic_detail' picture.id %}">{{ picture.title }}</a>
-        - {{ picture.date| date:"Y-m-j" }}</li>
+    <li>{{ picture.category }} - <a href="{% url 'picture:pic_detail' picture.id %}">{{ picture.pic_name }}</a>
+        - {{ picture.upload_date| date:"Y-m-j" }}</li>
     {% endfor %}
 {% else %}
     <li>还没有上传新图片</li>
