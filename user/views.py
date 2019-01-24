@@ -68,7 +68,7 @@ def profile(request, pk):
 def profile_update(request, pk):
     user = get_object_or_404(User, pk=pk)
     user_profile = get_object_or_404(UserProfile, user=user)
-    print(request.method)
+
     if request.method == "POST":
         form = ProfileForm(request.POST)
 

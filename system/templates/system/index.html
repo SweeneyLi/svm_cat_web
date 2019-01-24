@@ -10,8 +10,10 @@
 miao~
 
 {% if user %}
-    <p>Hello {{ user }}~miao</p>
-    <a href="{% url 'user:logout' %}">logout</a>
+    <p>Hello {{ user }}~miao</p><br>
+    |<a href="{% url 'picture:pic_upload' %}">upload</a>
+    |<a href="{% url 'picture:pic_list' %}">pic_list</a>
+    |<a href="{% url 'user:logout' %}">logout</a>
 {% else %}
     <a href="{% url 'user:login' %}">login</a>
     <a href="{% url 'user:register' %}">register</a>
