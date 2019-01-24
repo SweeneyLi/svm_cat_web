@@ -16,7 +16,11 @@
 {% if user.is_authenticated %}
 <a href="{% url 'user:profile_update' user.id %}">Edit</a>
 | <a href="{% url 'user:pwd_change' user.id %}">Change Password </a>
-| <a href="{% url 'user:logout' %}">Logout</a>
+| <a href="{% url 'user:logout' %}">Logout</a><br><br>
+|
+    | <a href="{% url 'picture:pic_upload' %}">upload</a>
+{#    | <a href="{% url 'picture:pic_detail' %}">upload</a>#}
+    | <a href="{% url 'picture:pic_list' %}">upload</a>
 {% endif %}
 
 {% endblock %}

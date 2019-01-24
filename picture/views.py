@@ -25,9 +25,11 @@ class PicUpload(CreateView):
     model = Picture
 
     # 可以通过fields选项自定义需要显示的表单
-    fields = ['title', 'image']
+    fields = ['pic_name', 'category']
 
     # CreateView默认Context_object_name是form。
 
     # 下面是CreateView默认模板，可以换成自己模板
     # template_name = 'picture/picture_form.html'
+
+

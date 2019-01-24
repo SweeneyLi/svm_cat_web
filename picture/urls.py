@@ -10,11 +10,9 @@ urlpatterns = [
     path('', views.PicList.as_view(), name='pic_list'),
 
     # 上传图片
-    re_path(r'^pic/upload/$',
-            views.PicUpload.as_view(), name='pic_upload'),
+    re_path(r'^pic/upload/$', views.PicUpload.as_view(), name='pic_upload'),
 
     # 展示图片
-    re_path(r'^pic/(?P<pk>\d+)/$',
-        views.PicDetail.as_view(), name='pic_detail'),
+    re_path(r'^pic/(?P<pk>\d+)/$', views.PicDetail.as_view(), name='pic_detail'),
 
 ]
