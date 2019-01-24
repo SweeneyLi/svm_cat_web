@@ -5,7 +5,7 @@ from .models import Picture
 
 # Create your views here.
 class PicList(ListView):
-    queryset = Picture.objects.all().order_by('-date')
+    queryset = Picture.objects.all().order_by('-upload_date')
 
     # ListView默认Context_object_name是object_list
     context_object_name = 'latest_picture_list'
