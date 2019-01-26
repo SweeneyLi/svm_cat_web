@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 
 from PIL import Image
 from os import path
-import datetime
+from datetime import datetime, timedelta
 
 from .forms import FileUploadModelForm
 from .models import Picture
@@ -50,7 +50,8 @@ class PicUpload(FormView):
                 the_path = path.join(settings.MEDIA_ROOT, str(user_id), category, pic_name)
                 if path.exists(the_path):
                     upload_pic_name, ext = pic_name.split('.')[0], pic_name.split('.')[-1]
-                    pic_name = upload_pic_name + '_' + datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S.") + ext
+                    time = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
+                    pic_name = upload_pic_name + '_' + time + ext
                 pic = Picture(user_id=user_id, pic_name=pic_name, path=f, category=category, pic_size=pic_size)
                 pic.save()
             return self.form_valid(form)
