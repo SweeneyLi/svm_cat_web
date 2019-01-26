@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'picture.apps.PictureConfig',
     'system.apps.SystemConfig',
+    'system.templatetags',
 
 ]
 

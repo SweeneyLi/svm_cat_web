@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
-from .models import UserProfile
 from django.contrib import auth
-from .forms import RegistrationForm, LoginForm, ProfileForm, PwdChangeForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+
+from .forms import RegistrationForm, LoginForm, ProfileForm, PwdChangeForm
+from .models import UserProfile
 
 
 def register(request):
@@ -51,7 +52,7 @@ def login(request):
             else:
                 # 登陆失败
                 return render(request, 'user/login.html', {'form': form,
-                               'message': 'Wrong password. Please try again.'})
+                                                           'message': 'Wrong password. Please try again.'})
     else:
         form = LoginForm()
 
@@ -117,9 +118,9 @@ def pwd_change(request, pk):
 
             else:
                 return render(request, 'user/pwd_change.html', {'form': form,
-                'user': user, 'message': 'Old password is wrong. Try again'})
+                                                                'user': user,
+                                                                'message': 'Old password is wrong. Try again'})
     else:
         form = PwdChangeForm()
 
     return render(request, 'user/pwd_change.html', {'form': form, 'user': user})
-
