@@ -1,8 +1,6 @@
-
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
-from django.contrib.auth.models import User
 
 
 class UserAuthMiddle(MiddlewareMixin):
@@ -16,5 +14,3 @@ class UserAuthMiddle(MiddlewareMixin):
         else:
             print('Not authenticated!!!')
             return HttpResponseRedirect(reverse('user:login'))
-
-

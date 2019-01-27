@@ -65,24 +65,24 @@ class RegistrationForm(forms.Form):
 
 class LoginForm(forms.Form):
 
-    username = forms.CharField(label='Username', max_length=50)
-    password = forms.CharField(label='Password', widget=forms.PasswordInput)
+    username = forms.CharField(label='Username', max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     # Use clean methods to define custom validation rules
 
-    def clean_username(self):
-        username = self.cleaned_data.get('username')
-
-        if email_check(username):
-            filter_result = User.objects.filter(email__exact=username)
-            if not filter_result:
-                raise forms.ValidationError("This email does not exist.")
-        else:
-            filter_result = User.objects.filter(username__exact=username)
-            if not filter_result:
-                raise forms.ValidationError("This username does not exist. Please register first.")
-
-        return username
+    # def clean_username(self):
+    #     username = self.cleaned_data.get('username')
+    #
+    #     if email_check(username):
+    #         filter_result = User.objects.filter(email__exact=username)
+    #         if not filter_result:
+    #             raise forms.ValidationError("This email does not exist.")
+    #     else:
+    #         filter_result = User.objects.filter(username__exact=username)
+    #         if not filter_result:
+    #             raise forms.ValidationError("This username does not exist. Please register first.")
+    #
+    #     return username
 
 
 class ProfileForm(forms.Form):

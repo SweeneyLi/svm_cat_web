@@ -1,24 +1,52 @@
-{% block content %}
-<h2>Login</h2>
-{% if message %}
- {{ message }}
-{% endif %}
-<div class="form-wrapper">
-   <form method="post" action="" enctype="multipart/form-data">
-      {% csrf_token %}
-      {% for field in form %}
-           <div class="fieldWrapper">
-        {{ field.errors }}
-        {{ field.label_tag }} {{ field }}
-        {% if field.help_text %}
-             <p class="help">{{ field.help_text|safe }}</p>
-        {% endif %}
-           </div>
-        {% endfor %}
-      <div class="button-wrapper submit">
-         <input type="submit" value="Login" />
-      </div>
-   </form>
-    <a href="{% url 'user:register' %}">Register</a>
-</div>
+{% extends 'system/base.html' %}
+{% load staticfiles %}
+
+{% block title %}login{% endblock %}
+{% block css %}<link href="{% static 'css/login.css' %}" rel="stylesheet"/>{% endblock %}
+
+
+ {% block content %}
+    <div class="container">
+        <div class="col-md-4 col-md-offset-4">
+          <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+              {% if message %}
+                  <div class="alert alert-warning">{{ message }}</div>
+              {% endif %}
+              {% csrf_token %}
+              <h2 class="text-center">Welcome to login</h2>
+
+              {{ form }}
+
+              <button type="reset" class="btn btn-default pull-left">reset</button>
+              <button type="submit" class="btn btn-primary pull-right" value="Login">submit</button>
+
+          </form>
+        </div>
+    </div>
 {% endblock %}
+
+{#{% block content %}#}
+{#<h2>Login</h2>#}
+{#{% if message %}#}
+{# {{ message }}#}
+{#{% endif %}#}
+{#<div class="form-wrapper">#}
+{#   <form method="post" action="" enctype="multipart/form-data">#}
+{#      {% csrf_token %}#}
+{#      {% for field in form %}#}
+{#           <div class="fieldWrapper">#}
+{#        {{ field.errors }}#}
+{#        {{ field.label_tag }}  {{ field }}#}
+{#        {% if field.help_text %}#}
+{#             <p class="help">123{{ field.help_text|safe }}</p>#}
+{#        {% endif %}#}
+{#           </div>#}
+{#        {% endfor %}#}
+{#      <div class="button-wrapper submit">#}
+{#         <input type="submit" value="Login" />#}
+{#      </div>#}
+{#   </form>#}
+{#    <a href="{% url 'user:register' %}">Register</a>#}
+{#</div>#}
+{#{% endblock %}#}

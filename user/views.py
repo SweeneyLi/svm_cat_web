@@ -40,19 +40,28 @@ def login(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
 
+            filter_result = User.objects.filter(username__exact=username)
+            if not filter_result:
+                return render(request, 'user/login.html',
+                              {'form': form, 'message': "This username does not exist. Please register first."})
+
             user = auth.authenticate(username=username, password=password)
+
+            if not user:
+                return render(request, 'user/login.html', {'form': form,
+                                                           'message': 'Wrong password. Please try again.'})
 
             if user.is_superuser:
                 return HttpResponseRedirect("/admin")
 
-            if user is not None and user.is_active:
+            if user.is_active:
                 auth.login(request, user)
                 return HttpResponseRedirect(reverse('user:profile', args=[user.id]))
 
             else:
                 # 登陆失败
                 return render(request, 'user/login.html', {'form': form,
-                                                           'message': 'Wrong password. Please try again.'})
+                                                           'message': 'Please try again.'})
     else:
         form = LoginForm()
 

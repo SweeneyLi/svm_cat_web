@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>picture_detail</title>
-</head>
-<body>
+{% extends 'system/base.html' %}
+{% load staticfiles %}
+
+{% block title %}picture_detail{% endblock %}
 
 {% block content %}
 <h3>{{ picture.pic_name }}</h3>
@@ -18,5 +15,3 @@
     <a href="{% url 'picture:pic_upload' %}">上传新图片</a></p>
 {% endblock %}
 
-</body>
-</html>

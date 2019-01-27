@@ -1,15 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>picture_list</title>
-</head>
-<body>
+
+{% extends 'system/base.html' %}
+{% load staticfiles %}
+
+{% block title %}picture_list{% endblock %}
+{% block css %}
+    <script type="text/javascript">
+function openShutManager(oSourceObj,oTargetObj,shutAble,oOpenTip,oShutTip){
+var sourceObj = typeof oSourceObj == "string" ? document.getElementById(oSourceObj) : oSourceObj;
+var targetObj = typeof oTargetObj == "string" ? document.getElementById(oTargetObj) : oTargetObj;
+var openTip = oOpenTip || "";
+var shutTip = oShutTip || "";
+if(targetObj.style.display!="none"){
+   if(shutAble) return;
+   targetObj.style.display="none";
+   if(openTip  &&  shutTip){
+    sourceObj.innerHTML = shutTip;
+   }
+} else {
+   targetObj.style.display="block";
+   if(openTip  &&  shutTip){
+    sourceObj.innerHTML = openTip;
+   }
+}
+}
+
+</script>
+{% endblock %}
 
 {% block content %}
 <h3>图片列表</h3>
 <ul>
-
+{#{% include "system/base.html" %}#}
 {% if picture_list %}
 
     {% regroup picture_list by category as pictures %}
@@ -62,27 +83,5 @@
 <p><a href="{% url 'picture:pic_upload' %}">上传新图片</a></p>
 {% endblock %}
 
-</body>
-</html>
 
-<script type="text/javascript">
-function openShutManager(oSourceObj,oTargetObj,shutAble,oOpenTip,oShutTip){
-var sourceObj = typeof oSourceObj == "string" ? document.getElementById(oSourceObj) : oSourceObj;
-var targetObj = typeof oTargetObj == "string" ? document.getElementById(oTargetObj) : oTargetObj;
-var openTip = oOpenTip || "";
-var shutTip = oShutTip || "";
-if(targetObj.style.display!="none"){
-   if(shutAble) return;
-   targetObj.style.display="none";
-   if(openTip  &&  shutTip){
-    sourceObj.innerHTML = shutTip;
-   }
-} else {
-   targetObj.style.display="block";
-   if(openTip  &&  shutTip){
-    sourceObj.innerHTML = openTip;
-   }
-}
-}
 
-</script>
