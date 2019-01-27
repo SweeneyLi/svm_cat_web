@@ -7,12 +7,13 @@
 <body>
 {% include 'system/base.html' %}
 <h1>Welcome to the SVM-based cat recognition system </h1>
-miao~
 
-{% if user %}
+
+{% if user.id %}
     <p>Hello {{ user }}~miao</p><br>
+    <a href="{% url 'user:profile' user.id %}">profile</a><br>
     |<a href="{% url 'picture:pic_upload' %}">upload</a>
-    |<a href="{% url 'picture:pic_list' %}">pic_list</a>
+    |<a href="{% url 'picture:pic_list' %}">pic_list</a><br>
     |<a href="{% url 'user:logout' %}">logout</a>
 {% else %}
     <a href="{% url 'user:login' %}">login</a>

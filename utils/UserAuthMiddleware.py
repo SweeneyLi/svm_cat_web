@@ -7,7 +7,7 @@ class UserAuthMiddle(MiddlewareMixin):
 
     def process_request(self, request):
 
-        not_need_login = ['/accounts/login/', '/accounts/register/']
+        not_need_login = ['/accounts/login/', '/accounts/register/', '/index/']
 
         if request.path in not_need_login or request.user.is_authenticated:
             return None
