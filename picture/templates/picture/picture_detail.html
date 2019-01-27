@@ -7,10 +7,10 @@
 <body>
 
 {% block content %}
-<h3>{{ picture.title }}</h3>
+<h3>{{ picture.pic_name }}</h3>
 
-{% if picture.image %}
-  <p><img src="{{ picture.image.url }}"/></p>
+{% if picture.path %}
+  <p><img src="{{ picture.path.url }}"/></p>
 {% endif %}
 
 <p>上传日期: {{ picture.upload_date | date:"Y-m-j" }} </p>

@@ -12,7 +12,7 @@ from django.conf import settings
 
 
 class PicList(ListView):
-    context_object_name = 'latest_picture_list'
+    context_object_name = 'picture_list'
 
     template_name = 'picture/picture_list.html'
 

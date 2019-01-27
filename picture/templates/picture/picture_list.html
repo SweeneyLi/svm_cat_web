@@ -10,13 +10,51 @@
 <h3>图片列表</h3>
 <ul>
 
-{% if latest_picture_list %}
-    {% for picture in latest_picture_list %}
-        <li>{{ picture.category }}
-        - <a href="{% url 'picture:pic_detail' picture.id %}">
-            {{ picture.pic_name   }}</a>
-        - {{ picture.upload_date| date:"Y-m-j" }}</li>
-    {% endfor %}
+{% if picture_list %}
+
+    {% regroup picture_list by category as pictures %}
+    <ul>
+    {% for category, pic_info in pictures %}
+        <li>{{ category }}
+        <ul>
+            {% for pic in pic_info %}
+              <li>{{ pic.upload_date | date:"Y-m-j"}}-----
+                  <a href="{% url 'picture:pic_detail' pic.id %}">
+                      {{ pic.pic_name }}</a>
+              </li>
+            {% endfor %}
+        </ul>
+        </li>
+    {% endfor %}
+    </ul>
+
+
+
+{#<p><a href="###" onclick="openShutManager(this,'box')">点击展开</a></p>#}
+{#<p id="box" style="display:none">#}
+{#   这里面放的是box的内容.#}
+{#</p>#}
+
+{#    {% regroup picture_list by category as pictures %}#}
+{#    <ul>#}
+{#    {% for category, pic_info in pictures %}#}
+{#        <p><a href="###" onclick="openShutManager(this,'{{ category }}')">{{ category }}</a></p>#}
+{#        <p id="{{ category }}" style="display:none">#}
+{#         <ul>#}
+{#            {% for pic in pic_info %}#}
+{##}
+{#              <li>{{ pic.upload_date | date:"Y-m-j"}}-----#}
+{#                  <a href="{% url 'picture:pic_detail' pic.id %}">#}
+{#                      {{ pic.pic_name }}</a>#}
+{#              </li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#        </p>#}
+{##}
+{#    {% endfor %}#}
+{#    </ul>#}
+
+
 {% else %}
 <li>还没有上传新图片</li>
 {% endif %}
@@ -26,3 +64,25 @@
 
 </body>
 </html>
+
+<script type="text/javascript">
+function openShutManager(oSourceObj,oTargetObj,shutAble,oOpenTip,oShutTip){
+var sourceObj = typeof oSourceObj == "string" ? document.getElementById(oSourceObj) : oSourceObj;
+var targetObj = typeof oTargetObj == "string" ? document.getElementById(oTargetObj) : oTargetObj;
+var openTip = oOpenTip || "";
+var shutTip = oShutTip || "";
+if(targetObj.style.display!="none"){
+   if(shutAble) return;
+   targetObj.style.display="none";
+   if(openTip  &&  shutTip){
+    sourceObj.innerHTML = shutTip;
+   }
+} else {
+   targetObj.style.display="block";
+   if(openTip  &&  shutTip){
+    sourceObj.innerHTML = openTip;
+   }
+}
+}
+
+</script>
