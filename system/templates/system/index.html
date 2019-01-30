@@ -12,9 +12,10 @@
 {% if user.id %}
     <p>Hello {{ user }}~miao</p><br>
     <a href="{% url 'user:profile' user.id %}">profile</a><br>
-    |<a href="{% url 'picture:pic_upload' %}">upload</a>
+    |<a href="{% url 'picture:pic_upload' %}">upload</a><br>
     |<a href="{% url 'picture:pic_list' %}">pic_list</a><br>
-    |<a href="{% url 'user:logout' %}">logout</a>
+    |<a href="{% url 'alogrithm:pic_processing' %}">pic_processing</a><br>
+    |<a href="{% url 'user:logout' %}">logout</a><br>
 {% else %}
     <a href="{% url 'user:login' %}">login</a>
     <a href="{% url 'user:register' %}">register</a>

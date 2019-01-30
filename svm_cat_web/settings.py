@@ -28,8 +28,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,9 +38,13 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'picture.apps.PictureConfig',
     'system.apps.SystemConfig',
+    'algorithm.apps.AlgorithmConfig',
+
     'system.templatetags',
 
 ]
+# Application definition
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
