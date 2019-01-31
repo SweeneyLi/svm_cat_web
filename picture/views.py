@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 from .forms import FileUploadModelForm
 from .models import Picture
-from django.conf import settings
+from django.conf.global_settings import MEDIA_ROOT
 
 
 class PicList(ListView):
@@ -36,7 +36,7 @@ class PicUpload(FormView):
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        files = request.FILES.getlist('file')
+        files = request.ng.getlist('file')
         user_id = self.request.user.id
 
         category = self.request.POST['category']
@@ -47,7 +47,7 @@ class PicUpload(FormView):
                 im = Image.open(f)
                 pic_size = im.size
                 pic_name = f.name
-                the_path = path.join(settings.MEDIA_ROOT, str(user_id), category, pic_name)
+                the_path = path.join(MEDIA_ROOT, 'upload_images', str(user_id), category, pic_name)
                 if path.exists(the_path):
                     upload_pic_name, ext = pic_name.split('.')[0], pic_name.split('.')[-1]
                     time = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")

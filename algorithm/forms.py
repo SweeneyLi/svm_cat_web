@@ -1,18 +1,14 @@
 from django import forms
-from django.forms import widgets
-
-from picture.models import Picture
 
 
 class PicProcessingForm(forms.Form):
 
-    pic_size = forms.CharField(initial='(194,259)')
+    pic_size = forms.CharField(initial='194,259')
     test_pic = forms.ImageField()
     orientations = forms.IntegerField(initial='9')
     pixels_per_cell = forms.CharField(initial='8,8')
     cells_per_block = forms.CharField(initial='3,3')
     is_color = forms.BooleanField(initial='True')
-
 
     # def clean_file(self):
     #     file = self.cleaned_data['file']
