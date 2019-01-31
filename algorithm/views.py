@@ -3,26 +3,20 @@ from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.conf import settings
 
 from .forms import PicProcessingForm
-from picture.models import Picture
 
+from os import path
 from skimage import feature, exposure
-
 import cv2
-import io
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 
-
-# # input: '8,8'. output:(8,8)
-# def str_to_tuple(a_str):
-#
-
-
 def pic_processing(request):
+    form = PicProcessingForm()
     if request.method == 'POST':
         # pic_size = request.form.pic_sie
         # test_pic = request.form.test_pic
@@ -62,23 +56,12 @@ def pic_processing(request):
         ax2.imshow(hog_image_rescaled, cmap=plt.cm.gray)
         ax2.set_title('Histogram of Oriented Gradients')
 
-        plt.savefig('temp.png')
-        # convert plot to SVG
-        svg = pltToSvg()
-        plt.cla()  # clean up plt so it can be re-used
-        response = HttpResponse(svg, content_type='image/svg+xml')
-        return response
+        hog_picture = path.join(settings.BASE_DIR, 'algorithm', 'temp',  str(request.user.id) + '_hog_picture.png')
+        plt.savefig(hog_picture)
+
+        return render(request, 'algorithm/pic_processing.html', {'form': form, 'hog_picture': hog_picture})
 
     else:
-        form = PicProcessingForm()
+        return render(request, 'algorithm/pic_processing.html', {'form': form})
 
-    return render(request, 'algorithm/pic_processing.html', {'form': form})
-
-
-def pltToSvg():
-    buf = io.BytesIO()
-    plt.savefig(buf, format='svg', bbox_inches='tight')
-    s = buf.getvalue()
-    buf.close()
-    return s
 

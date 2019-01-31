@@ -6,7 +6,11 @@
 {% block content %}
 <h3>Pic_Processing</h3>
 <form method="post" enctype="multipart/form-data">{% csrf_token %}
-    
+ 
+{% if hog_picture %}
+  <p><img src="{{ hog_picture }}"/></p>
+{% endif %}
+
     {% for field in form %}
     <div class="fieldWrapper">
         {{ field.errors }}
