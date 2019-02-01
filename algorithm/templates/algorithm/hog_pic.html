@@ -1,0 +1,30 @@
+{% extends 'system/base.html' %}
+{% load staticfiles %}
+
+{% block title %}pic_processing{% endblock %}
+
+{% block content %}
+<h3>Pic_Processing</h3>
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+
+{#    {{ form.pic_size.label_tag }} {{ form.pic_size }}#}
+{#    {{ form.test_pic.label_tag }} {{ form.test_pic }}#}
+    {% for field in form %}
+    <div class="fieldWrapper">
+        {{ field.label_tag }} {{ field }}
+    </div>
+    {% endfor %}
+
+    <input type="submit" value="确定" />
+</form>
+
+{% if hog_picture %}
+  <p><img src="{{ hog_picture }}"/></p>
+{% endif %}
+
+{% if hog_time %}
+  <p>(Average in 1000)The hog take about {{ hog_time }}s</p>
+{% endif %}
+
+{% endblock %}
+

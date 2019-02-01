@@ -142,3 +142,5 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+ALGORITHM_JSON_PATH = os.path.join(MEDIA_ROOT, 'algorithm', 'algorithm_info.json')
