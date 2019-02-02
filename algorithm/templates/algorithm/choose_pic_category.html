@@ -4,17 +4,27 @@
 {% block title %}pic_processing{% endblock %}
 
 {% block content %}
-<h3>Pic_Processing</h3>
+
+<h1>First Step</h1>
+<h3>Choose_pic_category</h3>
+
+
+
+
 <form method="post" enctype="multipart/form-data">{% csrf_token %}
 
 {#    {{ form.pic_size.label_tag }} {{ form.pic_size }}#}
 {#    {{ form.test_pic.label_tag }} {{ form.test_pic }}#}
-    {% for field in form %}
+
+    {% for field in choose_pic_category_form %}
     <div class="fieldWrapper">
         {{ field.label_tag }} {{ field }}
     </div>
     {% endfor %}
 
+{{ form.as_p }}
+{#    {{ form.data['test_pic'].label_tag }} {{ form.data['test_pic'] }}#}
+{#    {{ form.data['test_category'].label_tag }} {{ form.data['test_category'] }}#}
     <input type="submit" value="确定" />
 </form>
 

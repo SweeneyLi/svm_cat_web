@@ -15,19 +15,18 @@ def cal_hog_time(img, orientations, pixels_per_cell, cells_per_block):
 
     first_time = time.clock()
 
-    # for i in range(1):
-    #     hog_vector = cv2.HOGDescriptor(win_size, block_size, block_stride, cell_size, nbins)
-    #     hist_2 = hog_vector.compute(img)
-    #     hist_2 = np.array(hist_2).reshape(len(hist_2), )
+    for i in range(10):
+        hog_vector = cv2.HOGDescriptor(win_size, block_size, block_stride, cell_size, nbins)
+        hist_2 = hog_vector.compute(img)
+        hist_2 = np.array(hist_2).reshape(len(hist_2), )
+        del hist_2
 
-    hog_vector = cv2.HOGDescriptor(win_size, block_size, block_stride, cell_size, nbins)
-    hist_2 = hog_vector.compute(img)
-    hist_2 = np.array(hist_2).reshape(len(hist_2), )
-
-    print(id(hog_vector))
+    # hog_vector = cv2.HOGDescriptor(win_size, block_size, block_stride, cell_size, nbins)
+    # hist_2 = hog_vector.compute(img)
+    # hist_2 = np.array(hist_2).reshape(len(hist_2), )
 
     end_time = time.clock()
 
-    avg_time = (end_time - first_time)/1
+    avg_time = (end_time - first_time)
     return avg_time
 

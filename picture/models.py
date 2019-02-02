@@ -22,7 +22,7 @@ class Picture(models.Model):
 
     def __str__(self):
         # // TODO: Chinese
-        return self.pic_name.encode('utf-8')
+        return self.pic_name
 
 # # 对于使用Django自带的通用视图非常重要
 #     def get_absolute_url(self):
