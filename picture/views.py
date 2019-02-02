@@ -49,7 +49,7 @@ class PicUpload(FormView):
                 pic_name = f.name
                 the_path = path.join(MEDIA_ROOT, 'upload_images', str(user_id), category, pic_name)
                 if path.exists(the_path):
-                    upload_pic_name, ext = pic_name.split('.')[0], pic_name.split('.')[-1]
+                    upload_pic_name, ext = pic_name.split('.')[0], path.splitext(pic_name)[1]
                     time = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
                     pic_name = upload_pic_name + '_' + time + ext
                 pic = Picture(user_id=user_id, pic_name=pic_name, path=f, category=category, pic_size=pic_size)

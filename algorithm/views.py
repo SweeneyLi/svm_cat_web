@@ -2,7 +2,8 @@ from django.shortcuts import render, reverse, redirect
 from django.conf import settings
 
 from .forms import HOGPicForm, ChoosePicCategoryForm
-from .tools import cal_hog_time
+from .tools import cal_hog_time, str_to_tuple, get_pic_vector
+from .algorithm_conf import *
 
 from os import path
 from skimage import feature, exposure
@@ -12,12 +13,13 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import json
 from datetime import datetime, timedelta
+from sklearn.model_selection import train_test_split
 
 
 def choose_pic_category(request):
     user_id = str(request.user.id)
 
-    if request.method == 'POST' :
+    if request.method == 'POST':
 
         # TODO: judege choose_pic_category_form.is_valid()
 
@@ -96,8 +98,6 @@ def hog_pic(request):
         with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
             json.dump(algorithm_info, f)
 
-        str_to_tuple = lambda a_str: tuple((int(a_str.split(',')[0]), int(a_str.split(',')[1])))
-
         # format the parameter
         pic_size = str_to_tuple(pic_size)
         pixels_per_cell = str_to_tuple(pixels_per_cell)
@@ -154,3 +154,9 @@ def hog_pic(request):
     else:
         hog_pic_form = HOGPicForm()
         return render(request, 'algorithm/hog_pic.html', {'hog_pic_form': hog_pic_form})
+
+
+def create_model(request):
+    pic_vector, label = get_pic_vector(str(request.user.id))
+    X_train, X_test, y_train, y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
+    return render(request, 'algorithm/create_model.html', {'a': y_train, 'b': y_test})
