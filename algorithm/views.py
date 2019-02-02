@@ -1,7 +1,6 @@
 from django.shortcuts import render, reverse, redirect
 from django.conf import settings
 
-from picture.models import Picture
 from .forms import HOGPicForm, ChoosePicCategoryForm
 from .tools import cal_hog_time
 
@@ -9,21 +8,26 @@ from os import path
 from skimage import feature, exposure
 import cv2
 import matplotlib
-
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import json
-import time
+from datetime import datetime, timedelta
 
 
 def choose_pic_category(request):
     user_id = str(request.user.id)
 
-    if request.method == 'POST':
+    if request.method == 'POST' :
+
+        # TODO: judege choose_pic_category_form.is_valid()
 
         # get the parameter
-
         test_pic = request.FILES.get('test_pic')
+        test_category_positive = request.POST.get('test_category_positive')
+        test_category_negative = request.POST.get('test_category_negative')
+
+        test_category_positive = test_category_positive.split('\'')[-2]
+        test_category_negative = test_category_negative.split('\'')[-2]
 
         #  save the test_pic
         pic_name = request.FILES.get('test_pic').name
@@ -37,10 +41,14 @@ def choose_pic_category(request):
         with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
             algorithm_info = json.load(load_f)
 
+        now = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
         algorithm_info[user_id] = {'test_pic': pic_name,
                                    'pic_para': {},
-                                   'test_category': {'positive': [], 'negative': []},
-                                   'update_time': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                                   'test_category': {
+                                       'positive': test_category_positive,
+                                       'negative': test_category_negative
+                                   },
+                                   'update_time': now
                                    }
 
         with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
@@ -48,15 +56,10 @@ def choose_pic_category(request):
 
         return redirect(reverse('alogrithm:hog_pic'))
     else:
-        all_test_category = Picture.objects.filter(user_id=user_id).values('category').distinct()
-        a_list = [a['category'] for a in all_test_category]
-        choose_pic_category_form = ChoosePicCategoryForm({
-            'test_pic': '',
-            # 'test_category': a_list
-        })
 
-        # form = ChoosePicCategoryForm(initial=a_list)
-        return render(request, 'algorithm/choose_pic_category.html', {'choose_pic_category_form': choose_pic_category_form})
+        choose_pic_category_form = ChoosePicCategoryForm(user_id=user_id)
+        return render(request, 'algorithm/choose_pic_category.html',
+                      {'choose_pic_category_form': choose_pic_category_form})
 
 
 def hog_pic(request):
@@ -87,8 +90,8 @@ def hog_pic(request):
             'pixels_per_cell': pixels_per_cell,
             'cells_per_block': cells_per_block,
         }
-
-        algorithm_info[user_id]['update_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        now = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
+        algorithm_info[user_id]['update_time'] = now
 
         with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
             json.dump(algorithm_info, f)

@@ -12,11 +12,28 @@ class HOGPicForm(forms.Form):
 
 class ChoosePicCategoryForm(forms.Form):
     test_pic = forms.ImageField()
-    # category = forms.ModelChoiceField(queryset=Picture.objects.get(user_id=request))
+    test_category_positive = forms.ModelChoiceField(Picture.objects.none())
+    test_category_negative = forms.ModelChoiceField(Picture.objects.none())
 
-    # test_category = forms.TypedChoiceField(
-    #     choices=(
-    #         (1, 'default')
-    #     ),
-    #     widget=forms.CheckboxSelectMultiple(),
-    # )
+    def __init__(self, user_id, *args, **kwargs):
+        super(ChoosePicCategoryForm, self).__init__(*args, **kwargs)
+        self.fields['test_category_positive'] = forms.ModelChoiceField(
+            queryset=Picture.objects.filter(user_id=user_id).values('category').distinct(),
+            empty_label="请至少选择一个",
+        )
+        self.fields['test_category_negative'] = forms.ModelChoiceField(
+            queryset=Picture.objects.filter(user_id=user_id).values('category').distinct(),
+            empty_label="请至少选择一个",
+        )
+
+    def is_valid(self):
+        # run the parent validation first
+        valid = super(ChoosePicCategoryForm, self).is_valid()
+
+        if not valid:
+            return valid
+        elif self.fields['test_category_negative'] == self.fields['test_category_positive']:
+            self._errors['same_category'] = 'test_category_negative should diff from test_category_positive'
+            return False
+        else:
+            return valid
