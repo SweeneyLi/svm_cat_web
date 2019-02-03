@@ -7,6 +7,8 @@
 <h3>{{ picture.pic_name }}</h3>
 
 {% if picture.path %}
+{#    {% load static %}#}
+{#     <p><img src="{%  static 'upload_images/1/cat/0.jpg' %}"/></p>#}
   <p><img src="{{ picture.path.url }}"/></p>
 {% endif %}
 

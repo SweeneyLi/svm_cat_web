@@ -1,14 +1,12 @@
 from django.shortcuts import render, reverse, redirect
-from django.conf import settings
 
 from .forms import HOGPicForm, ChoosePicCategoryForm, ContrastAlgorithmForm
 from .tools import *
 
-
 from os import path
 import json
 from datetime import datetime, timedelta
-
+import multiprocessing as mp
 
 def choose_pic_category(request):
     user_id = str(request.user.id)
@@ -80,6 +78,11 @@ def hog_pic(request):
         user_id = str(request.user.id)
 
         execute_hog_pic(pic_size, orientations, pixels_per_cell,cells_per_block, is_color, user_id)
+
+        proc = mp.Process(target=execute_hog_pic, args=(pic_size, orientations, pixels_per_cell,cells_per_block, is_color, user_id))
+        proc.daemon = True
+        proc.start()
+        proc.join()
 
 
         # get the saved png to show in page

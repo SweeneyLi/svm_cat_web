@@ -130,11 +130,6 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell,cells_per_block, is_
                                  user_id + '_hog_picture.png')
     plt.savefig(hog_picture_path)
 
-    # del plt
-    # try to clear plt
-    # plt.clf()
-    # plt.cla()
-    # plt.close('all')
 
 
 def get_pic_vector(user_id):
