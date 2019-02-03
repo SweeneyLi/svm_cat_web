@@ -2,18 +2,11 @@ from django import forms
 from picture.models import Picture
 
 
-class HOGPicForm(forms.Form):
-    pic_size = forms.CharField(initial='194,259')
-    orientations = forms.IntegerField(initial='9')
-    pixels_per_cell = forms.CharField(initial='8,8')
-    cells_per_block = forms.CharField(initial='3,3')
-    is_color = forms.BooleanField(initial=True, required=False)
-
-
 class ChoosePicCategoryForm(forms.Form):
     test_pic = forms.ImageField()
     test_category_positive = forms.ModelChoiceField(Picture.objects.none())
     test_category_negative = forms.ModelChoiceField(Picture.objects.none())
+    validation_size = forms.FloatField(initial=0.2)
 
     def __init__(self, user_id, *args, **kwargs):
         super(ChoosePicCategoryForm, self).__init__(*args, **kwargs)
@@ -37,3 +30,25 @@ class ChoosePicCategoryForm(forms.Form):
             return False
         else:
             return valid
+
+class HOGPicForm(forms.Form):
+    pic_size = forms.CharField(initial='194,259')
+    orientations = forms.IntegerField(initial='9')
+    pixels_per_cell = forms.CharField(initial='8,8')
+    cells_per_block = forms.CharField(initial='3,3')
+    is_color = forms.BooleanField(initial=True, required=False)
+
+
+class ContrastAlgorithmForm(forms.Form):
+    algorithms = ('LogisticRegression', 'KNeighborsClassifier',
+                  'DecisionTreeClassifier', 'GaussianNB', 'SVC')
+
+
+    algorithm_list = forms.MultipleChoiceField(label='algorithm_list', choices=algorithms,
+                                            widget=forms.CheckboxSelectMultiple())
+
+    is_standard = forms.BooleanField(initial=False)
+
+    def __init__(self, *args, **kwargs):
+        super(ContrastAlgorithmForm, self).__init__(*args, **kwargs)
+        # self.fields['user_id'].widget.attrs['readonly'] = True
