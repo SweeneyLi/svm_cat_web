@@ -27,7 +27,7 @@ SECRET_KEY = '8%gpo5mepj-=7)3hu$(wf=li3k99x+$lp(f0pwr7l)5w8dxq^z'
 # DEBUG = False
 #
 # ALLOWED_HOSTS = ['*']
-
+#
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -148,3 +148,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ALGORITHM_JSON_PATH = os.path.join(MEDIA_ROOT, 'algorithm', 'algorithm_info.json')
+FEATURE_VECTOR_PATH = os.path.join(MEDIA_ROOT, 'algorithm', 'feature_vector.pkl')

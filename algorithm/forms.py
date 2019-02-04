@@ -31,6 +31,7 @@ class ChoosePicCategoryForm(forms.Form):
         else:
             return valid
 
+
 class HOGPicForm(forms.Form):
     pic_size = forms.CharField(initial='194,259')
     orientations = forms.IntegerField(initial='9')
@@ -40,15 +41,14 @@ class HOGPicForm(forms.Form):
 
 
 class ContrastAlgorithmForm(forms.Form):
-    algorithms = ('LogisticRegression', 'KNeighborsClassifier',
-                  'DecisionTreeClassifier', 'GaussianNB', 'SVC')
+    is_standard = forms.BooleanField(initial=False, required=False)
+    #
+    # algorithms = ('LogisticRegression', 'KNeighborsClassifier',
+    #               'DecisionTreeClassifier', 'GaussianNB')
+    #
+    # contrast_algorithm = forms.MultipleChoiceField(label='algoricontrast_algorithmthm_list',
+    #                                                choices=algorithms, widget=forms.CheckboxSelectMultiple())
 
 
-    algorithm_list = forms.MultipleChoiceField(label='algorithm_list', choices=algorithms,
-                                            widget=forms.CheckboxSelectMultiple())
 
-    is_standard = forms.BooleanField(initial=False)
 
-    def __init__(self, *args, **kwargs):
-        super(ContrastAlgorithmForm, self).__init__(*args, **kwargs)
-        # self.fields['user_id'].widget.attrs['readonly'] = True

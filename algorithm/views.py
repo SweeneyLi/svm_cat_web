@@ -1,12 +1,13 @@
 from django.shortcuts import render, reverse, redirect
 
-from .forms import HOGPicForm, ChoosePicCategoryForm, ContrastAlgorithmForm
-from .tools import *
+from .forms import *
+from .functions import *
 
 from os import path
 import json
 from datetime import datetime, timedelta
 import multiprocessing as mp
+
 
 def choose_pic_category(request):
     user_id = str(request.user.id)
@@ -38,7 +39,7 @@ def choose_pic_category(request):
 
         now = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
 
-        # json initial
+        # algorithm_info_json initial
         algorithm_info[user_id] = {'pic_para': {
             'test_pic': pic_name
         }, 'model_para': {
@@ -60,7 +61,6 @@ def choose_pic_category(request):
 
 
 def hog_pic(request):
-
     if request.method == 'POST':
 
         # TODO:form validation
@@ -77,13 +77,15 @@ def hog_pic(request):
         is_color = request.POST.get('is_color')
         user_id = str(request.user.id)
 
-        execute_hog_pic(pic_size, orientations, pixels_per_cell,cells_per_block, is_color, user_id)
+        execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is_color, user_id)
 
-        proc = mp.Process(target=execute_hog_pic, args=(pic_size, orientations, pixels_per_cell,cells_per_block, is_color, user_id))
-        proc.daemon = True
-        proc.start()
-        proc.join()
+        gc.collect()
 
+        # TODO: how to use the process to avoid memory leak
+        # proc = mp.Process(target=execute_hog_pic, args=(pic_size, orientations, pixels_per_cell,cells_per_block, is_color, user_id, ))
+        # proc.daemon = True
+        # proc.start()
+        # proc.join()
 
         # get the saved png to show in page
         relative_pic_path = path.join('/media', 'algorithm', 'hog_picture',
@@ -106,18 +108,33 @@ def hog_pic(request):
 
 def contrast_algorithm(request):
     if request.method == 'POST':
-        X_train, X_test, y_train, y_test = get_pic_vector(str(request.user.id))
+        user_id = str(request.user.id)
 
+        # contrast_algorithm = request.POST.getlist('contrast_algorithm')
+        is_standard = request.POST.get('is_standard')
+        is_standard = False if is_standard == None else True
+        contrast_algorithm = False
 
+        results = execute_contrast_algorithm(user_id, is_standard, contrast_algorithm)
+
+        relative_pic_path = path.join('/media', 'algorithm', 'hog_picture',
+                                      user_id + '_contrast_algorithm.png')
+        contrast_algorithm_form = ContrastAlgorithmForm(request.POST)
+        # del plt
+        gc.collect()
+        return render(request, 'algorithm/contrast_algorithm.html',
+                      {'contrast_algorithm_form': contrast_algorithm_form,
+                       'algorithm_picture': relative_pic_path,
+                       'results': results
+                       })
     else:
+        get_pic_vector(str(request.user.id))
         contrast_algorithm_form = ContrastAlgorithmForm()
-        return render(request, 'algorithm/', {'contrast_algorithm_form': contrast_algorithm_form})
+        return render(request, 'algorithm/contrast_algorithm.html',
+                      {'contrast_algorithm_form': contrast_algorithm_form})
 
 
 def create_model(request):
     X_train, X_test, y_train, y_test = get_pic_vector(str(request.user.id))
 
     return render(request, 'algorithm/create_model.html', {'a': y_train, 'b': y_test})
-
-
-
