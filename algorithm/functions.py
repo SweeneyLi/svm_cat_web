@@ -261,6 +261,14 @@ def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
     with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
         feature_vector = pickle.load(load_f)
 
+    with open(settings.ALGORITHM_JSON_PATH, "r") as load_f2:
+        algorithm_info = json.load(load_f2)
+
+    algorithm_info[user_id]['data_para'].update({'is_standard': is_standard})
+
+    with open(settings.ALGORITHM_JSON_PATH, "w") as f:
+        json.dump(algorithm_info, f)
+
     models = {}
     if is_standard:
         models = {}

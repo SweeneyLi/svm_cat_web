@@ -38,7 +38,7 @@ def choose_pic_category(request):
         with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
             algorithm_info = json.load(load_f)
 
-        now = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
+        # now = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
 
         # algorithm_info_json initial
         algorithm_info[user_id] = {'pic_para': {
@@ -47,7 +47,8 @@ def choose_pic_category(request):
             'category_positive': test_category_positive,
             'category_negative': test_category_negative,
             'validation_size': validation_size,
-        }, 'update_time': now
+        },
+            # 'update_time': now
         }
 
         with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
