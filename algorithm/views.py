@@ -43,7 +43,7 @@ def choose_pic_category(request):
         # algorithm_info_json initial
         algorithm_info[user_id] = {'pic_para': {
             'test_pic': pic_name
-        }, 'model_para': {
+        }, 'data_para': {
             'category_positive': test_category_positive,
             'category_negative': test_category_negative,
             'validation_size': validation_size,
@@ -75,7 +75,7 @@ def hog_pic(request):
         orientations = int(request.POST.get('orientations'))
         pixels_per_cell = request.POST.get('pixels_per_cell')
         cells_per_block = request.POST.get('cells_per_block')
-        is_color = request.POST.get('is_color')
+        is_color = True if request.POST.get('is_color') else False
         user_id = str(request.user.id)
 
         # execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is_color, user_id)
