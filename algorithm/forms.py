@@ -1,5 +1,6 @@
 from django import forms
 from picture.models import Picture
+from django.db.models import Count
 
 
 # TODO: all the valid of forms
@@ -13,11 +14,15 @@ class ChoosePicCategoryForm(forms.Form):
     def __init__(self, user_id, *args, **kwargs):
         super(ChoosePicCategoryForm, self).__init__(*args, **kwargs)
         self.fields['test_category_positive'] = forms.ModelChoiceField(
-            queryset=Picture.objects.filter(user_id=user_id).values('category').distinct(),
+            queryset=Picture.objects.filter(user_id=user_id).values('category').distinct().annotate(
+                num_category=Count('category')
+            ).filter(user_id=user_id),
             empty_label="请至少选择一个",
         )
         self.fields['test_category_negative'] = forms.ModelChoiceField(
-            queryset=Picture.objects.filter(user_id=user_id).values('category').distinct(),
+            queryset=Picture.objects.filter(user_id=user_id).values('category').distinct().annotate(
+                num_category=Count('category')
+            ),
             empty_label="请至少选择一个",
         )
 

@@ -214,6 +214,8 @@ def get_pic_vector(user_id):
                     os.listdir(os.path.join(pic_root_dir, positive_category))]
     negative_pic = [os.path.join(pic_root_dir, negative_category, i) for i in
                     os.listdir(os.path.join(pic_root_dir, negative_category))]
+
+
     pic_file_list = positive_pic + negative_pic
 
     for pic in pic_file_list:
@@ -242,6 +244,9 @@ def get_pic_vector(user_id):
 
     with open(settings.FEATURE_VECTOR_PATH, "wb") as f:
         pickle.dump(feature_vector, f)
+
+    with open(settings.ALGORITHM_JSON_PATH, "w") as f2:
+        json.dump(algorithm_info, f2)
 
     return None
 

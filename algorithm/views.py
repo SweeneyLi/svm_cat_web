@@ -38,7 +38,8 @@ def choose_pic_category(request):
         with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
             algorithm_info = json.load(load_f)
 
-        # now = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
+
+
 
         # algorithm_info_json initial
         algorithm_info[user_id] = {'pic_para': {
