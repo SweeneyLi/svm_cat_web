@@ -159,7 +159,7 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
     plt.close('all')
     gc.collect()
 
-    hog_time = cal_hog_time(img, orientations, pixels_per_cell, cells_per_block)
+    # hog_time = cal_hog_time(img, orientations, pixels_per_cell, cells_per_block)
 
     algorithm_info[user_id]['pic_para'] = {
         'test_pic': test_pic,
@@ -168,7 +168,7 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
         'pixels_per_cell': pixels_per_cell,
         'cells_per_block': cells_per_block,
         'is_color': is_color_num,
-        'hog_time': hog_time
+        # 'hog_time': hog_time
     }
     now = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
     algorithm_info[user_id]['update_time'] = now
@@ -203,9 +203,9 @@ def get_pic_vector(user_id):
     is_color = algorithm_info[user_id]['pic_para']['is_color']
     validation_size = algorithm_info[user_id]['model_para']['validation_size']
 
-    pic_size = str_to_tuple(pic_size)
-    pixels_per_cell = str_to_tuple(pixels_per_cell)
-    cells_per_block = str_to_tuple(cells_per_block)
+    pic_size = tuple(pic_size)
+    pixels_per_cell = tuple(pixels_per_cell)
+    cells_per_block = tuple(cells_per_block)
 
     img_list = []
     positive_pic = [os.path.join(pic_root_dir, positive_category, i) for i in

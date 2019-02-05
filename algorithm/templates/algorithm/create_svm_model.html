@@ -1,0 +1,19 @@
+{% extends 'system/base.html' %}
+{% load staticfiles %}
+
+{% block title %}create_svm_model{% endblock %}
+
+{% block content %}
+
+<h1>Fifth Step</h1>
+<h3>create_svm_model</h3>
+
+
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+    {{ form.as_p }}
+     <input type="submit" value="Save" />
+</form>
+
+
+{% endblock %}
+

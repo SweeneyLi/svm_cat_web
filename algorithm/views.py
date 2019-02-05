@@ -94,12 +94,12 @@ def hog_pic(request):
         with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
             algorithm_info = json.load(load_f)
 
-            hog_time = algorithm_info[user_id]['pic_para']['hog_time']
+            # hog_time = algorithm_info[user_id]['pic_para']['hog_time']
 
         return render(request, 'algorithm/hog_pic.html',
                       {'hog_pic_form': hog_pic_form,
                        'hog_picture': relative_pic_path,
-                       'hog_time': hog_time
+                       # 'hog_time': hog_time
                        })
 
     else:
