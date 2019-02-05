@@ -1,1 +1,28 @@
-{"1": {"pic_para": {"test_pic": "10.jpg", "pic_size": "194,259", "orientations": 8, "pixels_per_cell": "8,8", "cells_per_block": "3,3", "is_color": 1}, "model_para": {"category_positive": "test3", "category_negative": "test4", "validation_size": 0.2}, "update_time": "2019-02-05_06:33:07."}}
+{
+  "1": {
+    "pic_para": {
+      "test_pic": "4.jpg",
+      "pic_size": [
+        194,
+        259
+      ],
+      "orientations": 9,
+      "pixels_per_cell": [
+        8,
+        8
+      ],
+      "cells_per_block": [
+        2,
+        2
+      ],
+      "is_color": 1,
+      "hog_time": 0.000581254
+    },
+    "model_para": {
+      "category_positive": "cat",
+      "category_negative": "other",
+      "validation_size": 0.2
+    },
+    "update_time": "2019-02-05_15:57:11."
+  }
+}

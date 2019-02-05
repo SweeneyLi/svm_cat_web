@@ -8,7 +8,7 @@ from sklearn.tree import DecisionTreeClassifier
 import pickle
 from .algorithm_conf import *
 from sklearn.svm import SVC
-from sklearn.model_selection import train_test_split, KFold, cross_val_score
+from sklearn.model_selection import train_test_split, KFold, cross_val_score, GridSearchCV
 import time
 import numpy as np
 import os
@@ -20,15 +20,30 @@ from datetime import datetime, timedelta
 import gc
 import matplotlib
 
-matplotlib.use('TkAgg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
 def str_to_tuple(a_str):
+    """
+    get the str like 8,8, then change to tuple (8,8)
+    :param a_str: str
+    :return: tuple
+    """
+
     return tuple((int(a_str.split(',')[0]), int(a_str.split(',')[1])))
 
 
 def hog(img_list, orientations, pixels_per_cell, cells_per_block):
+    """
+    change the img to feature_vector
+    :param img_list:
+    :param orientations:
+    :param pixels_per_cell:
+    :param cells_per_block:
+    :return: vector(array)
+    """
+
     size = pixels_per_cell[0] * cells_per_block[0]
     win_size = (size, size)
     block_size = pixels_per_cell
@@ -45,6 +60,15 @@ def hog(img_list, orientations, pixels_per_cell, cells_per_block):
 
 
 def cal_hog_time(img, orientations, pixels_per_cell, cells_per_block):
+    """
+    calculate the time of hog
+    :param img:
+    :param orientations:
+    :param pixels_per_cell:
+    :param cells_per_block:
+    :return: time
+    """
+
     # opencv
     size = pixels_per_cell[0] * cells_per_block[0]
     win_size = (size, size)
@@ -55,7 +79,7 @@ def cal_hog_time(img, orientations, pixels_per_cell, cells_per_block):
 
     first_time = time.clock()
 
-    for i in range(10):
+    for i in range(1000):
         hog_vector = cv2.HOGDescriptor(win_size, block_size, block_stride, cell_size, nbins)
         hist_2 = hog_vector.compute(img)
         hist_2 = np.array(hist_2).reshape(len(hist_2), )
@@ -67,11 +91,22 @@ def cal_hog_time(img, orientations, pixels_per_cell, cells_per_block):
 
     end_time = time.clock()
 
-    avg_time = (end_time - first_time)
+    avg_time = (end_time - first_time) / 1000
     return avg_time
 
 
 def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is_color, user_id):
+    """
+    get the pic_para, save them to algorithm_info.json, then hog them by plot (save in local)
+    :param pic_size:
+    :param orientations:
+    :param pixels_per_cell:
+    :param cells_per_block:
+    :param is_color:
+    :param user_id:
+    :return: None
+    """
+
     is_color_num = 1 if is_color else 0
 
     # 取出json中的test_pic, 放入图片参数
@@ -79,20 +114,6 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
         algorithm_info = json.load(load_f)
 
     test_pic = algorithm_info[user_id]['pic_para']['test_pic']
-
-    algorithm_info[user_id]['pic_para'] = {
-        'test_pic': test_pic,
-        'pic_size': pic_size,
-        'orientations': orientations,
-        'pixels_per_cell': pixels_per_cell,
-        'cells_per_block': cells_per_block,
-        'is_color': is_color_num
-    }
-    now = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
-    algorithm_info[user_id]['update_time'] = now
-
-    with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
-        json.dump(algorithm_info, f)
 
     # format the parameter
     pic_size = str_to_tuple(pic_size)
@@ -135,10 +156,38 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
     hog_picture_path = path.join(settings.MEDIA_ROOT, 'algorithm', 'hog_picture',
                                  user_id + '_hog_picture.png')
     plt.savefig(hog_picture_path)
+    plt.close('all')
+    gc.collect()
+
+    hog_time = cal_hog_time(img, orientations, pixels_per_cell, cells_per_block)
+
+    algorithm_info[user_id]['pic_para'] = {
+        'test_pic': test_pic,
+        'pic_size': pic_size,
+        'orientations': orientations,
+        'pixels_per_cell': pixels_per_cell,
+        'cells_per_block': cells_per_block,
+        'is_color': is_color_num,
+        'hog_time': hog_time
+    }
+    now = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
+    algorithm_info[user_id]['update_time'] = now
+
+    with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
+        json.dump(algorithm_info, f)
 
 
-# TODO: judege whether to recalculate
 def get_pic_vector(user_id):
+    """
+    get the model_para and pic_para, change them to vector,
+    then save in the feature_vector.pkl
+
+    :param user_id: str
+    :return: None
+    """
+
+    # TODO: judege whether to recalculate
+
     # load the algorithm_info.json
     with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
         algorithm_info = json.load(load_f)
@@ -192,11 +241,17 @@ def get_pic_vector(user_id):
     with open(settings.FEATURE_VECTOR_PATH, "wb") as f:
         pickle.dump(feature_vector, f)
 
-    # return X_train, X_test, y_train, y_test
     return None
 
 
 def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
+    """
+    accept the parameter, then contrast the several algorithms to svm show in boxplot by previous vector
+    :param user_id:
+    :param is_standard:
+    :param contrast_algorithm:
+    :return: None
+    """
     num_folds = 10
     seed = 7
     scoring = 'accuracy'
@@ -232,7 +287,7 @@ def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
         results.append(cv_results)
 
     # 评估算法 - 箱线图
-    fig = plt.figure(0)
+    fig = plt.figure()
     fig.suptitle('Algorithm Comparison')
     ax = fig.add_subplot(111)
     plt.boxplot(results)
@@ -241,72 +296,48 @@ def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
     contrast_algorithm_path = path.join(settings.MEDIA_ROOT, 'algorithm', 'hog_picture',
                                         user_id + '_contrast_algorithm.png')
     plt.savefig(contrast_algorithm_path)
-    # plt.close(0)
 
+    fig.clf()
+    plt.close('all')
+
+    gc.collect()
     return None
-#
-#
-# def test_get_pic_vector(user_id):
-#     BASE_DIR = '/Users/sweeney/WorkSpaces/Git/svm_cat_web'
-#     MEDIA_ROOT = BASE_DIR + '/media'
-#     ALGORITHM_JSON_PATH = MEDIA_ROOT + '/algorithm' + '/algorithm_info.json'
-#
-#     # load the algorithm_info.json
-#     with open(ALGORITHM_JSON_PATH, "r") as load_f:
-#         algorithm_info = json.load(load_f)
-#
-#     pic_root_dir = os.path.join(MEDIA_ROOT, 'upload_images', str(user_id))
-#
-#     positive_category = algorithm_info[user_id]['model_para']['category_positive']
-#     negative_category = algorithm_info[user_id]['model_para']['category_negative']
-#     pic_size = algorithm_info[user_id]['pic_para']['pic_size']
-#     orientations = int(algorithm_info[user_id]['pic_para']['orientations'])
-#     pixels_per_cell = algorithm_info[user_id]['pic_para']['pixels_per_cell']
-#     cells_per_block = algorithm_info[user_id]['pic_para']['cells_per_block']
-#     is_color = algorithm_info[user_id]['pic_para']['is_color']
-#     validation_size = algorithm_info[user_id]['model_para']['validation_size']
-#
-#     pic_size = str_to_tuple(pic_size)
-#     pixels_per_cell = str_to_tuple(pixels_per_cell)
-#     cells_per_block = str_to_tuple(cells_per_block)
-#
-#     img_list = []
-#     positive_pic = [os.path.join(pic_root_dir, positive_category, i) for i in
-#                     os.listdir(os.path.join(pic_root_dir, positive_category))]
-#     negative_pic = [os.path.join(pic_root_dir, negative_category, i) for i in
-#                     os.listdir(os.path.join(pic_root_dir, negative_category))]
-#     pic_file_list = positive_pic + negative_pic
-#
-#     for pic in pic_file_list:
-#         pic = os.path.join(pic_root_dir, pic)
-#         a_pic = cv2.imread(pic, is_color)
-#         a_pic = cv2.resize(a_pic, pic_size, interpolation=cv2.INTER_AREA)
-#         img_list.append(a_pic)
-#
-#     pic_vector = hog(img_list, orientations, pixels_per_cell, cells_per_block)
-#     label = np.array(np.repeat(1, pic_vector.shape[0]))
-#     label[len(positive_pic):] = 0
-#
-#     X_train, X_test, y_train, y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=7)
-#
-#     # X_train, X_test, y_train, y_test = list(X_train), list(X_test), list(y_train), list(y_test)
-#
-#     feature_vector = {}
-#
-#     feature_vector[user_id] = {
-#         'X_train': X_train,
-#         'X_test': X_test,
-#         'y_train': y_train,
-#         'y_test': y_test
-#     }
-#
-#     pickle.dump(feature_vector, open('feature_vector.pkl', 'wb'))
-#
-#     # return X_train, X_test, y_train, y_test
-#     return None
-#
-#
-# test_get_pic_vector('1')
-#
-# data = pickle.load(open('feature_vector.pkl', 'rb'))
-# print(data['1']['y_test'])
+
+
+def execute_adjust_svm(user_id, c, kernel, return_dict):
+    """
+    get the c and kernel, return the results of svm by given parameter
+    :param user_id:str
+    :param c: list
+    :param kernl: list
+    :return: results
+    """
+
+    # TODO: optimizate the parameter
+    with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
+        feature_vector = pickle.load(load_f)
+
+    X_train, Y_train = feature_vector[user_id]['X_train'], feature_vector[user_id]['Y_train']
+    scaler = StandardScaler().fit(X_train)
+    rescaledX = scaler.transform(X_train).astype(float)
+    param_grid = {
+        'C': c,
+        'kernel': kernel
+    }
+    model = SVC(gamma='scale')
+    kfold = KFold(n_splits=num_folds, random_state=seed)
+    grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=scoring, cv=kfold)
+    grid_result = grid.fit(X=rescaledX, y=Y_train)
+
+    cv_results = zip(grid_result.cv_results_['mean_test_score'],
+                     grid_result.cv_results_['std_test_score'],
+                     grid_result.cv_results_['params'])
+
+    # return_dict = {
+    #     'best_score': grid_result.best_score_,
+    #     'best_params': grid_result.best_params_,
+    #     'cv_results': cv_results
+    # }
+    return_dict['best_score'] = grid_result.best_score_
+    return_dict['best_params'] = grid_result.best_params_
+    return_dict['cv_results'] = cv_results

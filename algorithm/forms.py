@@ -2,6 +2,8 @@ from django import forms
 from picture.models import Picture
 
 
+# TODO: all the valid of forms
+
 class ChoosePicCategoryForm(forms.Form):
     test_pic = forms.ImageField()
     test_category_positive = forms.ModelChoiceField(Picture.objects.none())
@@ -35,20 +37,26 @@ class ChoosePicCategoryForm(forms.Form):
 class HOGPicForm(forms.Form):
     pic_size = forms.CharField(initial='194,259')
     orientations = forms.IntegerField(initial='9')
-    pixels_per_cell = forms.CharField(initial='8,8')
-    cells_per_block = forms.CharField(initial='3,3')
+    pixels_per_cell = forms.CharField(initial='16,16')
+    cells_per_block = forms.CharField(initial='2,2')
     is_color = forms.BooleanField(initial=True, required=False)
 
 
 class ContrastAlgorithmForm(forms.Form):
     is_standard = forms.BooleanField(initial=False, required=False)
-    #
+
     # algorithms = ('LogisticRegression', 'KNeighborsClassifier',
     #               'DecisionTreeClassifier', 'GaussianNB')
-    #
-    # contrast_algorithm = forms.MultipleChoiceField(label='algoricontrast_algorithmthm_list',
-    #                                                choices=algorithms, widget=forms.CheckboxSelectMultiple())
+    algorithms = (('1', 'svm'), ('2', 'asdf'))
+
+    contrast_algorithm = forms.MultipleChoiceField(label='contrast_algorithmthms',
+                                                   choices=algorithms, widget=forms.CheckboxSelectMultiple())
 
 
-
-
+class SVMParameterForm(forms.Form):
+    c = forms.CharField(initial='0.1, 0.3, 0.5, 0.7, 0.9, 1.0')
+    kernel_list = (('linear', 'linear'), ('poly', 'poly'), ('rbf', 'rbf'), ('sigmoid', 'sigmoid'))
+    kernel = forms.MultipleChoiceField(label='kernel',
+                                       choices=kernel_list,
+                                       widget=forms.CheckboxSelectMultiple()
+                                       )

@@ -10,6 +10,7 @@ import multiprocessing as mp
 
 
 def choose_pic_category(request):
+    # TODO: add the loading html
     user_id = str(request.user.id)
 
     if request.method == 'POST':
@@ -77,28 +78,28 @@ def hog_pic(request):
         is_color = request.POST.get('is_color')
         user_id = str(request.user.id)
 
-        execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is_color, user_id)
+        # execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is_color, user_id)
 
-        gc.collect()
-
-        # TODO: how to use the process to avoid memory leak
-        # proc = mp.Process(target=execute_hog_pic, args=(pic_size, orientations, pixels_per_cell,cells_per_block, is_color, user_id, ))
-        # proc.daemon = True
-        # proc.start()
-        # proc.join()
+        proc = mp.Process(target=execute_hog_pic,
+                          args=(pic_size, orientations, pixels_per_cell, cells_per_block, is_color, user_id))
+        proc.daemon = True
+        proc.start()
+        proc.join()
 
         # get the saved png to show in page
         relative_pic_path = path.join('/media', 'algorithm', 'hog_picture',
                                       user_id + '_hog_picture.png')
         hog_pic_form = HOGPicForm(request.POST)
 
-        # TODO: meet the memory problem when calcuate the hog time
-        # hog_time = cal_hog_time(img, orientations, pixels_per_cell, cells_per_block)
+        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+            algorithm_info = json.load(load_f)
+
+            hog_time = algorithm_info[user_id]['pic_para']['hog_time']
 
         return render(request, 'algorithm/hog_pic.html',
                       {'hog_pic_form': hog_pic_form,
                        'hog_picture': relative_pic_path,
-                       # 'hog_time': hog_time
+                       'hog_time': hog_time
                        })
 
     else:
@@ -110,22 +111,24 @@ def contrast_algorithm(request):
     if request.method == 'POST':
         user_id = str(request.user.id)
 
+        # TODO: complete the choices of contrast_alorgitm
         # contrast_algorithm = request.POST.getlist('contrast_algorithm')
-        is_standard = request.POST.get('is_standard')
-        is_standard = False if is_standard == None else True
         contrast_algorithm = False
 
-        results = execute_contrast_algorithm(user_id, is_standard, contrast_algorithm)
+        is_standard = True if request.POST.get('is_standard') else False
+
+        proc = mp.Process(target=execute_contrast_algorithm, args=(user_id, is_standard, contrast_algorithm))
+        proc.daemon = True
+        proc.start()
+        proc.join()
 
         relative_pic_path = path.join('/media', 'algorithm', 'hog_picture',
                                       user_id + '_contrast_algorithm.png')
         contrast_algorithm_form = ContrastAlgorithmForm(request.POST)
-        # del plt
-        gc.collect()
+
         return render(request, 'algorithm/contrast_algorithm.html',
                       {'contrast_algorithm_form': contrast_algorithm_form,
                        'algorithm_picture': relative_pic_path,
-                       'results': results
                        })
     else:
         get_pic_vector(str(request.user.id))
@@ -134,7 +137,24 @@ def contrast_algorithm(request):
                       {'contrast_algorithm_form': contrast_algorithm_form})
 
 
-def create_model(request):
-    X_train, X_test, y_train, y_test = get_pic_vector(str(request.user.id))
+def adjust_svm(request):
+    if request.method == 'POST':
+        user_id = str(request.user.id)
+        c = request.POST.get('c').split(',')
+        c = list(map(lambda a: float(a), c))
+        kernel = request.POST.getlist('kernel')
 
-    return render(request, 'algorithm/create_model.html', {'a': y_train, 'b': y_test})
+        manager = mp.Manager()
+        return_dict = manager.dict()
+        proc = mp.Process(target=execute_adjust_svm, args=(user_id, c, kernel, return_dict))
+        proc.daemon = True
+        proc.start()
+        proc.join()
+
+        svm_parameter_form = SVMParameterForm(request.POST)
+        return render(request, 'algorithm/adjust_svm.html',
+                      {'svm_parameter_form': svm_parameter_form,
+                       'results': return_dict})
+    else:
+        svm_parameter_form = SVMParameterForm()
+        return render(request, 'algorithm/adjust_svm.html', {'svm_parameter_form': svm_parameter_form})
