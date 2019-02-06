@@ -24,16 +24,6 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
-def str_to_tuple(a_str):
-    """
-    get the str like 8,8, then change to tuple (8,8)
-    :param a_str: str
-    :return: tuple
-    """
-
-    return tuple((int(a_str.split(',')[0]), int(a_str.split(',')[1])))
-
-
 def hog(img_list, orientations, pixels_per_cell, cells_per_block):
     """
     change the img to feature_vector
@@ -113,11 +103,6 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
 
     test_pic = algorithm_info[user_id]['pic_para']['test_pic']
 
-    # format the parameter
-    pic_size = str_to_tuple(pic_size)
-    pixels_per_cell = str_to_tuple(pixels_per_cell)
-    cells_per_block = str_to_tuple(cells_per_block)
-
     # read pic and resize it
     saved_pic_path = path.join(settings.MEDIA_ROOT, 'algorithm', 'hog_picture',
                                user_id + '_' + 'hog_test_pic.jpg')
@@ -165,10 +150,10 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
 
     algorithm_info[user_id]['pic_para'].update({
         'test_pic': test_pic,
-        'pic_size': pic_size,
+        'pic_size': str(pic_size),
         'orientations': orientations,
-        'pixels_per_cell': pixels_per_cell,
-        'cells_per_block': cells_per_block,
+        'pixels_per_cell': str(pixels_per_cell),
+        'cells_per_block': str(cells_per_block),
         'is_color': is_color
     })
 

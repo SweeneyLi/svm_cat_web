@@ -74,10 +74,10 @@ def hog_pic(request):
         #     return False
 
         # get the parameter
-        pic_size = request.POST.get('pic_size')
+        pic_size = eval(request.POST.get('pic_size'))
         orientations = int(request.POST.get('orientations'))
-        pixels_per_cell = request.POST.get('pixels_per_cell')
-        cells_per_block = request.POST.get('cells_per_block')
+        pixels_per_cell = eval(request.POST.get('pixels_per_cell'))
+        cells_per_block = eval(request.POST.get('cells_per_block'))
         is_color = True if request.POST.get('is_color') else False
         user_id = str(request.user.id)
 

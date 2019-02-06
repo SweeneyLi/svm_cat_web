@@ -2,7 +2,6 @@ from django import forms
 from picture.models import Picture
 from django.db.models import Count
 
-
 # TODO: all the valid of forms
 
 class ChoosePicCategoryForm(forms.Form):
@@ -40,10 +39,10 @@ class ChoosePicCategoryForm(forms.Form):
 
 
 class HOGPicForm(forms.Form):
-    pic_size = forms.CharField(initial='194,259')
+    pic_size = forms.CharField(initial='(194,259)')
     orientations = forms.IntegerField(initial='9')
-    pixels_per_cell = forms.CharField(initial='16,16')
-    cells_per_block = forms.CharField(initial='2,2')
+    pixels_per_cell = forms.CharField(initial='(16,16)')
+    cells_per_block = forms.CharField(initial='(2,2)')
     is_color = forms.BooleanField(initial=True, required=False)
 
 
