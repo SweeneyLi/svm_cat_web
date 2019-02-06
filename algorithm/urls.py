@@ -9,7 +9,7 @@ urlpatterns = [
     path('hog_pic/', views.hog_pic, name='hog_pic'),
     path('contrast_algorithm/', views.contrast_algorithm, name='contrast_algorithm'),
     path('adjust_svm/', views.adjust_svm, name='adjust_svm'),
-    # path('create_svm_model/', views.adjust_svm, name='adjust_svm'),
+    path('create_svm_model/', views.ModelCreateView.as_view(), name='create_svm_model'),
 
     # path('train_model/', views.train_model, name='train_model'),
 ]

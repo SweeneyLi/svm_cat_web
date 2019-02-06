@@ -1,1 +1,40 @@
-{"1": {"pic_para": {"test_pic": "0.jpg"}, "data_para": {"category_positive": "cat", "category_negative": "other", "num_category_positive": 40, "num_category_negative": 53, "validation_size": 0.2}, "model_para": {}}, "2": {"pic_para": {"test_pic": "11.jpg", "pic_size": "(194, 259)", "orientations": 9, "pixels_per_cell": "(8, 8)", "cells_per_block": "(2, 2)", "is_color": true}, "data_para": {"category_positive": "cat", "category_negative": "other", "num_category_positive": 16, "num_category_negative": 20, "validation_size": 0.2, "is_standard": false}, "model_para": {"best_score": 0.6071428571428571, "best_params": {"C": 0.1, "kernel": "linear"}}}}
+{
+  "1": {
+    "pic_para": {
+      "test_pic": "0.jpg"
+    },
+    "data_para": {
+      "category_positive": "cat",
+      "category_negative": "other",
+      "num_category_positive": 40,
+      "num_category_negative": 53,
+      "validation_size": 0.2
+    },
+    "model_para": {}
+  },
+  "2": {
+    "pic_para": {
+      "test_pic": "11.jpg",
+      "pic_size": "(194, 259)",
+      "orientations": 9,
+      "pixels_per_cell": "(8, 8)",
+      "cells_per_block": "(2, 2)",
+      "is_color": true
+    },
+    "data_para": {
+      "category_positive": "cat",
+      "category_negative": "other",
+      "num_category_positive": 16,
+      "num_category_negative": 20,
+      "validation_size": 0.2,
+      "is_standard": false
+    },
+    "model_para": {
+      "best_score": 0.6071428571428571,
+      "best_params": {
+        "C": 0.1,
+        "kernel": "linear"
+      }
+    }
+  }
+}

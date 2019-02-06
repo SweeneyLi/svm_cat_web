@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class SVMModel(models.Model):
@@ -9,8 +10,12 @@ class SVMModel(models.Model):
     cells_per_block = models.CharField('cells_per_block', max_length=50)
     is_color = models.BooleanField('is_color ')
     is_standard = models.BooleanField('is_standard')
-    C = models.CharField('C', max_length=50)
+    C = models.FloatField('C', max_length=50)
     kernel = models.CharField('kernel', max_length=50)
     create_time = models.DateTimeField('create_time', auto_now=True)
     update_time = models.DateTimeField('update_time', auto_now_add=True)
-    accuracy_score = models.FloatField('accuracy_score', max_length=100)
+    train_num = models.IntegerField('train_num', default=0)
+    accuracy_score = models.FloatField('accuracy_score', max_length=100, default=0)
+
+    def get_absolute_url(self):
+        return reverse('system:index')

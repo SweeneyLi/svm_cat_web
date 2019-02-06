@@ -2,11 +2,12 @@ from django.shortcuts import render, reverse, redirect
 
 from .forms import *
 from .functions import *
+from .models import SVMModel
 
 from os import path
 import json
-from datetime import datetime, timedelta
 import multiprocessing as mp
+from django.views.generic import CreateView
 
 
 def choose_pic_category(request):
@@ -46,11 +47,11 @@ def choose_pic_category(request):
 
         algorithm_info[user_id]['pic_para'].update({'test_pic': pic_name})
         algorithm_info[user_id]['data_para'].update({
-                'category_positive': test_category_positive['category'],
-                'category_negative': test_category_negative['category'],
-                'num_category_positive': test_category_positive['num_category'],
-                'num_category_negative': test_category_negative['num_category'],
-                'validation_size': validation_size,
+            'category_positive': test_category_positive['category'],
+            'category_negative': test_category_negative['category'],
+            'num_category_positive': test_category_positive['num_category'],
+            'num_category_negative': test_category_negative['num_category'],
+            'validation_size': validation_size,
         })
 
         with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
@@ -155,3 +156,35 @@ def adjust_svm(request):
     else:
         svm_parameter_form = SVMParameterForm()
         return render(request, 'algorithm/adjust_svm.html', {'svm_parameter_form': svm_parameter_form})
+
+
+class ModelCreateView(CreateView):
+    template_name = 'algorithm/create_svm_model.html'
+    model = SVMModel
+    fields = ['model_name', 'pic_size', 'orientations',
+              'pixels_per_cell', 'cells_per_block', 'is_color',
+              'is_standard', 'C', 'kernel']
+
+    def get_form_kwargs(self):
+        kwargs = super(ModelCreateView, self).get_form_kwargs()
+
+        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+            algorithm_info = json.load(load_f)
+        user_id = str(self.request.user.id)
+
+        kwargs['initial']['model_name'] = algorithm_info[user_id]['data_para']. \
+                                              get('category_positive', "svm") + '_model'
+        kwargs['initial']['pic_size'] = algorithm_info[user_id]['pic_para'].get('pic_size', "(194, 259)")
+        kwargs['initial']['orientations'] = algorithm_info[user_id]['pic_para'].get('orientations', 9)
+        kwargs['initial']['pixels_per_cell'] = algorithm_info[user_id]['pic_para'].get('pixels_per_cell', "(8, 8)")
+        kwargs['initial']['cells_per_block'] = algorithm_info[user_id]['pic_para'].get('cells_per_block', "(3, 3)")
+        kwargs['initial']['is_color'] = algorithm_info[user_id]['pic_para'].get('is_color', True)
+        kwargs['initial']['is_standard'] = algorithm_info[user_id]['data_para'].get('is_standard', True)
+        kwargs['initial']['C'] = algorithm_info[user_id]['model_para'].get('C', 2.0)
+        kwargs['initial']['kernel'] = algorithm_info[user_id]['model_para'].get('kernel', "sigmoid")
+
+        return kwargs
+
+    # def get_form(self, form_class=None):
+    #     form = super(ModelCreateView, self).get_form(form_class)
+    #     return form
