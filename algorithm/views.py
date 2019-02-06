@@ -196,6 +196,7 @@ class ModelCreateView(CreateView):
     def form_valid(self, form):
         user_id = self.request.user.id
 
+        form.instance.user_id = user_id
         svm_model = SVC(C=form.data['C'], kernel=form.data['kernel'])
 
         # save the model in local
