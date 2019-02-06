@@ -186,8 +186,10 @@ class ModelCreateView(CreateView):
         kwargs['initial']['cells_per_block'] = algorithm_info[user_id]['pic_para'].get('cells_per_block', "(3, 3)")
         kwargs['initial']['is_color'] = algorithm_info[user_id]['pic_para'].get('is_color', True)
         kwargs['initial']['is_standard'] = algorithm_info[user_id]['data_para'].get('is_standard', True)
-        kwargs['initial']['C'] = algorithm_info[user_id]['model_para'].get('C', 2.0)
-        kwargs['initial']['kernel'] = algorithm_info[user_id]['model_para'].get('kernel', "sigmoid")
+
+        best_params = algorithm_info[user_id]['model_para'].get('best_params', {'C': 2.0, 'kernel': 'sigmoid'})
+        kwargs['initial']['C'] = best_params['C']
+        kwargs['initial']['kernel'] = best_params['kernel']
 
         return kwargs
 
