@@ -1,14 +1,17 @@
 from django.shortcuts import render, reverse, redirect
 from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
 from .forms import *
 from .functions import *
 from .models import SVMModel
 
-from os import path
-import json
 import multiprocessing as mp
-from django.views.generic import CreateView
+from os import path, mkdir
+import json
+import pickle
+
+
 
 
 def choose_pic_category(request):
@@ -187,4 +190,21 @@ class ModelCreateView(CreateView):
         kwargs['initial']['kernel'] = algorithm_info[user_id]['model_para'].get('kernel', "sigmoid")
 
         return kwargs
+
+    def form_valid(self, form):
+        user_id = self.request.user.id
+
+        svm_model = SVC(C=form.data['C'], kernel=form.data['kernel'])
+
+        # save the model in local
+        #  TODO: judge the same model_name
+        the_dir = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id))
+        if not path.exists(the_dir):
+            mkdir(the_dir)
+        filename = form.data['model_name'] + '.pkl'
+        the_path = path.join(the_dir, filename)
+        with open(the_path, 'wb') as model_f:
+            pickle.dump(svm_model, model_f)
+
+        return super().form_valid(form)
 
