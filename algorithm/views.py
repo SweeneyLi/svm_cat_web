@@ -4,7 +4,7 @@ from django.views.generic import CreateView
 
 from .forms import *
 from .functions import *
-from .models import SVMModel
+from .models import SVMModel, ModelTrainLog
 
 import multiprocessing as mp
 from os import path, mkdir
@@ -167,7 +167,9 @@ class ModelCreateView(CreateView):
               'pixels_per_cell', 'cells_per_block', 'is_color',
               'is_standard', 'C', 'kernel']
 
-    success_url = reverse_lazy('system:index')
+    def get_success_url(self):
+        # return render(reverse_lazy('alogrithm:train_svm_model'), self.request.POST.get('model_name'))
+        return reverse_lazy('system:index')
 
     def get_form_kwargs(self):
         kwargs = super(ModelCreateView, self).get_form_kwargs()
@@ -178,7 +180,6 @@ class ModelCreateView(CreateView):
 
         kwargs['initial']['model_name'] = algorithm_info[user_id]['data_para']. \
                                               get('category_positive', "svm") + '_model'
-        kwargs['initial']['user_id'] = self.request.user.id
 
         kwargs['initial']['pic_size'] = algorithm_info[user_id]['pic_para'].get('pic_size', "(194, 259)")
         kwargs['initial']['orientations'] = algorithm_info[user_id]['pic_para'].get('orientations', 9)
@@ -211,4 +212,10 @@ class ModelCreateView(CreateView):
 
         return super().form_valid(form)
 
-# class ModelTrainView()
+
+class ModelTrainView(CreateView):
+    model = ModelTrainLog
+    form_class = TrainLogForm
+
+    def get_success_url(self):
+        return render(reverse_lazy('alogrithm:train_svm_model'), )

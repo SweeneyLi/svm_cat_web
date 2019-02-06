@@ -1,0 +1,29 @@
+{% extends 'system/base.html' %}
+{% load staticfiles %}
+
+{% block title %}train_svm_model{% endblock %}
+
+{% block content %}
+
+<h3>train_svm_model</h3>
+
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+    {% for field in svm_parameter_form %}
+    <div class="fieldWrapper">
+        {{ field.label_tag }} {{ field }}
+    </div>
+    {% endfor %}
+    <input type="submit" value="确定" />
+</form>
+
+
+{% if results %}
+    <p>best_score: {{ results.best_score }}</p>
+    <p>best_params: {{ results.best_params }}</p>
+    {% for mean, std, param in results.cv_results %}
+        <p>mean: {{ mean }}; std: {{ std }}; param: {{ param }}</p>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
+

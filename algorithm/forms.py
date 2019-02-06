@@ -2,6 +2,7 @@ from django import forms
 from picture.models import Picture
 from django.db.models import Count
 
+
 # TODO: all the valid of forms
 
 class ChoosePicCategoryForm(forms.Form):
@@ -16,13 +17,13 @@ class ChoosePicCategoryForm(forms.Form):
             queryset=Picture.objects.filter(user_id=user_id).values('category').distinct().annotate(
                 num_category=Count('category')
             ).filter(user_id=user_id),
-            empty_label="请至少选择一个",
+            empty_label="---------",
         )
         self.fields['test_category_negative'] = forms.ModelChoiceField(
             queryset=Picture.objects.filter(user_id=user_id).values('category').distinct().annotate(
                 num_category=Count('category')
             ),
-            empty_label="请至少选择一个",
+            empty_label="---------",
         )
 
     def is_valid(self):
@@ -64,3 +65,41 @@ class SVMParameterForm(forms.Form):
                                        choices=kernel_list,
                                        widget=forms.CheckboxSelectMultiple()
                                        )
+
+
+class TrainLogForm(forms.Form):
+    model_name = forms.CharField(max_length=100)
+    train_category_positive = forms.ModelChoiceField(Picture.objects.none())
+    train_category_negative = forms.ModelChoiceField(Picture.objects.none())
+    validation_size = forms.FloatField(initial=0.2)
+
+    def __init__(self, user_id, *args, **kwargs):
+        super(TrainLogForm, self).__init__(*args, **kwargs)
+
+        self.fields['model_name'].widget.attrs['readonly'] = True
+
+        self.fields['train_category_positive'] = forms.ModelChoiceField(
+            queryset=Picture.objects.filter(user_id=user_id).values('category').distinct().annotate(
+                num_category=Count('category')
+            ).filter(user_id=user_id),
+            empty_label="---------",
+        )
+        self.fields['train_category_negative'] = forms.ModelChoiceField(
+            queryset=Picture.objects.filter(user_id=user_id).values('category').distinct().annotate(
+                num_category=Count('category')
+            ),
+            empty_label="---------",
+        )
+
+    def is_valid(self):
+        # run the parent validation first
+        valid = super(TrainLogForm, self).is_valid()
+
+        if not valid:
+            return valid
+        elif self.fields['train_category_negative'] == self.fields['train_category_positive']:
+            self._errors['same_category'] = 'test_category_negative should diff from test_category_positive'
+            return False
+        else:
+            return valid
+

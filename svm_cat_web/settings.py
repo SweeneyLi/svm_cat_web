@@ -149,3 +149,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ALGORITHM_JSON_PATH = os.path.join(MEDIA_ROOT, 'algorithm', 'algorithm_info.json')
 FEATURE_VECTOR_PATH = os.path.join(MEDIA_ROOT, 'algorithm', 'feature_vector.pkl')
+
+TIME_ZONE = 'Asia/Shanghai'
+
+USE_TZ = False
