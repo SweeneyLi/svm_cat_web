@@ -1,4 +1,5 @@
 from django.shortcuts import render, reverse, redirect
+from django.urls import reverse_lazy
 
 from .forms import *
 from .functions import *
@@ -165,6 +166,8 @@ class ModelCreateView(CreateView):
               'pixels_per_cell', 'cells_per_block', 'is_color',
               'is_standard', 'C', 'kernel']
 
+    success_url = reverse_lazy('system:index')
+
     def get_form_kwargs(self):
         kwargs = super(ModelCreateView, self).get_form_kwargs()
 
@@ -185,6 +188,3 @@ class ModelCreateView(CreateView):
 
         return kwargs
 
-    # def get_form(self, form_class=None):
-    #     form = super(ModelCreateView, self).get_form(form_class)
-    #     return form
