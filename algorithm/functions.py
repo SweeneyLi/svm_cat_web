@@ -188,9 +188,9 @@ def get_pic_vector(user_id):
     is_color = algorithm_info[user_id]['pic_para']['is_color']
     validation_size = algorithm_info[user_id]['data_para']['validation_size']
 
-    pic_size = tuple(pic_size)
-    pixels_per_cell = tuple(pixels_per_cell)
-    cells_per_block = tuple(cells_per_block)
+    pic_size = eval(pic_size)
+    pixels_per_cell = eval(pixels_per_cell)
+    cells_per_block = eval(cells_per_block)
 
     img_list = []
     positive_pic = [os.path.join(pic_root_dir, positive_category, i) for i in
