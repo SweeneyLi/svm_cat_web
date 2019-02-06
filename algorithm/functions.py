@@ -163,17 +163,15 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
 
     # hog_time = cal_hog_time(img, orientations, pixels_per_cell, cells_per_block)
 
-    algorithm_info[user_id]['pic_para'] = {
+    algorithm_info[user_id]['pic_para'].update({
         'test_pic': test_pic,
         'pic_size': pic_size,
         'orientations': orientations,
         'pixels_per_cell': pixels_per_cell,
         'cells_per_block': cells_per_block,
-        'is_color': is_color,
-        # 'hog_time': hog_time
-    }
-    # now = (datetime.now() + timedelta(hours=8)).strftime("%Y-%m-%d_%H:%M:%S.")
-    # algorithm_info[user_id]['update_time'] = now
+        'is_color': is_color
+    })
+
 
     with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
         json.dump(algorithm_info, f)
@@ -356,10 +354,10 @@ def execute_adjust_svm(user_id, c, kernel, return_dict):
     with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
         algorithm_info = json.load(load_f)
 
-    algorithm_info[user_id]['model_para'] = {
+    algorithm_info[user_id]['model_para'].update({
         'best_score': grid_result.best_score_,
         'best_params': grid_result.best_params_
-    }
+    })
 
     with open(settings.ALGORITHM_JSON_PATH, "w") as f:
         json.dump(algorithm_info, f)

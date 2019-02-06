@@ -20,11 +20,8 @@ def choose_pic_category(request):
         # get the parameter
         test_pic = request.FILES.get('test_pic')
         validation_size = float(request.POST.get('validation_size'))
-        test_category_positive = request.POST.get('test_category_positive')
-        test_category_negative = request.POST.get('test_category_negative')
-
-        test_category_positive = test_category_positive.split('\'')[-2]
-        test_category_negative = test_category_negative.split('\'')[-2]
+        test_category_positive = eval(request.POST.get('test_category_positive'))
+        test_category_negative = eval(request.POST.get('test_category_negative'))
 
         #  save the test_pic
         pic_name = request.FILES.get('test_pic').name
@@ -38,19 +35,23 @@ def choose_pic_category(request):
         with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
             algorithm_info = json.load(load_f)
 
-
-
-
         # algorithm_info_json initial
-        algorithm_info[user_id] = {'pic_para': {
-            'test_pic': pic_name
-        }, 'data_para': {
-            'category_positive': test_category_positive,
-            'category_negative': test_category_negative,
-            'validation_size': validation_size,
-        },
-            # 'update_time': now
-        }
+        if user_id not in algorithm_info.keys():
+            algorithm_info[user_id] = {}
+
+        algorithm_info_keys = algorithm_info[user_id].keys()
+        for key in ['pic_para', 'data_para', 'model_para']:
+            if key not in algorithm_info_keys:
+                algorithm_info[user_id][key] = {}
+
+        algorithm_info[user_id]['pic_para'].update({'test_pic': pic_name})
+        algorithm_info[user_id]['data_para'].update({
+                'category_positive': test_category_positive['category'],
+                'category_negative': test_category_negative['category'],
+                'num_category_positive': test_category_positive['num_category'],
+                'num_category_negative': test_category_negative['num_category'],
+                'validation_size': validation_size,
+        })
 
         with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
             json.dump(algorithm_info, f)
@@ -93,15 +94,9 @@ def hog_pic(request):
                                       user_id + '_hog_picture.png')
         hog_pic_form = HOGPicForm(request.POST)
 
-        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
-            algorithm_info = json.load(load_f)
-
-            # hog_time = algorithm_info[user_id]['pic_para']['hog_time']
-
         return render(request, 'algorithm/hog_pic.html',
                       {'hog_pic_form': hog_pic_form,
                        'hog_picture': relative_pic_path,
-                       # 'hog_time': hog_time
                        })
 
     else:
