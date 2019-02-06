@@ -12,8 +12,6 @@ import json
 import pickle
 
 
-
-
 def choose_pic_category(request):
     # TODO: add the loading html
     user_id = str(request.user.id)
@@ -180,6 +178,8 @@ class ModelCreateView(CreateView):
 
         kwargs['initial']['model_name'] = algorithm_info[user_id]['data_para']. \
                                               get('category_positive', "svm") + '_model'
+        kwargs['initial']['user_id'] = self.request.user.id
+
         kwargs['initial']['pic_size'] = algorithm_info[user_id]['pic_para'].get('pic_size', "(194, 259)")
         kwargs['initial']['orientations'] = algorithm_info[user_id]['pic_para'].get('orientations', 9)
         kwargs['initial']['pixels_per_cell'] = algorithm_info[user_id]['pic_para'].get('pixels_per_cell', "(8, 8)")
@@ -210,3 +210,4 @@ class ModelCreateView(CreateView):
 
         return super().form_valid(form)
 
+# class ModelTrainView()
