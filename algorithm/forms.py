@@ -77,6 +77,7 @@ class TrainLogForm(forms.Form):
     def __init__(self, user_id, *args, **kwargs):
         super(TrainLogForm, self).__init__(*args, **kwargs)
 
+        # TODO: format the choice at page
         self.fields['model_name'] = forms.ModelChoiceField(
             queryset=SVMModel.objects.filter(user_id=user_id).values('model_name').distinct().order_by('-update_time'),
             empty_label="---------",

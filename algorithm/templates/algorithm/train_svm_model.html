@@ -9,7 +9,7 @@
 
 <form method="post" enctype="multipart/form-data">{% csrf_token %}
 {{ form.as_p }}
-    {% for field in TrainLogForm %}
+    {% for field in train_log_form %}
     <div class="fieldWrapper">
         {{ field.label_tag }} {{ field }}
     </div>
@@ -18,8 +18,10 @@
 </form>
 
 
-{% if results %}
-
+{% if result %}
+    {{ result.accuracy_score }}<br><hr>
+    {{ result.confusion_matrix }}<br><hr>
+    {{ result.classification_report }}<br><hr>
 {% endif %}
 
 {% endblock %}

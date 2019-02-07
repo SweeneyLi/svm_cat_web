@@ -1,10 +1,15 @@
 from django.conf import settings
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+from .models import SVMModel
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.externals import joblib
+
 import pickle
 from .algorithm_conf import *
 from sklearn.svm import SVC
@@ -16,7 +21,6 @@ from os import path
 from skimage import feature, exposure
 import cv2
 import json
-from datetime import datetime, timedelta
 import gc
 import matplotlib
 
@@ -157,7 +161,6 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
         'is_color': is_color
     })
 
-
     with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
         json.dump(algorithm_info, f)
 
@@ -198,7 +201,6 @@ def get_pic_vector(user_id):
     negative_pic = [os.path.join(pic_root_dir, negative_category, i) for i in
                     os.listdir(os.path.join(pic_root_dir, negative_category))]
 
-
     pic_file_list = positive_pic + negative_pic
 
     for pic in pic_file_list:
@@ -211,17 +213,15 @@ def get_pic_vector(user_id):
     label = np.array(np.repeat(1, pic_vector.shape[0]))
     label[len(positive_pic):] = 0
 
-    X_train, X_test, y_train, y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
-
-    # X_train, X_test, y_train, y_test = list(X_train), list(X_test), list(y_train), list(y_test)
+    X_train, X_test, Y_train, Y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
 
     # initial feature_vector.pki
     feature_vector = {
         user_id: {
             'X_train': X_train,
             'X_test': X_test,
-            'Y_train': y_train,
-            'Y_test': y_test
+            'Y_train': Y_train,
+            'Y_test': Y_test
         }
     }
 
@@ -347,3 +347,52 @@ def execute_adjust_svm(user_id, c, kernel, return_dict):
     with open(settings.ALGORITHM_JSON_PATH, "w") as f:
         json.dump(algorithm_info, f)
 
+
+def execute_train_model(user_id, model_name, train_category_positive, train_category_negative, validation_size,
+                        return_dict):
+    model = SVMModel.objects.get(user_id=user_id, model_name=model_name)
+
+    pic_root_dir = os.path.join(settings.MEDIA_ROOT, 'upload_images', str(user_id))
+    img_list = []
+    positive_pic = [os.path.join(pic_root_dir, train_category_positive, i) for i in
+                    os.listdir(os.path.join(pic_root_dir, train_category_positive))]
+    negative_pic = [os.path.join(pic_root_dir, train_category_negative, i) for i in
+                    os.listdir(os.path.join(pic_root_dir, train_category_negative))]
+
+    pic_file_list = positive_pic + negative_pic
+
+    for pic in pic_file_list:
+        pic = os.path.join(pic_root_dir, pic)
+        a_pic = cv2.imread(pic, model.is_color)
+        a_pic = cv2.resize(a_pic, eval(model.pic_size), interpolation=cv2.INTER_AREA)
+        img_list.append(a_pic)
+
+    pic_vector = hog(img_list, eval(model.orientations), eval(model.pixels_per_cell), eval(model.cells_per_block))
+    label = np.array(np.repeat(1, pic_vector.shape[0]))
+    label[len(positive_pic):] = 0
+
+    X_train, X_test, Y_train, Y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
+
+    the_path = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id), model_name + '.pkl')
+    with open(the_path, 'rb') as model_f:
+        svm_model = joblib.load(model_f)
+
+    if model.is_standard:
+        scaler = StandardScaler().fit(X_train)
+        rescaledX = scaler.transform(X_train)
+        svm_model.fit(X=rescaledX, y=Y_train)
+        rescaled_validationX = scaler.transform(X_test)
+        predictions = svm_model.predict(rescaled_validationX)
+    else:
+        svm_model.fit(X=X_train, y=Y_train)
+        predictions = model.predict(X_test)
+
+    return_dict['accuracy_score'] = accuracy_score(Y_test, predictions)
+    return_dict['confusion_matrix'] = confusion_matrix(Y_test, predictions)
+    return_dict['classification_report'] = classification_report(Y_test, predictions)
+
+    model.accuracy_score = accuracy_score(Y_test, predictions)
+    model.save()
+
+    with open(the_path, 'wb') as f:
+        joblib.dump(svm_model, f)

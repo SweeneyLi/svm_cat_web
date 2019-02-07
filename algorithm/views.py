@@ -5,7 +5,7 @@ from django.views.generic import CreateView
 from .forms import *
 from .functions import *
 from .models import SVMModel, ModelTrainLog
-
+from sklearn.externals import joblib
 import multiprocessing as mp
 from os import path, mkdir
 import json
@@ -202,38 +202,62 @@ class ModelCreateView(CreateView):
             return super().form_invalid(form)
 
         form.instance.user_id = user_id
-        svm_model = SVC(C=form.data['C'], kernel=form.data['kernel'])
 
         # save the model in local
-        #  TODO: judge the same model_name
+        svm_model = SVC(C=float(form.data['C']), kernel=form.data['kernel'])
+
         the_dir = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id))
         if not path.exists(the_dir):
             mkdir(the_dir)
         filename = form.data['model_name'] + '.pkl'
         the_path = path.join(the_dir, filename)
         with open(the_path, 'wb') as model_f:
-            pickle.dump(svm_model, model_f)
+            joblib.dump(svm_model, model_f)
 
         return super().form_valid(form)
 
 
-class ModelTrainView(CreateView):
-    model = ModelTrainLog
-    form_class = TrainLogForm
-    template_name = 'algorithm/train_svm_model.html'
-    fields = ['model_name', 'train_category_positive', 'train_category_negative']
+def train_svm_model(request):
+    if request.method == 'POST':
+        user_id = request.user.id
+        model_name = eval(request.POST.get('model_name'))['model_name']
+        train_category_positive_dict = eval(request.POST.get('train_category_positive'))
+        train_category_negative_dict = eval(request.POST.get('train_category_negative'))
 
-    def get_form(self, form_class=TrainLogForm):
-        form = form_class(self.request.user.id)
-        return form
+        train_category_positive = train_category_positive_dict['category']
+        positive_num = train_category_positive_dict['num_category']
+        train_category_negative = train_category_negative_dict['category']
+        negative_num = train_category_negative_dict['num_category']
+        validation_size = float(request.POST.get('validation_size'))
 
-    def get_form_kwargs(self):
-        kwargs = super(ModelTrainView, self).get_form_kwargs()
-        return kwargs
+        # train the model
+        manager = mp.Manager()
+        return_dict = manager.dict()
+        proc = mp.Process(target=execute_train_model, args=(
+            user_id, model_name, train_category_positive, train_category_negative, validation_size, return_dict
+        ))
+        proc.daemon = True
+        proc.start()
+        proc.join()
 
-    def form_valid(self, form):
-        pass
+        train_log = ModelTrainLog(user_id=user_id, model_name=model_name,
+                                  train_category_positive=train_category_positive,
+                                  positive_num=positive_num,
+                                  train_category_negative=train_category_negative,
+                                  negative_num=negative_num,
+                                  validation_size=validation_size,
+                                  accuracy_score=return_dict['accuracy_score'])
 
-    def get_success_url(self):
-        # return render(reverse_lazy('alogrithm:train_svm_model'), )
-        return reverse_lazy('system:index')
+        train_log.save()
+        svm_model = SVMModel.objects.get(user_id=user_id, model_name=model_name)
+        svm_model.train_num += 1
+        svm_model.save()
+
+        train_log_form = TrainLogForm(request.user.id)
+        return render(request, 'algorithm/train_svm_model.html',
+                      {'train_log_form': train_log_form,
+                       'result': return_dict})
+    else:
+        train_log_form = TrainLogForm(request.user.id)
+        return render(request, 'algorithm/train_svm_model.html',
+                      {'train_log_form': train_log_form})
