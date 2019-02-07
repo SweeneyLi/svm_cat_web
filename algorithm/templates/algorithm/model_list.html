@@ -1,0 +1,28 @@
+{% extends 'system/base.html' %}
+{% load staticfiles %}
+
+{% block title %}model_list{% endblock %}
+
+{% block content %}
+
+
+<h3>model_list</h3>
+
+
+
+{% if model_list %}
+    {% for model in model_list %}
+        <ul>
+            <a href="{% url 'alogrithm:model_detail' model.id %}">
+              {{ model.model_name }}</a>--
+            {{ model.train_num }}--
+            {{ model.create_time }}--
+            {{ model.update_time }}--
+            {{ model.accuracy_score }}--
+        </ul>
+    {% endfor %}
+{% endif %}
+
+
+{% endblock %}
+

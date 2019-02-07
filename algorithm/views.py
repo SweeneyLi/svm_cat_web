@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView, DetailView
 
 from .forms import *
 from .functions import *
@@ -261,3 +261,23 @@ def train_svm_model(request):
         train_log_form = TrainLogForm(request.user.id)
         return render(request, 'algorithm/train_svm_model.html',
                       {'train_log_form': train_log_form})
+
+
+class ModelListView(ListView):
+    context_object_name = 'model_list'
+
+    template_name = 'algorithm/model_list.html'
+
+    def get_queryset(self):
+        return SVMModel.objects.all(). \
+            filter(user_id=self.request.user.id).order_by('accuracy_score', '-update_time')
+
+
+class ModelDetail(DetailView):
+    model = SVMModel
+    Context_object_name = 'model_detail'
+
+    template_name = 'algorithm/model_detail.html'
+
+    # def get_queryset(self):
+    #     return SVMModel.objects.get(id=int(self.kwargs['pk']))

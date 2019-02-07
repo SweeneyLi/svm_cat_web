@@ -1,0 +1,30 @@
+{% extends 'system/base.html' %}
+{% load staticfiles %}
+
+{% block title %}model_detail{% endblock %}
+
+{% block content %}
+<h3>{{ SVMModel.model_name }}</h3>
+
+{% if object %}
+{{ object.model_name}}<br>
+{{ object.train_num}}<br>
+{{ object.create_time}}<br>
+{{ object.update_time}}<br>
+{{ object.accuracy_score}}<br>
+{{ object.C}}<br>
+{{ object.kernel}}<br>
+{{ object.is_standard}}<br>
+{{ object.pic_size}}<br>
+{{ object.orientations}}<br>
+{{ object.pixels_per_cell}}<br>
+{{ object.cells_per_block}}<br>
+{{ object.is_color}}<br>
+
+{% endif %}
+
+
+<p><a href="{% url 'alogrithm:model_list' %}">model_list</a> |
+
+{% endblock %}
+
