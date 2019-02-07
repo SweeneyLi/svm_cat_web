@@ -1,5 +1,6 @@
 from django import forms
 from picture.models import Picture
+from .models import SVMModel
 from django.db.models import Count
 
 
@@ -68,15 +69,18 @@ class SVMParameterForm(forms.Form):
 
 
 class TrainLogForm(forms.Form):
-    model_name = forms.CharField(max_length=100)
-    train_category_positive = forms.ModelChoiceField(Picture.objects.none())
-    train_category_negative = forms.ModelChoiceField(Picture.objects.none())
+    model_name = forms.ModelChoiceField(SVMModel.objects.none())
+    train_category_positive = forms.ModelChoiceField(SVMModel.objects.none())
+    train_category_negative = forms.ModelChoiceField(SVMModel.objects.none())
     validation_size = forms.FloatField(initial=0.2)
 
     def __init__(self, user_id, *args, **kwargs):
         super(TrainLogForm, self).__init__(*args, **kwargs)
 
-        self.fields['model_name'].widget.attrs['readonly'] = True
+        self.fields['model_name'] = forms.ModelChoiceField(
+            queryset=SVMModel.objects.filter(user_id=user_id).values('model_name').distinct().order_by('-update_time'),
+            empty_label="---------",
+        )
 
         self.fields['train_category_positive'] = forms.ModelChoiceField(
             queryset=Picture.objects.filter(user_id=user_id).values('category').distinct().annotate(
@@ -92,7 +96,6 @@ class TrainLogForm(forms.Form):
         )
 
     def is_valid(self):
-        # run the parent validation first
         valid = super(TrainLogForm, self).is_valid()
 
         if not valid:
@@ -102,4 +105,3 @@ class TrainLogForm(forms.Form):
             return False
         else:
             return valid
-

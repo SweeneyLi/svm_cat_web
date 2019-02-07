@@ -168,8 +168,7 @@ class ModelCreateView(CreateView):
               'is_standard', 'C', 'kernel']
 
     def get_success_url(self):
-        # return render(reverse_lazy('alogrithm:train_svm_model'), self.request.POST.get('model_name'))
-        return reverse_lazy('system:index')
+        return reverse_lazy('alogrithm:train_svm_model')
 
     def get_form_kwargs(self):
         kwargs = super(ModelCreateView, self).get_form_kwargs()
@@ -197,6 +196,11 @@ class ModelCreateView(CreateView):
     def form_valid(self, form):
         user_id = self.request.user.id
 
+        # judge the same model_name
+        if SVMModel.objects.filter(user_id=user_id, model_name=form.data['model_name']).exists():
+            form.add_error(None, "The model_name is created!")
+            return super().form_invalid(form)
+
         form.instance.user_id = user_id
         svm_model = SVC(C=form.data['C'], kernel=form.data['kernel'])
 
@@ -216,6 +220,20 @@ class ModelCreateView(CreateView):
 class ModelTrainView(CreateView):
     model = ModelTrainLog
     form_class = TrainLogForm
+    template_name = 'algorithm/train_svm_model.html'
+    fields = ['model_name', 'train_category_positive', 'train_category_negative']
+
+    def get_form(self, form_class=TrainLogForm):
+        form = form_class(self.request.user.id)
+        return form
+
+    def get_form_kwargs(self):
+        kwargs = super(ModelTrainView, self).get_form_kwargs()
+        return kwargs
+
+    def form_valid(self, form):
+        pass
 
     def get_success_url(self):
-        return render(reverse_lazy('alogrithm:train_svm_model'), )
+        # return render(reverse_lazy('alogrithm:train_svm_model'), )
+        return reverse_lazy('system:index')

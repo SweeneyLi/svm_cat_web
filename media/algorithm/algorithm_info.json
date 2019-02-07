@@ -14,10 +14,10 @@
   },
   "2": {
     "pic_para": {
-      "test_pic": "11.jpg",
+      "test_pic": "13.jpg",
       "pic_size": "(194, 259)",
       "orientations": 9,
-      "pixels_per_cell": "(8, 8)",
+      "pixels_per_cell": "(16, 16)",
       "cells_per_block": "(2, 2)",
       "is_color": true
     },
@@ -27,10 +27,10 @@
       "num_category_positive": 16,
       "num_category_negative": 20,
       "validation_size": 0.2,
-      "is_standard": false
+      "is_standard": true
     },
     "model_para": {
-      "best_score": 0.6071428571428571,
+      "best_score": 0.6428571428571429,
       "best_params": {
         "C": 0.1,
         "kernel": "linear"
