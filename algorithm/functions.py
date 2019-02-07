@@ -213,15 +213,15 @@ def get_pic_vector(user_id):
     label = np.array(np.repeat(1, pic_vector.shape[0]))
     label[len(positive_pic):] = 0
 
-    X_train, X_test, Y_train, Y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
+    x_train, x_test, y_train, y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
 
     # initial feature_vector.pki
     feature_vector = {
         user_id: {
-            'X_train': X_train,
-            'X_test': X_test,
-            'Y_train': Y_train,
-            'Y_test': Y_test
+            'x_train': x_train,
+            'x_test': x_test,
+            'y_train': y_train,
+            'y_test': y_test
         }
     }
 
@@ -278,8 +278,8 @@ def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
 
         # TODO:The nums of samples should big than kfold
         cv_results = cross_val_score(models[key],
-                                     feature_vector[user_id]['X_train'],
-                                     feature_vector[user_id]['Y_train'],
+                                     feature_vector[user_id]['x_train'],
+                                     feature_vector[user_id]['y_train'],
                                      cv=kfold,
                                      scoring=scoring)
         results.append(cv_results)
@@ -315,9 +315,9 @@ def execute_adjust_svm(user_id, c, kernel, return_dict):
     with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
         feature_vector = pickle.load(load_f)
 
-    X_train, Y_train = feature_vector[user_id]['X_train'], feature_vector[user_id]['Y_train']
-    scaler = StandardScaler().fit(X_train)
-    rescaledX = scaler.transform(X_train).astype(float)
+    x_train, y_train = feature_vector[user_id]['x_train'], feature_vector[user_id]['y_train']
+    scaler = StandardScaler().fit(x_train)
+    rescaledX = scaler.transform(x_train).astype(float)
     param_grid = {
         'C': c,
         'kernel': kernel
@@ -325,7 +325,7 @@ def execute_adjust_svm(user_id, c, kernel, return_dict):
     model = SVC(gamma='scale')
     kfold = KFold(n_splits=num_folds, random_state=seed)
     grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=scoring, cv=kfold)
-    grid_result = grid.fit(X=rescaledX, y=Y_train)
+    grid_result = grid.fit(X=rescaledX, y=y_train)
 
     cv_results = zip(grid_result.cv_results_['mean_test_score'],
                      grid_result.cv_results_['std_test_score'],
@@ -371,33 +371,34 @@ def execute_train_model(user_id, model_name, train_category_positive, train_cate
     label = np.array(np.repeat(1, pic_vector.shape[0]))
     label[len(positive_pic):] = 0
 
-    X_train, X_test, Y_train, Y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
+    x_train, x_test, y_train, y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
 
     the_path = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id), model_name + '.model')
     with open(the_path, 'rb') as model_f:
         svm_model = joblib.load(model_f)
 
     if model.is_standard:
-        scaler = StandardScaler().fit(X_train)
+        scaler = StandardScaler().fit(x_train)
 
-        rescaledX = scaler.transform(X_train)
-        svm_model.fit(X=rescaledX, y=Y_train)
+        rescaledX = scaler.transform(x_train)
+        svm_model.fit(X=rescaledX, y=y_train)
 
-        rescaled_validationX = scaler.transform(X_test)
+        rescaled_validationX = scaler.transform(x_test)
         predictions = svm_model.predict(rescaled_validationX)
 
-        svm_model.fit(rescaled_validationX, Y_test)
+        svm_model.fit(rescaled_validationX, y_test)
 
     else:
-        svm_model.fit(X=X_train, y=Y_train)
-        predictions = model.predict(X_test)
-        svm_model.fit(X_test, Y_test)
+        svm_model.fit(X=x_train, y=y_train)
+        predictions = model.predict(x_test)
+        svm_model.fit(x_test, y_test)
 
-    return_dict['accuracy_score'] = accuracy_score(Y_test, predictions)
-    return_dict['confusion_matrix'] = confusion_matrix(Y_test, predictions)
-    return_dict['classification_report'] = classification_report(Y_test, predictions)
+    return_dict['accuracy_score'] = accuracy_score(y_test, predictions)
+    return_dict['confusion_matrix'] = confusion_matrix(y_test, predictions)
+    return_dict['classification_report'] = classification_report(y_test, predictions)
 
-    model.accuracy_score = accuracy_score(Y_test, predictions)
+    model.train_num += 1
+    model.recently_accuracy_score = accuracy_score(y_test, predictions)
     model.save()
 
     with open(the_path, 'wb') as f:

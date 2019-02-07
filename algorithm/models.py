@@ -9,15 +9,17 @@ class SVMModel(models.Model):
     create_time = models.DateTimeField('create_time', auto_now=True)
     update_time = models.DateTimeField('update_time', auto_now_add=True)
 
-    accuracy_score = models.FloatField('accuracy_score', max_length=100, default=0)
+    recently_accuracy_score = models.FloatField('recently_accuracy_score', max_length=100, default=0)
     C = models.FloatField('C', max_length=50)
-    kernel = models.CharField('kernel', max_length=50)
+    kernel_choice = [('sigmoid', 'sigmoid'), ('rbf', 'rbf'), ('poly', 'poly'), ('linear', 'linear')]
+    kernel = models.CharField('kernel', choices=kernel_choice, max_length=50)
+
     is_standard = models.BooleanField('is_standard')
+    is_color = models.BooleanField('is_color')
     pic_size = models.CharField('pic_size', max_length=50)
     orientations = models.CharField('orientations', max_length=50)
     pixels_per_cell = models.CharField('pixels_per_cell', max_length=50)
     cells_per_block = models.CharField('cells_per_block', max_length=50)
-    is_color = models.BooleanField('is_color ')
 
     def __str__(self):
         # // TODO: Chinese
@@ -28,7 +30,6 @@ class ModelTrainLog(models.Model):
     user_id = models.IntegerField('user_id')
     train_time = models.DateTimeField('train_time', auto_now_add=True)
     model_name = models.CharField('model_name', max_length=100)
-
 
     train_category_positive = models.CharField('train_category_positive', max_length=100)
     positive_num = models.IntegerField('positive_num')
