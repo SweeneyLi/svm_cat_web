@@ -19,9 +19,9 @@ class SVMModel(models.Model):
     cells_per_block = models.CharField('cells_per_block', max_length=50)
     is_color = models.BooleanField('is_color ')
 
-    # def __str__(self):
-    #     # // TODO: Chinese
-    #     return self.model_name
+    def __str__(self):
+        # // TODO: Chinese
+        return self.model_name
 
 
 class ModelTrainLog(models.Model):

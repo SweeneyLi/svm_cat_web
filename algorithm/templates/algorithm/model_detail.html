@@ -6,20 +6,20 @@
 {% block content %}
 <h3>{{ SVMModel.model_name }}</h3>
 
-{% if object %}
-{{ object.model_name}}<br>
-{{ object.train_num}}<br>
-{{ object.create_time}}<br>
-{{ object.update_time}}<br>
-{{ object.accuracy_score}}<br>
-{{ object.C}}<br>
-{{ object.kernel}}<br>
-{{ object.is_standard}}<br>
-{{ object.pic_size}}<br>
-{{ object.orientations}}<br>
-{{ object.pixels_per_cell}}<br>
-{{ object.cells_per_block}}<br>
-{{ object.is_color}}<br>
+{% if svmmodel %}
+* model_name:{{ svmmodel.model_name}}<br>
+* train_num:{{ svmmodel.train_num}}<br>
+* create_time:{{ svmmodel.create_time}}<br>
+* update_time:{{ svmmodel.update_time}}<br>
+* accuracy_score:{{ svmmodel.accuracy_score}}<br>
+* C:{{ svmmodel.C}}<br>
+* kernel:{{ svmmodel.kernel}}<br>
+* is_standard:{{ svmmodel.is_standard}}<br>
+* pic_size:{{ svmmodel.pic_size}}<br>
+* orientations:{{ svmmodel.orientations}}<br>
+* pixels_per_cell:{{ svmmodel.pixels_per_cell}}<br>
+* cells_per_block:{{ svmmodel.cells_per_block}}<br>
+* is_color:{{ svmmodel.is_color}}<br>
 
 {% endif %}
 
