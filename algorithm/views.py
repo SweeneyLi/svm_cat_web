@@ -209,7 +209,7 @@ class ModelCreateView(CreateView):
         the_dir = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id))
         if not path.exists(the_dir):
             mkdir(the_dir)
-        filename = form.data['model_name'] + '.pkl'
+        filename = form.data['model_name'] + '.model'
         the_path = path.join(the_dir, filename)
         with open(the_path, 'wb') as model_f:
             joblib.dump(svm_model, model_f)

@@ -32,8 +32,8 @@
     "model_para": {
       "best_score": 0.6428571428571429,
       "best_params": {
-        "C": 0.1,
-        "kernel": "linear"
+        "C": 2.0,
+        "kernel": "sigmoid"
       }
     }
   }

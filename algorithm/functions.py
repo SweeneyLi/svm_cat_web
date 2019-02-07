@@ -373,19 +373,25 @@ def execute_train_model(user_id, model_name, train_category_positive, train_cate
 
     X_train, X_test, Y_train, Y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
 
-    the_path = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id), model_name + '.pkl')
+    the_path = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id), model_name + '.model')
     with open(the_path, 'rb') as model_f:
         svm_model = joblib.load(model_f)
 
     if model.is_standard:
         scaler = StandardScaler().fit(X_train)
+
         rescaledX = scaler.transform(X_train)
         svm_model.fit(X=rescaledX, y=Y_train)
+
         rescaled_validationX = scaler.transform(X_test)
         predictions = svm_model.predict(rescaled_validationX)
+
+        svm_model.fit(rescaled_validationX, Y_test)
+
     else:
         svm_model.fit(X=X_train, y=Y_train)
         predictions = model.predict(X_test)
+        svm_model.fit(X_test, Y_test)
 
     return_dict['accuracy_score'] = accuracy_score(Y_test, predictions)
     return_dict['confusion_matrix'] = confusion_matrix(Y_test, predictions)
