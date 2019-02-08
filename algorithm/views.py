@@ -10,6 +10,7 @@ import multiprocessing as mp
 from os import path, mkdir
 import json
 import pickle
+import shutil
 
 
 def choose_pic_category(request):
@@ -78,7 +79,7 @@ def hog_pic(request):
 
         # get the parameter
         pic_size = eval(request.POST.get('pic_size'))
-        orientations = int(request.POST.get('orientations'))
+        orientations = request.POST.get('orientations')
         pixels_per_cell = eval(request.POST.get('pixels_per_cell'))
         cells_per_block = eval(request.POST.get('cells_per_block'))
         is_color = True if request.POST.get('is_color') else False
@@ -306,42 +307,52 @@ class ModelDetail(DetailView):
 def cat_identification(request):
     user_id = request.user.id
     if request.method == 'POST':
+        files = request.FILES.getlist('file')
+        model_name = eval(request.POST.get('model_name'))['model_name']
 
-        # model_name = eval(request.POST.get('model_name'))['model_name']
-        # train_category_positive_dict = eval(request.POST.get('train_category_positive'))
-        # train_category_negative_dict = eval(request.POST.get('train_category_negative'))
-        #
-        # train_category_positive = train_category_positive_dict['category']
-        # positive_num = train_category_positive_dict['num_category']
-        # train_category_negative = train_category_negative_dict['category']
-        # negative_num = train_category_negative_dict['num_category']
-        # validation_size = float(request.POST.get('validation_size'))
-        #
-        # # train the model
-        # manager = mp.Manager()
-        # return_dict = manager.dict()
-        # proc = mp.Process(target=execute_train_model, args=(
-        #     user_id, model_name, train_category_positive, train_category_negative, validation_size, return_dict
-        # ))
-        # proc.daemon = True
-        # proc.start()
-        # proc.join()
-        #
-        # train_log = ModelTrainLog(user_id=user_id, model_name=model_name,
-        #                           train_category_positive=train_category_positive,
-        #                           positive_num=positive_num,
-        #                           train_category_negative=train_category_negative,
-        #                           negative_num=negative_num,
-        #                           validation_size=validation_size,
-        #                           accuracy_score=return_dict['accuracy_score'])
-        # train_log.save()
+        show_probility = request.POST.get('show_probility')
+        use_ensemble = request.POST.get('use_ensemble')
+        ensemble_learning = request.POST.get('ensemble_learning')
+        n_estimators = request.POST.get('n_estimators')
 
-        cat_identification_form = CatIdentificationForm(request.user.id)
+        # save the files
+        saved_pic_root = path.join(settings.MEDIA_ROOT, 'predict_images',
+                                   str(user_id))
+        if path.exists(saved_pic_root):
+            shutil.rmtree(saved_pic_root)
+        mkdir(saved_pic_root)
 
-        # TODO：format the result in page
+        for f in files:
+            pic_name = f.name
+            with open(os.path.join(saved_pic_root, pic_name), 'wb+') as destination:
+                for chunk in f.chunks():
+                    destination.write(chunk)
+
+
+
+        manager = mp.Manager()
+        return_dict = manager.dict()
+        proc = mp.Process(target=execute_cat_identification, args=(
+            user_id, files, model_name, show_probility, use_ensemble, ensemble_learning, n_estimators, return_dict
+        ))
+        proc.daemon = True
+        proc.start()
+        proc.join()
+
+        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+            algorithm_info = json.load(load_f)
+
+        n_estimators = algorithm_info[str(user_id)]['ensemble_para']['best_params'][
+                'n_estimators']
+        ensemble_learning = algorithm_info[str(user_id)]['ensemble_para'][
+                'ensemble_learning']
+        cat_identification_form = CatIdentificationForm(request.user.id, initial={
+            'n_estimators': n_estimators,
+            'ensemble_learning': ensemble_learning
+        })
         return render(request, 'algorithm/cat_identification.html',
                       {'cat_identification_form': cat_identification_form,
-                       # 'result': return_dict
+                       'result': return_dict
                        })
     else:
 

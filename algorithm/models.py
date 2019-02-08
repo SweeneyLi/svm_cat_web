@@ -17,7 +17,7 @@ class SVMModel(models.Model):
     is_standard = models.BooleanField('is_standard')
     is_color = models.BooleanField('is_color')
     pic_size = models.CharField('pic_size', max_length=50)
-    orientations = models.CharField('orientations', max_length=50)
+    orientations = models.IntegerField('orientations')
     pixels_per_cell = models.CharField('pixels_per_cell', max_length=50)
     cells_per_block = models.CharField('cells_per_block', max_length=50)
 

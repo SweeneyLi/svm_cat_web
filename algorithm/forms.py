@@ -134,9 +134,9 @@ class CatIdentificationForm(forms.Form):
 
     model_name = forms.ModelChoiceField(SVMModel.objects.none())
 
-    show_probility = forms.BooleanField(initial=False)
+    show_probility = forms.BooleanField(initial=False, required=False)
 
-    use_ensemble = forms.BooleanField(initial=False)
+    use_ensemble = forms.BooleanField(initial=False, required=False)
 
     ensemble_learning_list = (('AdaBoostClassifier', 'AdaBoostClassifier'), ('BaggingClassifier', 'BaggingClassifier'))
 

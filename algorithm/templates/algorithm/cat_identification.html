@@ -18,10 +18,12 @@
     <input type="submit" value="确定" />
 </form>
 
+    {% if result %}
+        {{ result }}
+    {% endif %}
 {#{% if hog_picture %}#}
 {#  <p><img src="{{ hog_picture }}"/></p>#}
 {#{% endif %}#}
-
 
 {#    <br><a href="{% url 'alogrithm:contrast_algorithm' %}">contrast_algorithm</a>#}
 {% endblock %}

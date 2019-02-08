@@ -27,6 +27,7 @@ import matplotlib
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from PIL import Image
 
 
 def hog(img_list, orientations, pixels_per_cell, cells_per_block):
@@ -368,7 +369,7 @@ def execute_train_model(user_id, model_name, train_category_positive, train_cate
         a_pic = cv2.resize(a_pic, eval(model.pic_size), interpolation=cv2.INTER_AREA)
         img_list.append(a_pic)
 
-    pic_vector = hog(img_list, eval(model.orientations), eval(model.pixels_per_cell), eval(model.cells_per_block))
+    pic_vector = hog(img_list, model.orientations, eval(model.pixels_per_cell), eval(model.cells_per_block))
     label = np.array(np.repeat(1, pic_vector.shape[0]))
     label[len(positive_pic):] = 0
 
@@ -450,3 +451,44 @@ def execute_adjust_ensemble(user_id, model_name, ensemble_learning, n_estimators
 
     with open(settings.ALGORITHM_JSON_PATH, "w") as f:
         json.dump(algorithm_info, f)
+
+
+def execute_cat_identification(user_id, files, model_name, show_probility, use_ensemble, ensemble_learning,
+                               n_estimators, return_dict):
+    model_db = SVMModel.objects.get(user_id=user_id, model_name=model_name)
+
+    the_path = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id), model_name + '.model')
+    with open(the_path, 'rb') as model_f:
+        svm_model = joblib.load(model_f)
+
+    pic_root_dir = path.join(settings.MEDIA_ROOT, 'predict_images',
+                                              str(user_id))
+    pic_list = os.listdir(os.path.join(pic_root_dir))
+
+    img_list = []
+    for pic in pic_list:
+        pic = os.path.join(pic_root_dir, pic)
+        a_pic = cv2.imread(pic, model_db.is_color)
+        a_pic = cv2.resize(a_pic, eval(model_db.pic_size), interpolation=cv2.INTER_AREA)
+        img_list.append(a_pic)
+
+    pic_vector = hog(img_list, model_db.orientations, eval(model_db.pixels_per_cell), eval(model_db.cells_per_block))
+
+    if use_ensemble:
+        if ensemble_learning == 'BaggingClassifier':
+            model = BaggingClassifier(base_estimator=svm_model, random_state=seed, n_estimators=n_estimators)
+        elif ensemble_learning == 'AdaBoostClassifier':
+            model = AdaBoostClassifier(base_estimator=svm_model, random_state=seed, n_estimators=n_estimators)
+    else:
+        model = svm_model
+
+    if model_db.is_standard:
+        scaler = StandardScaler().fit(pic_vector)
+        pic_vector = scaler.transform(pic_vector)
+
+    if show_probility:
+        predictions = (model.predict_proba(pic_vector))[:, 0]
+    else:
+        predictions = model.predict(pic_vector)
+
+    return_dict['predictions'] = predictions
