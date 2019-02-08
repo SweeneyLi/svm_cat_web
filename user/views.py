@@ -52,6 +52,7 @@ def login(request):
                                                            'message': 'Wrong password. Please try again.'})
 
             if user.is_superuser:
+                auth.login(request, user)
                 return HttpResponseRedirect("/admin")
 
             if user.is_active:
