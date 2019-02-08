@@ -1,0 +1,28 @@
+{% extends 'system/base.html' %}
+{% load staticfiles %}
+
+{% block title %}cat_identification{% endblock %}
+
+{% block content %}
+
+<h3>cat_identification</h3>
+
+
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+{{ form.as_p }}
+    {% for field in cat_identification_form %}
+    <div class="fieldWrapper">
+        {{ field.label_tag }} {{ field }}
+    </div>
+    {% endfor %}
+    <input type="submit" value="确定" />
+</form>
+
+{#{% if hog_picture %}#}
+{#  <p><img src="{{ hog_picture }}"/></p>#}
+{#{% endif %}#}
+
+
+{#    <br><a href="{% url 'alogrithm:contrast_algorithm' %}">contrast_algorithm</a>#}
+{% endblock %}
+

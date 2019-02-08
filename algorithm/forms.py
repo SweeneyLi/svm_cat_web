@@ -2,6 +2,8 @@ from django import forms
 from picture.models import Picture
 from .models import SVMModel
 from django.db.models import Count
+from django.conf import settings
+import json
 
 
 # TODO: all the valid of forms
@@ -113,13 +115,37 @@ class EnsembleParamsForm(forms.Form):
 
     ensemble_learning_list = (('AdaBoostClassifier', 'AdaBoostClassifier'), ('BaggingClassifier', 'BaggingClassifier'))
 
-    ensemble_learning = forms.MultipleChoiceField(label='ensemble_learning',
-                                                  choices=ensemble_learning_list,
-                                                  widget=forms.CheckboxSelectMultiple())
+    ensemble_learning = forms.ChoiceField(label='ensemble_learning',
+                                          choices=ensemble_learning_list)
     n_estimators = forms.CharField(initial='[10, 50, 100]')
 
     def __init__(self, user_id, *args, **kwargs):
         super(EnsembleParamsForm, self).__init__(*args, **kwargs)
+
+        # TODO: format the choice at page
+        self.fields['model_name'] = forms.ModelChoiceField(
+            queryset=SVMModel.objects.filter(user_id=user_id).values('model_name').distinct().order_by('-update_time'),
+            empty_label="---------",
+        )
+
+
+class CatIdentificationForm(forms.Form):
+    file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+
+    model_name = forms.ModelChoiceField(SVMModel.objects.none())
+
+    show_probility = forms.BooleanField(initial=False)
+
+    use_ensemble = forms.BooleanField(initial=False)
+
+    ensemble_learning_list = (('AdaBoostClassifier', 'AdaBoostClassifier'), ('BaggingClassifier', 'BaggingClassifier'))
+
+    ensemble_learning = forms.ChoiceField(label='ensemble_learning',
+                                          choices=ensemble_learning_list)
+    n_estimators = forms.IntegerField()
+
+    def __init__(self, user_id, *args, **kwargs):
+        super(CatIdentificationForm, self).__init__(*args, **kwargs)
 
         # TODO: format the choice at page
         self.fields['model_name'] = forms.ModelChoiceField(

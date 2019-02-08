@@ -169,7 +169,8 @@ def adjust_ensemble_learning(request):
 
         manager = mp.Manager()
         return_dict = manager.dict()
-        proc = mp.Process(target=execute_adjust_ensemble, args=(user_id, model_name, ensemble_learning, n_estimators, return_dict))
+        proc = mp.Process(target=execute_adjust_ensemble,
+                          args=(user_id, model_name, ensemble_learning, n_estimators, return_dict))
         proc.daemon = True
         proc.start()
         proc.join()
@@ -180,7 +181,8 @@ def adjust_ensemble_learning(request):
                        'results': return_dict})
     else:
         ensemble_params_form = EnsembleParamsForm(request.user.id)
-        return render(request, 'algorithm/adjust_ensemble_learning.html', {'ensemble_params_form': ensemble_params_form})
+        return render(request, 'algorithm/adjust_ensemble_learning.html',
+                      {'ensemble_params_form': ensemble_params_form})
 
 
 class ModelCreateView(CreateView):
@@ -300,3 +302,59 @@ class ModelDetail(DetailView):
 
     template_name = 'algorithm/model_detail.html'
 
+
+def cat_identification(request):
+    user_id = request.user.id
+    if request.method == 'POST':
+
+        # model_name = eval(request.POST.get('model_name'))['model_name']
+        # train_category_positive_dict = eval(request.POST.get('train_category_positive'))
+        # train_category_negative_dict = eval(request.POST.get('train_category_negative'))
+        #
+        # train_category_positive = train_category_positive_dict['category']
+        # positive_num = train_category_positive_dict['num_category']
+        # train_category_negative = train_category_negative_dict['category']
+        # negative_num = train_category_negative_dict['num_category']
+        # validation_size = float(request.POST.get('validation_size'))
+        #
+        # # train the model
+        # manager = mp.Manager()
+        # return_dict = manager.dict()
+        # proc = mp.Process(target=execute_train_model, args=(
+        #     user_id, model_name, train_category_positive, train_category_negative, validation_size, return_dict
+        # ))
+        # proc.daemon = True
+        # proc.start()
+        # proc.join()
+        #
+        # train_log = ModelTrainLog(user_id=user_id, model_name=model_name,
+        #                           train_category_positive=train_category_positive,
+        #                           positive_num=positive_num,
+        #                           train_category_negative=train_category_negative,
+        #                           negative_num=negative_num,
+        #                           validation_size=validation_size,
+        #                           accuracy_score=return_dict['accuracy_score'])
+        # train_log.save()
+
+        cat_identification_form = CatIdentificationForm(request.user.id)
+
+        # TODO：format the result in page
+        return render(request, 'algorithm/cat_identification.html',
+                      {'cat_identification_form': cat_identification_form,
+                       # 'result': return_dict
+                       })
+    else:
+
+        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+            algorithm_info = json.load(load_f)
+
+        n_estimators = algorithm_info[str(user_id)]['ensemble_para']['best_params'][
+                'n_estimators']
+        ensemble_learning = algorithm_info[str(user_id)]['ensemble_para'][
+                'ensemble_learning']
+        cat_identification_form = CatIdentificationForm(request.user.id, initial={
+            'n_estimators': n_estimators,
+            'ensemble_learning': ensemble_learning
+        })
+        return render(request, 'algorithm/cat_identification.html',
+                      {'cat_identification_form': cat_identification_form})

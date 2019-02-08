@@ -443,6 +443,7 @@ def execute_adjust_ensemble(user_id, model_name, ensemble_learning, n_estimators
         algorithm_info = json.load(load_f)
 
     algorithm_info[str(user_id)]['ensemble_para'].update({
+        'ensemble_learning': ensemble_learning,
         'best_score': grid_result.best_score_,
         'best_params': grid_result.best_params_
     })
