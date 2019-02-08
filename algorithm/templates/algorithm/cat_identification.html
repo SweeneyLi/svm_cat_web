@@ -7,7 +7,7 @@
 
 <h3>cat_identification</h3>
 
-
+{{ error_message }}
 <form method="post" enctype="multipart/form-data">{% csrf_token %}
 {{ form.as_p }}
     {% for field in cat_identification_form %}

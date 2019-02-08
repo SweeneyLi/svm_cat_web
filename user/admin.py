@@ -12,12 +12,13 @@ class UserProfileInline(admin.StackedInline):
 
 @admin.register(User)
 class UserProfileAdmin(admin.ModelAdmin):
+    list_display = [('id'), ('username'), ('last_login'), ('is_superuser')]
+
+    search_fields = [('username')]
+
     fieldsets = [
-        (None, {'fields': ['username', 'password']}),
+        (None, {'fields': ['username', 'password', 'email']}),
         ('Important dates', {'fields': ['last_login', 'date_joined'], 'classes': ['collapse']}),
     ]
-    inlines = [UserProfileInline]
-    # list_display = ('question_text', 'pub_date', 'was_published_recently')
-    # list_filter = ['pub_date']
-    # search_fields = ['question_text']
 
+    inlines = [UserProfileInline]

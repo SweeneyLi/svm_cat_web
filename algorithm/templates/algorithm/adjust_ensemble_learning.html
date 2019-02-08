@@ -25,6 +25,6 @@
         <p>mean: {{ mean }}; std: {{ std }}; param: {{ param }}</p>
     {% endfor %}
 {% endif %}
-
+<a href="{% url "alogrithm:create_svm_model" %} ">create_svm_model</a>
 {% endblock %}
 

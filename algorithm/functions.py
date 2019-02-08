@@ -407,7 +407,7 @@ def execute_train_model(user_id, model_name, train_category_positive, train_cate
         joblib.dump(svm_model, f)
 
 
-def execute_adjust_ensemble(user_id, model_name, ensemble_learning, n_estimators, return_dict):
+def execute_adjust_ensemble(user_id, C, kernel, ensemble_learning, n_estimators, return_dict):
     with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
         feature_vector = pickle.load(load_f)
 
@@ -417,9 +417,7 @@ def execute_adjust_ensemble(user_id, model_name, ensemble_learning, n_estimators
     rescaledX = scaler.transform(x_train)
     param_grid = {'n_estimators': n_estimators}
 
-    model_db = SVMModel.objects.get(user_id=user_id, model_name=model_name)
-
-    cart = SVC(gamma='scale', C=model_db.C, kernel=model_db.kernel, probability=True)
+    cart = SVC(gamma='scale', C=C, kernel=kernel, probability=True)
 
     if ensemble_learning == 'BaggingClassifier':
         model = BaggingClassifier(base_estimator=cart, random_state=seed)
@@ -453,13 +451,12 @@ def execute_adjust_ensemble(user_id, model_name, ensemble_learning, n_estimators
         json.dump(algorithm_info, f)
 
 
-def execute_cat_identification(user_id, files, model_name, show_probility, use_ensemble, ensemble_learning,
-                               n_estimators, return_dict):
+def execute_cat_identification(user_id, model_name, show_probility, return_dict):
     model_db = SVMModel.objects.get(user_id=user_id, model_name=model_name)
 
     the_path = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id), model_name + '.model')
     with open(the_path, 'rb') as model_f:
-        svm_model = joblib.load(model_f)
+        model = joblib.load(model_f)
 
     pic_root_dir = path.join(settings.MEDIA_ROOT, 'predict_images',
                                               str(user_id))
@@ -473,14 +470,6 @@ def execute_cat_identification(user_id, files, model_name, show_probility, use_e
         img_list.append(a_pic)
 
     pic_vector = hog(img_list, model_db.orientations, eval(model_db.pixels_per_cell), eval(model_db.cells_per_block))
-
-    if use_ensemble:
-        if ensemble_learning == 'BaggingClassifier':
-            model = BaggingClassifier(base_estimator=svm_model, random_state=seed, n_estimators=n_estimators)
-        elif ensemble_learning == 'AdaBoostClassifier':
-            model = AdaBoostClassifier(base_estimator=svm_model, random_state=seed, n_estimators=n_estimators)
-    else:
-        model = svm_model
 
     if model_db.is_standard:
         scaler = StandardScaler().fit(pic_vector)

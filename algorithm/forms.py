@@ -62,7 +62,7 @@ class ContrastAlgorithmForm(forms.Form):
 
 
 class SVMParameterForm(forms.Form):
-    c = forms.CharField(initial='0.1, 0.3, 0.5, 0.7, 0.9, 1.0')
+    C = forms.CharField(initial='0.1, 0.3, 0.5, 0.7, 0.9, 1.0')
     kernel_list = (('linear', 'linear'), ('poly', 'poly'), ('rbf', 'rbf'), ('sigmoid', 'sigmoid'))
     kernel = forms.MultipleChoiceField(label='kernel',
                                        choices=kernel_list,
@@ -111,22 +111,29 @@ class TrainLogForm(forms.Form):
 
 
 class EnsembleParamsForm(forms.Form):
-    model_name = forms.ModelChoiceField(SVMModel.objects.none())
+    C = forms.FloatField(label='C')
+    kernel_list = (('linear', 'linear'), ('poly', 'poly'), ('rbf', 'rbf'), ('sigmoid', 'sigmoid'))
+    kernel = forms.MultipleChoiceField(label='kernel',
+                                       choices=kernel_list,
+                                       widget=forms.CheckboxSelectMultiple()
+                                       )
 
     ensemble_learning_list = (('AdaBoostClassifier', 'AdaBoostClassifier'), ('BaggingClassifier', 'BaggingClassifier'))
 
     ensemble_learning = forms.ChoiceField(label='ensemble_learning',
                                           choices=ensemble_learning_list)
-    n_estimators = forms.CharField(initial='[10, 50, 100]')
+    n_estimators = forms.CharField(label='n_estimators', initial='[10,900]')
 
     def __init__(self, user_id, *args, **kwargs):
         super(EnsembleParamsForm, self).__init__(*args, **kwargs)
 
-        # TODO: format the choice at page
-        self.fields['model_name'] = forms.ModelChoiceField(
-            queryset=SVMModel.objects.filter(user_id=user_id).values('model_name').distinct().order_by('-update_time'),
-            empty_label="---------",
-        )
+        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+            algorithm_info = json.load(load_f)
+
+        self.initial = {
+            'C': algorithm_info[str(user_id)]['model_para']['best_params']['C'],
+            'kernel': algorithm_info[str(user_id)]['model_para']['best_params']['kernel']
+        }
 
 
 class CatIdentificationForm(forms.Form):
@@ -135,14 +142,6 @@ class CatIdentificationForm(forms.Form):
     model_name = forms.ModelChoiceField(SVMModel.objects.none())
 
     show_probility = forms.BooleanField(initial=False, required=False)
-
-    use_ensemble = forms.BooleanField(initial=False, required=False)
-
-    ensemble_learning_list = (('AdaBoostClassifier', 'AdaBoostClassifier'), ('BaggingClassifier', 'BaggingClassifier'))
-
-    ensemble_learning = forms.ChoiceField(label='ensemble_learning',
-                                          choices=ensemble_learning_list)
-    n_estimators = forms.IntegerField()
 
     def __init__(self, user_id, *args, **kwargs):
         super(CatIdentificationForm, self).__init__(*args, **kwargs)

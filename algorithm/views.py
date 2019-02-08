@@ -141,13 +141,13 @@ def contrast_algorithm(request):
 def adjust_svm(request):
     if request.method == 'POST':
         user_id = str(request.user.id)
-        c = request.POST.get('c').split(',')
-        c = list(map(lambda a: float(a), c))
+        C = request.POST.get('c').split(',')
+        C = list(map(lambda a: float(a), C))
         kernel = request.POST.getlist('kernel')
 
         manager = mp.Manager()
         return_dict = manager.dict()
-        proc = mp.Process(target=execute_adjust_svm, args=(user_id, c, kernel, return_dict))
+        proc = mp.Process(target=execute_adjust_svm, args=(user_id, C, kernel, return_dict))
         proc.daemon = True
         proc.start()
         proc.join()
@@ -164,14 +164,15 @@ def adjust_svm(request):
 def adjust_ensemble_learning(request):
     if request.method == 'POST':
         user_id = request.user.id
-        model_name = eval(request.POST.get('model_name'))['model_name']
+        C = float(request.POST.get('C'))
+        kernel = request.POST.get('kernel')
         n_estimators = eval(request.POST.get('n_estimators'))
         ensemble_learning = request.POST.get('ensemble_learning')
 
         manager = mp.Manager()
         return_dict = manager.dict()
         proc = mp.Process(target=execute_adjust_ensemble,
-                          args=(user_id, model_name, ensemble_learning, n_estimators, return_dict))
+                          args=(user_id, C, kernel, ensemble_learning, n_estimators, return_dict))
         proc.daemon = True
         proc.start()
         proc.join()
@@ -311,13 +312,17 @@ class ModelDetail(DetailView):
 def cat_identification(request):
     user_id = request.user.id
     if request.method == 'POST':
-        files = request.FILES.getlist('file')
         model_name = eval(request.POST.get('model_name'))['model_name']
 
+        model_db = SVMModel.objects.get(user_id=user_id, model_name=model_name)
+        if model_db.train_num == 0:
+            cat_identification_form = CatIdentificationForm(request.user.id)
+            return render(request, 'algorithm/cat_identification.html',
+                          {'cat_identification_form': cat_identification_form,
+                           'error_message': 'The trained model could predict, please train it'})
+
+        files = request.FILES.getlist('file')
         show_probility = request.POST.get('show_probility')
-        use_ensemble = request.POST.get('use_ensemble')
-        ensemble_learning = request.POST.get('ensemble_learning')
-        n_estimators = request.POST.get('n_estimators')
 
         # save the files
         saved_pic_root = path.join(settings.MEDIA_ROOT, 'predict_images',
@@ -335,7 +340,7 @@ def cat_identification(request):
         manager = mp.Manager()
         return_dict = manager.dict()
         proc = mp.Process(target=execute_cat_identification, args=(
-            user_id, files, model_name, show_probility, use_ensemble, ensemble_learning, n_estimators, return_dict
+            user_id, model_name, show_probility, return_dict
         ))
         proc.daemon = True
         proc.start()
@@ -344,30 +349,12 @@ def cat_identification(request):
         with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
             algorithm_info = json.load(load_f)
 
-        n_estimators = algorithm_info[str(user_id)]['ensemble_para']['best_params'][
-            'n_estimators']
-        ensemble_learning = algorithm_info[str(user_id)]['ensemble_para'][
-            'ensemble_learning']
-        cat_identification_form = CatIdentificationForm(request.user.id, initial={
-            'n_estimators': n_estimators,
-            'ensemble_learning': ensemble_learning
-        })
+        cat_identification_form = CatIdentificationForm(request.user.id)
         return render(request, 'algorithm/cat_identification.html',
                       {'cat_identification_form': cat_identification_form,
                        'result': return_dict
                        })
     else:
-
-        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
-            algorithm_info = json.load(load_f)
-
-        n_estimators = algorithm_info[str(user_id)]['ensemble_para']['best_params'][
-            'n_estimators']
-        ensemble_learning = algorithm_info[str(user_id)]['ensemble_para'][
-            'ensemble_learning']
-        cat_identification_form = CatIdentificationForm(request.user.id, initial={
-            'n_estimators': n_estimators,
-            'ensemble_learning': ensemble_learning
-        })
+        cat_identification_form = CatIdentificationForm(request.user.id)
         return render(request, 'algorithm/cat_identification.html',
                       {'cat_identification_form': cat_identification_form})
