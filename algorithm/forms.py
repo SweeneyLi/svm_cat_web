@@ -106,3 +106,23 @@ class TrainLogForm(forms.Form):
             return False
         else:
             return valid
+
+
+class EnsembleParamsForm(forms.Form):
+    model_name = forms.ModelChoiceField(SVMModel.objects.none())
+
+    ensemble_learning_list = (('AdaBoostClassifier', 'AdaBoostClassifier'), ('BaggingClassifier', 'BaggingClassifier'))
+
+    ensemble_learning = forms.MultipleChoiceField(label='ensemble_learning',
+                                                  choices=ensemble_learning_list,
+                                                  widget=forms.CheckboxSelectMultiple())
+    n_estimators = forms.CharField(initial='[10, 50, 100]')
+
+    def __init__(self, user_id, *args, **kwargs):
+        super(EnsembleParamsForm, self).__init__(*args, **kwargs)
+
+        # TODO: format the choice at page
+        self.fields['model_name'] = forms.ModelChoiceField(
+            queryset=SVMModel.objects.filter(user_id=user_id).values('model_name').distinct().order_by('-update_time'),
+            empty_label="---------",
+        )

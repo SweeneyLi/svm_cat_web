@@ -43,7 +43,7 @@ def choose_pic_category(request):
             algorithm_info[user_id] = {}
 
         algorithm_info_keys = algorithm_info[user_id].keys()
-        for key in ['pic_para', 'data_para', 'model_para']:
+        for key in ['pic_para', 'data_para', 'model_para', 'ensemble_para']:
             if key not in algorithm_info_keys:
                 algorithm_info[user_id][key] = {}
 
@@ -160,6 +160,29 @@ def adjust_svm(request):
         return render(request, 'algorithm/adjust_svm.html', {'svm_parameter_form': svm_parameter_form})
 
 
+def adjust_ensemble_learning(request):
+    if request.method == 'POST':
+        user_id = request.user.id
+        model_name = eval(request.POST.get('model_name'))['model_name']
+        n_estimators = eval(request.POST.get('n_estimators'))
+        ensemble_learning = request.POST.get('ensemble_learning')
+
+        manager = mp.Manager()
+        return_dict = manager.dict()
+        proc = mp.Process(target=execute_adjust_ensemble, args=(user_id, model_name, ensemble_learning, n_estimators, return_dict))
+        proc.daemon = True
+        proc.start()
+        proc.join()
+
+        ensemble_params_form = EnsembleParamsForm(user_id, request.POST)
+        return render(request, 'algorithm/adjust_ensemble_learning.html',
+                      {'ensemble_params_form': ensemble_params_form,
+                       'results': return_dict})
+    else:
+        ensemble_params_form = EnsembleParamsForm(request.user.id)
+        return render(request, 'algorithm/adjust_ensemble_learning.html', {'ensemble_params_form': ensemble_params_form})
+
+
 class ModelCreateView(CreateView):
     template_name = 'algorithm/create_svm_model.html'
     model = SVMModel
@@ -204,7 +227,7 @@ class ModelCreateView(CreateView):
         form.instance.user_id = user_id
 
         # save the model in local
-        svm_model = SVC(C=float(form.data['C']), kernel=form.data['kernel'])
+        svm_model = SVC(C=float(form.data['C']), kernel=form.data['kernel'], probability=True)
 
         the_dir = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id))
         if not path.exists(the_dir):
@@ -268,7 +291,7 @@ class ModelListView(ListView):
 
     def get_queryset(self):
         return SVMModel.objects.all(). \
-            filter(user_id=self.request.user.id).order_by('accuracy_score', '-update_time')
+            filter(user_id=self.request.user.id).order_by('recently_accuracy_score', '-update_time')
 
 
 class ModelDetail(DetailView):
@@ -277,5 +300,3 @@ class ModelDetail(DetailView):
 
     template_name = 'algorithm/model_detail.html'
 
-    # def get_queryset(self):
-    #     return SVMModel.objects.get(id=int(self.kwargs['pk']))

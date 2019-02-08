@@ -13,4 +13,5 @@ urlpatterns = [
     path('train_svm_model/', views.train_svm_model, name='train_svm_model'),
     path('model_list/', views.ModelListView.as_view(), name='model_list'),
     re_path(r'^model_detail/(?P<pk>\d+)/$', views.ModelDetail.as_view(), name='model_detail'),
+    path('adjust_ensemble_learning/', views.adjust_ensemble_learning, name='adjust_ensemble_learning'),
 ]

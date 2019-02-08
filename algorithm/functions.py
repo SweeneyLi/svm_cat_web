@@ -1,4 +1,5 @@
 from django.conf import settings
+from sklearn.ensemble import AdaBoostClassifier, BaggingClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 from .models import SVMModel
@@ -403,3 +404,48 @@ def execute_train_model(user_id, model_name, train_category_positive, train_cate
 
     with open(the_path, 'wb') as f:
         joblib.dump(svm_model, f)
+
+
+def execute_adjust_ensemble(user_id, model_name, ensemble_learning, n_estimators, return_dict):
+    with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
+        feature_vector = pickle.load(load_f)
+
+    x_train, y_train = feature_vector[str(user_id)]['x_train'], feature_vector[str(user_id)]['y_train']
+
+    scaler = StandardScaler().fit(x_train)
+    rescaledX = scaler.transform(x_train)
+    param_grid = {'n_estimators': n_estimators}
+
+    model_db = SVMModel.objects.get(user_id=user_id, model_name=model_name)
+
+    cart = SVC(gamma='scale', C=model_db.C, kernel=model_db.kernel, probability=True)
+
+    if ensemble_learning == 'BaggingClassifier':
+        model = BaggingClassifier(base_estimator=cart, random_state=seed)
+    elif ensemble_learning == 'AdaBoostClassifier':
+        model = AdaBoostClassifier(base_estimator=cart, random_state=seed)
+    else:
+        return False
+
+    kfold = KFold(n_splits=num_folds, random_state=seed)
+    grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=scoring, cv=kfold)
+    grid_result = grid.fit(X=rescaledX, y=y_train)
+
+    cv_results = zip(grid_result.cv_results_['mean_test_score'],
+                     grid_result.cv_results_['std_test_score'],
+                     grid_result.cv_results_['params'])
+    return_dict['best_score'] = grid_result.best_score_
+    return_dict['best_params'] = grid_result.best_params_
+    return_dict['cv_results'] = cv_results
+
+    # save the best_score, best_params in algorithm_json
+    with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+        algorithm_info = json.load(load_f)
+
+    algorithm_info[str(user_id)]['ensemble_para'].update({
+        'best_score': grid_result.best_score_,
+        'best_params': grid_result.best_params_
+    })
+
+    with open(settings.ALGORITHM_JSON_PATH, "w") as f:
+        json.dump(algorithm_info, f)
