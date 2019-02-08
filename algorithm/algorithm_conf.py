@@ -1,3 +1,3 @@
 num_folds = 10
-seed = 2
+seed = 7
 scoring = 'accuracy'

@@ -246,12 +246,12 @@ def train_svm_model(request):
                                   train_category_negative=train_category_negative,
                                   negative_num=negative_num,
                                   validation_size=validation_size,
-                                  recently_accuracy_score=return_dict['accuracy_score'])
-
+                                  accuracy_score=return_dict['accuracy_score'])
         train_log.save()
 
-
         train_log_form = TrainLogForm(request.user.id)
+
+        # TODO：format the result in page
         return render(request, 'algorithm/train_svm_model.html',
                       {'train_log_form': train_log_form,
                        'result': return_dict})
