@@ -5,11 +5,11 @@ from django.contrib.auth.models import User
 class SVMModel(models.Model):
     user_id = models.IntegerField('user_id')
     model_name = models.CharField('model_name', max_length=50)
-    train_num = models.IntegerField('train_num', default=0)
-    create_time = models.DateTimeField('create_time', auto_now=True)
-    update_time = models.DateTimeField('update_time', auto_now_add=True)
 
+    train_num = models.IntegerField('train_num', default=0)
+    update_time = models.DateTimeField('update_time', auto_now_add=True)
     recently_accuracy_score = models.FloatField('recently_accuracy_score', max_length=100, default=0)
+
     C = models.FloatField('C', max_length=50)
     kernel_choice = [('sigmoid', 'sigmoid'), ('rbf', 'rbf'), ('poly', 'poly'), ('linear', 'linear')]
     kernel = models.CharField('kernel', choices=kernel_choice, max_length=50)
@@ -20,6 +20,14 @@ class SVMModel(models.Model):
     orientations = models.IntegerField('orientations')
     pixels_per_cell = models.CharField('pixels_per_cell', max_length=50)
     cells_per_block = models.CharField('cells_per_block', max_length=50)
+
+    create_time = models.DateTimeField('create_time', auto_now=True)
+
+    ensemble_learning_choice = [('BaggingClassifier', 'BaggingClassifier'),
+                                ('AdaBoostClassifier', 'AdaBoostClassifier'),
+                                ('None', 'None')]
+    ensemble_learning = models.CharField('ensemble_learning', choices=ensemble_learning_choice, max_length=50, default='None')
+    n_estimators = models.IntegerField('n_estimators', default=0)
 
     def __str__(self):
         # // TODO: Chinese

@@ -8,14 +8,14 @@ import json
 
 # TODO: all the valid of forms
 
-class ChoosePicCategoryForm(forms.Form):
+class PrepareDataForm(forms.Form):
     test_pic = forms.ImageField()
     test_category_positive = forms.ModelChoiceField(Picture.objects.none())
     test_category_negative = forms.ModelChoiceField(Picture.objects.none())
     validation_size = forms.FloatField(initial=0.2)
 
     def __init__(self, user_id, *args, **kwargs):
-        super(ChoosePicCategoryForm, self).__init__(*args, **kwargs)
+        super(PrepareDataForm, self).__init__(*args, **kwargs)
         self.fields['test_category_positive'] = forms.ModelChoiceField(
             queryset=Picture.objects.filter(user_id=user_id).values('category').distinct().annotate(
                 num_category=Count('category')
@@ -31,7 +31,7 @@ class ChoosePicCategoryForm(forms.Form):
 
     def is_valid(self):
         # run the parent validation first
-        valid = super(ChoosePicCategoryForm, self).is_valid()
+        valid = super(PrepareDataForm, self).is_valid()
 
         if not valid:
             return valid
@@ -44,7 +44,7 @@ class ChoosePicCategoryForm(forms.Form):
 
 class HOGPicForm(forms.Form):
     pic_size = forms.CharField(initial='(194,259)')
-    orientations = forms.IntegerField(initial='9')
+    orientations = forms.IntegerField(initial=9)
     pixels_per_cell = forms.CharField(initial='(16,16)')
     cells_per_block = forms.CharField(initial='(2,2)')
     is_color = forms.BooleanField(initial=True, required=False)

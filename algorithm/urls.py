@@ -5,7 +5,7 @@ from . import views
 app_name = 'alogrithm'
 
 urlpatterns = [
-    path('choose_pic_category', views.choose_pic_category, name='choose_pic_category'),
+    path('prepare_data', views.prepare_data, name='prepare_data'),
     path('hog_pic/', views.hog_pic, name='hog_pic'),
     path('contrast_algorithm/', views.contrast_algorithm, name='contrast_algorithm'),
     path('adjust_svm/', views.adjust_svm, name='adjust_svm'),

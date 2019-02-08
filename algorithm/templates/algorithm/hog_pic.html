@@ -9,9 +9,6 @@
 <h3>hog_pic</h3>
 
 <form method="post" enctype="multipart/form-data">{% csrf_token %}
-
-{#    {{ form.pic_size.label_tag }} {{ form.pic_size }}#}
-{#    {{ form.test_pic.label_tag }} {{ form.test_pic }}#}
     {% for field in hog_pic_form %}
     <div class="fieldWrapper">
         {{ field.label_tag }} {{ field }}

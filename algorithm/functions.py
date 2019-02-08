@@ -445,8 +445,8 @@ def execute_adjust_ensemble(user_id, model_name, ensemble_learning, n_estimators
 
     algorithm_info[str(user_id)]['ensemble_para'].update({
         'ensemble_learning': ensemble_learning,
+        'n_estimators': grid_result.best_params_['n_estimators'],
         'best_score': grid_result.best_score_,
-        'best_params': grid_result.best_params_
     })
 
     with open(settings.ALGORITHM_JSON_PATH, "w") as f:
@@ -487,7 +487,7 @@ def execute_cat_identification(user_id, files, model_name, show_probility, use_e
         pic_vector = scaler.transform(pic_vector)
 
     if show_probility:
-        predictions = (model.predict_proba(pic_vector))[:, 0]
+        predictions = (model.predict_proba(pic_vector))[:, 1]
     else:
         predictions = model.predict(pic_vector)
 

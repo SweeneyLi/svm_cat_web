@@ -13,13 +13,13 @@ import pickle
 import shutil
 
 
-def choose_pic_category(request):
+def prepare_data(request):
     # TODO: add the loading html
     user_id = str(request.user.id)
 
     if request.method == 'POST':
 
-        # TODO: judege choose_pic_category_form.is_valid()
+        # TODO: judege prepare_data_form.is_valid()
 
         # get the parameter
         test_pic = request.FILES.get('test_pic')
@@ -57,15 +57,15 @@ def choose_pic_category(request):
             'validation_size': validation_size,
         })
 
-        with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
+        with open(settings.ALGORITHM_JSON_PATH, 'w') as f:
             json.dump(algorithm_info, f)
 
         return redirect(reverse('alogrithm:hog_pic'))
     else:
 
-        choose_pic_category_form = ChoosePicCategoryForm(user_id=user_id)
+        prepare_data_form = PrepareDataForm(user_id=user_id)
         return render(request, 'algorithm/choose_pic_category.html',
-                      {'choose_pic_category_form': choose_pic_category_form})
+                      {'prepare_data_form': prepare_data_form})
 
 
 def hog_pic(request):
@@ -79,7 +79,7 @@ def hog_pic(request):
 
         # get the parameter
         pic_size = eval(request.POST.get('pic_size'))
-        orientations = request.POST.get('orientations')
+        orientations = int(request.POST.get('orientations'))
         pixels_per_cell = eval(request.POST.get('pixels_per_cell'))
         cells_per_block = eval(request.POST.get('cells_per_block'))
         is_color = True if request.POST.get('is_color') else False
@@ -191,7 +191,8 @@ class ModelCreateView(CreateView):
     model = SVMModel
     fields = ['model_name', 'pic_size', 'orientations',
               'pixels_per_cell', 'cells_per_block', 'is_color',
-              'is_standard', 'C', 'kernel']
+              'is_standard', 'C', 'kernel', 'ensemble_learning',
+              'n_estimators']
 
     def get_success_url(self):
         return reverse_lazy('alogrithm:train_svm_model')
@@ -203,9 +204,8 @@ class ModelCreateView(CreateView):
             algorithm_info = json.load(load_f)
         user_id = str(self.request.user.id)
 
-        kwargs['initial']['model_name'] = algorithm_info[user_id]['data_para']. \
-                                              get('category_positive', "svm") + '_model'
-
+        kwargs['initial']['model_name'] = algorithm_info[user_id]['data_para'].get('category_positive',
+                                                                                   "svm") + '_model'
         kwargs['initial']['pic_size'] = algorithm_info[user_id]['pic_para'].get('pic_size', "(194, 259)")
         kwargs['initial']['orientations'] = algorithm_info[user_id]['pic_para'].get('orientations', 9)
         kwargs['initial']['pixels_per_cell'] = algorithm_info[user_id]['pic_para'].get('pixels_per_cell', "(8, 8)")
@@ -213,9 +213,13 @@ class ModelCreateView(CreateView):
         kwargs['initial']['is_color'] = algorithm_info[user_id]['pic_para'].get('is_color', True)
         kwargs['initial']['is_standard'] = algorithm_info[user_id]['data_para'].get('is_standard', True)
 
-        best_params = algorithm_info[user_id]['model_para'].get('best_params', {'C': 2.0, 'kernel': 'sigmoid'})
-        kwargs['initial']['C'] = best_params['C']
-        kwargs['initial']['kernel'] = best_params['kernel']
+        model_best_params = algorithm_info[user_id]['model_para'].get('best_params', {'C': 2.0, 'kernel': 'sigmoid'})
+        kwargs['initial']['C'] = model_best_params['C']
+        kwargs['initial']['kernel'] = model_best_params['kernel']
+
+        kwargs['initial']['ensemble_learning'] = algorithm_info[user_id]['ensemble_para'].get('ensemble_learning',
+                                                                                              'None')
+        kwargs['initial']['n_estimators'] = algorithm_info[user_id]['ensemble_para'].get('n_estimators', 0)
 
         return kwargs
 
@@ -328,8 +332,6 @@ def cat_identification(request):
                 for chunk in f.chunks():
                     destination.write(chunk)
 
-
-
         manager = mp.Manager()
         return_dict = manager.dict()
         proc = mp.Process(target=execute_cat_identification, args=(
@@ -343,9 +345,9 @@ def cat_identification(request):
             algorithm_info = json.load(load_f)
 
         n_estimators = algorithm_info[str(user_id)]['ensemble_para']['best_params'][
-                'n_estimators']
+            'n_estimators']
         ensemble_learning = algorithm_info[str(user_id)]['ensemble_para'][
-                'ensemble_learning']
+            'ensemble_learning']
         cat_identification_form = CatIdentificationForm(request.user.id, initial={
             'n_estimators': n_estimators,
             'ensemble_learning': ensemble_learning
@@ -360,9 +362,9 @@ def cat_identification(request):
             algorithm_info = json.load(load_f)
 
         n_estimators = algorithm_info[str(user_id)]['ensemble_para']['best_params'][
-                'n_estimators']
+            'n_estimators']
         ensemble_learning = algorithm_info[str(user_id)]['ensemble_para'][
-                'ensemble_learning']
+            'ensemble_learning']
         cat_identification_form = CatIdentificationForm(request.user.id, initial={
             'n_estimators': n_estimators,
             'ensemble_learning': ensemble_learning

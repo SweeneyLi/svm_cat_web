@@ -1,16 +1,16 @@
 {% extends 'system/base.html' %}
 {% load staticfiles %}
 
-{% block title %}Choose_pic_category{% endblock %}
+{% block title %}prepare_data{% endblock %}
 
 {% block content %}
 
 <h1>First Step</h1>
-<h3>Choose_pic_category</h3>
+<h3>prepare_data</h3>
 
 
 <form method="post" enctype="multipart/form-data">{% csrf_token %}
-    {% for field in choose_pic_category_form %}
+    {% for field in prepare_data_form %}
     <div class="fieldWrapper">
         {{ field.label_tag }} {{ field }}
     </div>
