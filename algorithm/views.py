@@ -140,7 +140,7 @@ def contrast_algorithm(request):
 def adjust_svm(request):
     if request.method == 'POST':
         user_id = str(request.user.id)
-        C = request.POST.get('c').split(',')
+        C = request.POST.get('C').split(',')
         C = list(map(lambda a: float(a), C))
         kernel = request.POST.getlist('kernel')
 
