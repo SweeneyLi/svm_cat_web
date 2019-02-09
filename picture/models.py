@@ -15,7 +15,7 @@ def user_directory_path(instance, filename):
 class Picture(models.Model):
     user_id = models.IntegerField('user_id')
     pic_name = models.CharField('pic_name', max_length=255, default='')
-    path = models.ImageField("path", upload_to=user_directory_path, blank=False, default='')
+    path = models.ImageField("path", upload_to=user_directory_path, blank=False)
     category = models.CharField("category", max_length=100, blank=False, default='default')
     pic_size = models.CharField('pic_size', max_length=20, default='')
     upload_date = models.DateField(default=date.today)

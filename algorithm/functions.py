@@ -27,7 +27,6 @@ import matplotlib
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from PIL import Image
 
 
 def hog(img_list, orientations, pixels_per_cell, cells_per_block):
@@ -244,9 +243,6 @@ def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
     :param contrast_algorithm:
     :return: None
     """
-    num_folds = 10
-    seed = 7
-    scoring = 'accuracy'
 
     with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
         feature_vector = pickle.load(load_f)
@@ -259,9 +255,11 @@ def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
     with open(settings.ALGORITHM_JSON_PATH, "w") as f:
         json.dump(algorithm_info, f)
 
+    contrast_algorithm.insert(0, 'SVM')
     models = {}
     if is_standard:
-        models = {}
+        contrast_algorithm = ['Scaler' + i for i in contrast_algorithm]
+
         models['ScalerSVM'] = Pipeline([('Scaler', StandardScaler()), ('SVM', SVC(gamma='scale'))])
         models['ScalerLR'] = Pipeline([('Scaler', StandardScaler()), ('LR', LogisticRegression(solver='lbfgs'))])
         models['ScalerKNN'] = Pipeline([('Scaler', StandardScaler()), ('KNN', KNeighborsClassifier())])
@@ -275,7 +273,7 @@ def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
         models['NB'] = GaussianNB()
 
     results = []
-    for key in models:
+    for key in contrast_algorithm:
         kfold = KFold(n_splits=num_folds, random_state=seed)
 
         # TODO:The nums of samples should big than kfold
@@ -291,7 +289,7 @@ def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
     fig.suptitle('Algorithm Comparison')
     ax = fig.add_subplot(111)
     plt.boxplot(results)
-    ax.set_xticklabels(models.keys())
+    ax.set_xticklabels(contrast_algorithm)
 
     contrast_algorithm_path = path.join(settings.MEDIA_ROOT, 'algorithm', 'hog_picture',
                                         user_id + '_contrast_algorithm.png')
@@ -459,7 +457,7 @@ def execute_cat_identification(user_id, model_name, show_probility, return_dict)
         model = joblib.load(model_f)
 
     pic_root_dir = path.join(settings.MEDIA_ROOT, 'predict_images',
-                                              str(user_id))
+                             str(user_id))
     pic_list = os.listdir(os.path.join(pic_root_dir))
 
     img_list = []

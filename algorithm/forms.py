@@ -55,7 +55,7 @@ class ContrastAlgorithmForm(forms.Form):
 
     # algorithms = ('LogisticRegression', 'KNeighborsClassifier',
     #               'DecisionTreeClassifier', 'GaussianNB')
-    algorithms = (('1', 'svm'), ('2', 'asdf'))
+    algorithms = (('LR', 'LR'), ('KNN', 'KNN'), ('CART', 'CART'), ('NB', 'NB'))
 
     contrast_algorithm = forms.MultipleChoiceField(label='contrast_algorithmthms',
                                                    choices=algorithms, widget=forms.CheckboxSelectMultiple())

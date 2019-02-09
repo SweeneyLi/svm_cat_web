@@ -113,8 +113,7 @@ def contrast_algorithm(request):
         user_id = str(request.user.id)
 
         # TODO: complete the choices of contrast_alorgitm
-        # contrast_algorithm = request.POST.getlist('contrast_algorithm')
-        contrast_algorithm = False
+        contrast_algorithm = request.POST.getlist('contrast_algorithm')
 
         is_standard = True if request.POST.get('is_standard') else False
 
