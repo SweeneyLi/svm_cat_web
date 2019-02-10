@@ -150,73 +150,75 @@ class HOGPicView(FormView):
                        })
 
 
-def hog_pic(request):
-    if request.method == 'POST':
+class EvaluateAlgorithmView(FormView):
+    form_class = EvaluateAlgoritmForm
 
-        # TODO:form validation
-        # # 判断参数，是否窗口尺寸大于图片尺寸
-        # if pixels_per_cell[0] * cells_per_block[0] >= pic_size[0] or pixels_per_cell[1] * cells_per_block[1] >= \
-        #         pic_size[1]:
-        #     return False
-
-        # get the parameter
-        pic_size = eval(request.POST.get('pic_size'))
-        orientations = int(request.POST.get('orientations'))
-        pixels_per_cell = eval(request.POST.get('pixels_per_cell'))
-        cells_per_block = eval(request.POST.get('cells_per_block'))
-        is_color = True if request.POST.get('is_color') else False
-        user_id = str(request.user.id)
-
-        # execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is_color, user_id)
-
-        proc = mp.Process(target=execute_hog_pic,
-                          args=(pic_size, orientations, pixels_per_cell, cells_per_block, is_color, user_id))
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        # hog the picture to feature vector and sava as feature_vector.pkl
+        proc = mp.Process(target=get_pic_vector, args=(str(request.user.id)))
         proc.daemon = True
         proc.start()
         proc.join()
 
-        # get the saved png to show in page
-        relative_pic_path = path.join('/media', 'algorithm', 'hog_picture',
-                                      user_id + '_hog_picture.png')
-        hog_pic_form = HOGPicForm(request.POST)
+        return render(request, 'algorithm/contrast_algorithm.html',
+                      {'form': form})
 
-        return render(request, 'algorithm/hog_pic.html',
-                      {'hog_pic_form': hog_pic_form,
-                       'hog_picture': relative_pic_path,
-                       })
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        user_id = str(self.request.user.id)
 
-    else:
-        hog_pic_form = HOGPicForm()
-        return render(request, 'algorithm/hog_pic.html', {'hog_pic_form': hog_pic_form})
-
-
-def contrast_algorithm(request):
-    if request.method == 'POST':
-        user_id = str(request.user.id)
-
-        # TODO: complete the choices of contrast_alorgitm
-        contrast_algorithm = request.POST.getlist('contrast_algorithm')
-
-        is_standard = True if request.POST.get('is_standard') else False
-
-        proc = mp.Process(target=execute_contrast_algorithm, args=(user_id, is_standard, contrast_algorithm))
+        algorithm_list = self.request.POST.getlist('algorithm_list')
+        is_standard = True if self.request.POST.get('is_standard') else False
+        proc = mp.Process(target=execute_evaluate_algorithm, args=(user_id, is_standard, algorithm_list))
         proc.daemon = True
         proc.start()
         proc.join()
 
-        relative_pic_path = path.join('/media', 'algorithm', 'hog_picture',
-                                      user_id + '_contrast_algorithm.png')
-        contrast_algorithm_form = ContrastAlgorithmForm(request.POST)
+        eval_pic = eval_pic_path(user_id)
 
-        return render(request, 'algorithm/contrast_algorithm.html',
-                      {'contrast_algorithm_form': contrast_algorithm_form,
-                       'algorithm_picture': relative_pic_path,
+        return render(self.request, 'algorithm/contrast_algorithm.html',
+                      {'form': form,
+                       'eval_pic': eval_pic,
                        })
-    else:
-        get_pic_vector(str(request.user.id))
-        contrast_algorithm_form = ContrastAlgorithmForm()
-        return render(request, 'algorithm/contrast_algorithm.html',
-                      {'contrast_algorithm_form': contrast_algorithm_form})
+
+
+class AdjustSVMView(FormView):
+    form_class = SVMParameterForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(request, 'algorithm/adjust_svm.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
+
+    def form_invalid(self, form, **kwargs):
+        return render(self.request, 'algorithm/adjust_svm.html',
+                      {'form': form, 'error_message': form.errors
+                       })
+
+    def form_valid(self, form, **kwargs):
+        form = self.get_form()
+        user_id = str(self.request.user.id)
+        C = form.data['C'].split(',')
+        C = list(map(lambda a: float(a), C))
+        kernel = self.request.POST.getlist('kernel')
+
+        manager = mp.Manager()
+        return_dict = manager.dict()
+        proc = mp.Process(target=execute_adjust_svm, args=(user_id, C, kernel, return_dict))
+        proc.daemon = True
+        proc.start()
+        proc.join()
+
+        return render(self.request, 'algorithm/adjust_svm.html',
+                      {'form': form,
+                       'results': return_dict})
 
 
 def adjust_svm(request):

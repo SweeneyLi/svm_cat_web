@@ -6,18 +6,13 @@
 {% block content %}
 
     <h1>Third Step</h1>
-    <h3>Contrast Algorithm</h3>
+    <h3>Evaluate Algorithm</h3>
 
-    {% if error_message %}
-        <div class="errors">
-            {{ error_message }}
-        </div>
-    {% endif %}
 
     <form method="post" enctype="multipart/form-data">{% csrf_token %}
 
 
-        {% for field in contrast_algorithm_form %}
+        {% for field in form %}
             <div class="fieldWrapper">
                 {{ field.label_tag }} {{ field }}
             </div>
@@ -30,8 +25,8 @@
          <p>{{ results }}</p>
     {% endif %}
 
-    {% if algorithm_picture %}
-         <p><img src="{{ algorithm_picture }}"/></p>
+    {% if eval_pic %}
+         <p><img src="{{ eval_pic }}"/></p>
     {% endif %}
 
 

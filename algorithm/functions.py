@@ -109,19 +109,15 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
     test_pic = algorithm_info[user_id]['pic_para']['test_pic']
 
     # read pic and resize it
-    saved_pic_path = path.join(settings.MEDIA_ROOT, 'algorithm', 'hog_picture',
-                               user_id + '_' + 'hog_test_pic.jpg')
-
+    saved_pic = saved_pic_path(user_id)
     if is_color:
-        img = cv2.imread(saved_pic_path, 1)
-        img = cv2.resize(img, pic_size, interpolation=cv2.INTER_AREA)
-        # cv2.imwrite(saved_pic_path, img)
-
+        img = cv2.imread(saved_pic, 1)
         # 将opencv的BGR模式转为matplotlib的RGB模式
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     else:
-        img = cv2.imread(saved_pic_path, 0)
-        img = cv2.resize(img, pic_size, interpolation=cv2.INTER_AREA)
+        img = cv2.imread(saved_pic, 0)
+
+    img = cv2.resize(img, pic_size, interpolation=cv2.INTER_AREA)
 
     # use the hog to change the picture
     fd, hog_image = feature.hog(img, orientations=orientations, pixels_per_cell=pixels_per_cell,
@@ -145,8 +141,7 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
     ax2.set_title('Histogram of Oriented Gradients')
 
     # save the plt as png
-    hog_picture_path = path.join(settings.MEDIA_ROOT, 'algorithm', 'hog_picture',
-                                 user_id + '_hog_picture.png')
+    hog_picture_path = hog_pic_path(user_id, relative=False)
     plt.savefig(hog_picture_path)
     plt.close('all')
     gc.collect()
@@ -164,6 +159,9 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
 
     with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
         json.dump(algorithm_info, f)
+    gc.collect()
+
+    return None
 
 
 def get_pic_vector(user_id):
@@ -207,6 +205,7 @@ def get_pic_vector(user_id):
     for pic in pic_file_list:
         pic = os.path.join(pic_root_dir, pic)
         a_pic = cv2.imread(pic, is_color)
+        a_pic = cv2.cvtColor(a_pic, cv2.COLOR_BGR2RGB)
         a_pic = cv2.resize(a_pic, pic_size, interpolation=cv2.INTER_AREA)
         img_list.append(a_pic)
 
@@ -235,7 +234,7 @@ def get_pic_vector(user_id):
     return None
 
 
-def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
+def execute_evaluate_algorithm(user_id, is_standard, algorithm_list):
     """
     accept the parameter, then contrast the several algorithms to svm show in boxplot by previous vector
     :param user_id:
@@ -255,10 +254,10 @@ def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
     with open(settings.ALGORITHM_JSON_PATH, "w") as f:
         json.dump(algorithm_info, f)
 
-    contrast_algorithm.insert(0, 'SVM')
+    algorithm_list.insert(0, 'SVM')
     models = {}
     if is_standard:
-        contrast_algorithm = ['Scaler' + i for i in contrast_algorithm]
+        algorithm_list = ['Scaler' + i for i in algorithm_list]
 
         models['ScalerSVM'] = Pipeline([('Scaler', StandardScaler()), ('SVM', SVC(gamma='scale'))])
         models['ScalerLR'] = Pipeline([('Scaler', StandardScaler()), ('LR', LogisticRegression(solver='lbfgs'))])
@@ -273,7 +272,7 @@ def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
         models['NB'] = GaussianNB()
 
     results = []
-    for key in contrast_algorithm:
+    for key in algorithm_list:
         kfold = KFold(n_splits=num_folds, random_state=seed)
 
         # TODO:The nums of samples should big than kfold
@@ -289,11 +288,10 @@ def execute_contrast_algorithm(user_id, is_standard, contrast_algorithm):
     fig.suptitle('Algorithm Comparison')
     ax = fig.add_subplot(111)
     plt.boxplot(results)
-    ax.set_xticklabels(contrast_algorithm)
+    ax.set_xticklabels(algorithm_list)
 
-    contrast_algorithm_path = path.join(settings.MEDIA_ROOT, 'algorithm', 'hog_picture',
-                                        user_id + '_contrast_algorithm.png')
-    plt.savefig(contrast_algorithm_path)
+    eval_pic = eval_pic_path(user_id, relative=False)
+    plt.savefig(eval_pic)
 
     fig.clf()
     plt.close('all')

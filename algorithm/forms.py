@@ -7,6 +7,17 @@ import json
 import re
 
 
+def is_float(str):
+    try:
+        a = float(str)
+    except Exception:
+        return False
+    if a == 0:
+        return False
+    else:
+        return True
+
+
 class PrepareDataForm(forms.Form):
     test_pic = forms.ImageField()
     test_category_positive = forms.ModelChoiceField(Picture.objects.none())
@@ -57,15 +68,14 @@ class HOGPicForm(forms.Form):
             return False
 
 
-class ContrastAlgorithmForm(forms.Form):
+class EvaluateAlgoritmForm(forms.Form):
     is_standard = forms.BooleanField(initial=False, required=False)
 
-    # algorithms = ('LogisticRegression', 'KNeighborsClassifier',
-    #               'DecisionTreeClassifier', 'GaussianNB')
-    algorithms = (('LR', 'LR'), ('KNN', 'KNN'), ('CART', 'CART'), ('NB', 'NB'))
+    algorithms = (('LR', 'LogisticRegression'), ('KNN', 'KNeighborsClassifier'),
+                  ('CART', 'DecisionTreeClassifier'), ('NB', 'GaussianNB'))
 
-    contrast_algorithm = forms.MultipleChoiceField(label='contrast_algorithmthms',
-                                                   choices=algorithms, widget=forms.CheckboxSelectMultiple())
+    algorithm_list = forms.MultipleChoiceField(label='algorithm_list',
+                                               choices=algorithms, widget=forms.CheckboxSelectMultiple())
 
 
 class SVMParameterForm(forms.Form):
@@ -73,8 +83,57 @@ class SVMParameterForm(forms.Form):
     kernel_list = (('linear', 'linear'), ('poly', 'poly'), ('rbf', 'rbf'), ('sigmoid', 'sigmoid'))
     kernel = forms.MultipleChoiceField(label='kernel',
                                        choices=kernel_list,
+                                       widget=forms.CheckboxSelectMultiple(),
+                                       required=True
+                                       )
+
+    def is_valid(self):
+
+        for a_C in self.data['C'].strip().split(','):
+            if not is_float(a_C):
+                self._errors = 'The format of C is wrong! '
+                return False
+        if 'kernel' not in self.data:
+            return False
+        else:
+            return True
+
+
+class EnsembleParamsForm(forms.Form):
+    C = forms.FloatField(label='C')
+    kernel_list = (('linear', 'linear'), ('poly', 'poly'), ('rbf', 'rbf'), ('sigmoid', 'sigmoid'))
+    kernel = forms.MultipleChoiceField(label='kernel',
+                                       choices=kernel_list,
                                        widget=forms.CheckboxSelectMultiple()
                                        )
+
+    ensemble_learning_list = (('AdaBoostClassifier', 'AdaBoostClassifier'), ('BaggingClassifier', 'BaggingClassifier'))
+
+    ensemble_learning = forms.ChoiceField(label='ensemble_learning',
+                                          choices=ensemble_learning_list)
+    n_estimators = forms.CharField(label='n_estimators', initial='[10,900]')
+
+    def __init__(self, user_id, *args, **kwargs):
+        super(EnsembleParamsForm, self).__init__(*args, **kwargs)
+
+        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+            algorithm_info = json.load(load_f)
+
+        self.initial = {
+            'C': algorithm_info[str(user_id)]['model_para']['best_params']['C'],
+            'kernel': algorithm_info[str(user_id)]['model_para']['best_params']['kernel']
+        }
+    #
+    # def is_valid(self):
+    #
+    #     for a_C in self.data['C'].strip().split(','):
+    #         if not is_float(a_C):
+    #             self._errors = 'The format of C is wrong! '
+    #             return False
+    #     if 'kernel' not in self.data:
+    #         return False
+    #     else:
+    #         return True
 
 
 class TrainLogForm(forms.Form):
@@ -115,32 +174,6 @@ class TrainLogForm(forms.Form):
             return False
         else:
             return valid
-
-
-class EnsembleParamsForm(forms.Form):
-    C = forms.FloatField(label='C')
-    kernel_list = (('linear', 'linear'), ('poly', 'poly'), ('rbf', 'rbf'), ('sigmoid', 'sigmoid'))
-    kernel = forms.MultipleChoiceField(label='kernel',
-                                       choices=kernel_list,
-                                       widget=forms.CheckboxSelectMultiple()
-                                       )
-
-    ensemble_learning_list = (('AdaBoostClassifier', 'AdaBoostClassifier'), ('BaggingClassifier', 'BaggingClassifier'))
-
-    ensemble_learning = forms.ChoiceField(label='ensemble_learning',
-                                          choices=ensemble_learning_list)
-    n_estimators = forms.CharField(label='n_estimators', initial='[10,900]')
-
-    def __init__(self, user_id, *args, **kwargs):
-        super(EnsembleParamsForm, self).__init__(*args, **kwargs)
-
-        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
-            algorithm_info = json.load(load_f)
-
-        self.initial = {
-            'C': algorithm_info[str(user_id)]['model_para']['best_params']['C'],
-            'kernel': algorithm_info[str(user_id)]['model_para']['best_params']['kernel']
-        }
 
 
 class CatIdentificationForm(forms.Form):

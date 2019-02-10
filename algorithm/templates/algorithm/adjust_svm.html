@@ -15,7 +15,7 @@
     {% endif %}
 
     <form method="post" enctype="multipart/form-data">{% csrf_token %}
-        {% for field in svm_parameter_form %}
+        {% for field in form %}
             <div class="fieldWrapper">
                 {{ field.label_tag }} {{ field }}
             </div>
