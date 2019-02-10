@@ -1,37 +1,83 @@
 from django.shortcuts import render, reverse, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, ListView, DetailView, FormView
+from django.utils.safestring import mark_safe
 
 from .forms import *
 from .functions import *
+from .algorithm_conf import *
 from .models import SVMModel, ModelTrainLog
+
 from sklearn.externals import joblib
 import multiprocessing as mp
 from os import path, mkdir
 import json
-import pickle
 import shutil
 
 
-def prepare_data(request):
-    # TODO: add the loading html
-    user_id = str(request.user.id)
+class template(FormView):
+    form_class = PrepareDataForm
 
-    if request.method == 'POST':
+    def get_form(self, form_class=None):
+        pass
 
-        # TODO: judege prepare_data_form.is_valid()
+    def get(self, request, *args, **kwargs):
+        pass
 
-        # get the parameter
-        test_pic = request.FILES.get('test_pic')
-        validation_size = float(request.POST.get('validation_size'))
-        test_category_positive = eval(request.POST.get('test_category_positive'))
-        test_category_negative = eval(request.POST.get('test_category_negative'))
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
+
+    def form_invalid(self, form, **kwargs):
+        return render(self.request, 'algorithm/choose_pic_category.html',
+                      {'form': form, 'error_message': form.errors
+                       })
+
+    def form_valid(self, form, **kwargs):
+        pass
+
+
+class PrepareDataView(FormView):
+    form_class = PrepareDataForm
+
+    def get_form(self, form_class=None):
+        form_class = self.get_form_class()
+        return form_class(self.request.user.id, **self.get_form_kwargs())
+
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(request, 'algorithm/choose_pic_category.html',
+                      {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
+
+    def form_invalid(self, form, **kwargs):
+        return render(self.request, 'algorithm/choose_pic_category.html',
+                      {'form': form,
+                       'error_message': form.errors
+                       })
+
+    def form_valid(self, form, **kwargs):
+
+        user_id = str(self.request.user.id)
+        test_pic = form.files['test_pic']
+        validation_size = float(form.data['validation_size'])
+        test_category_positive = eval(form.data['test_category_positive'])
+        test_category_negative = eval(form.data['test_category_negative'])
 
         #  save the test_pic
-        pic_name = request.FILES.get('test_pic').name
-        saved_pic_path = path.join(settings.MEDIA_ROOT, 'algorithm', 'hog_picture',
-                                   user_id + '_' + 'hog_test_pic.jpg')
-        with open(saved_pic_path, 'wb+') as destination:
+        pic_name = test_pic.name
+        saved_pic = saved_pic_path(user_id)
+
+        with open(saved_pic, 'wb+') as destination:
             for chunk in test_pic.chunks():
                 destination.write(chunk)
 
@@ -61,11 +107,47 @@ def prepare_data(request):
             json.dump(algorithm_info, f)
 
         return redirect(reverse('alogrithm:hog_pic'))
-    else:
 
-        prepare_data_form = PrepareDataForm(user_id=user_id)
-        return render(request, 'algorithm/choose_pic_category.html',
-                      {'prepare_data_form': prepare_data_form})
+
+class HOGPicView(FormView):
+    form_class = HOGPicForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(request, 'algorithm/hog_pic.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
+
+    def form_invalid(self, form, **kwargs):
+        return render(self.request, 'algorithm/hog_pic.html',
+                      {'form': form, 'error_message': form.errors})
+
+    def form_valid(self, form, **kwargs):
+        pic_size = eval(form.data['pic_size'])
+        orientations = int(form.data['orientations'])
+        pixels_per_cell = eval(form.data['pixels_per_cell'])
+        cells_per_block = eval(form.data['cells_per_block'])
+        is_color = True if 'is_color' in form.data else False
+        user_id = str(self.request.user.id)
+
+        proc = mp.Process(target=execute_hog_pic,
+                          args=(pic_size, orientations, pixels_per_cell, cells_per_block, is_color, user_id))
+        proc.daemon = True
+        proc.start()
+        proc.join()
+
+        # get the saved png to show in page
+        hog_pic = hog_pic_path(user_id)
+
+        return render(self.request, 'algorithm/hog_pic.html',
+                      {'form': form,
+                       'hog_pic': hog_pic,
+                       })
 
 
 def hog_pic(request):

@@ -5,26 +5,32 @@
 
 {% block content %}
 
-<h1>Second Step</h1>
-<h3>hog_pic</h3>
+    <h1>Second Step</h1>
+    <h3>hog_pic</h3>
 
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-    {% for field in hog_pic_form %}
-    <div class="fieldWrapper">
-        {{ field.label_tag }} {{ field }}
-    </div>
-    {% endfor %}
+    {% if error_message %}
+        <div class="errors">
+            {{ error_message }}
+        </div>
+    {% endif %}
 
-    <input type="submit" value="确定" />
-</form>
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        {% for field in form %}
+            <div class="fieldWrapper">
+                {{ field.label_tag }} {{ field }}
+            </div>
+        {% endfor %}
 
-{% if hog_picture %}
-  <p><img src="{{ hog_picture }}"/></p>
-{% endif %}
+           <input type="submit" value="确定"/>
+    </form>
 
-{% if hog_time %}
-  <p>(Average in 1000)The hog take about {{ hog_time }}s</p>
-{% endif %}
+    {% if hog_pic %}
+         <p><img src="{{ hog_pic }}"/></p>
+    {% endif %}
+
+    {% if hog_time %}
+         <p>(Average in 1000)The hog take about {{ hog_time }}s</p>
+    {% endif %}
 
     <br><a href="{% url 'alogrithm:contrast_algorithm' %}">contrast_algorithm</a>
 {% endblock %}

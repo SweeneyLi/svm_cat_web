@@ -5,8 +5,8 @@ from . import views
 app_name = 'alogrithm'
 
 urlpatterns = [
-    path('prepare_data', views.prepare_data, name='prepare_data'),
-    path('hog_pic/', views.hog_pic, name='hog_pic'),
+    path('prepare_data', views.PrepareDataView.as_view(), name='prepare_data'),
+    path('hog_pic/', views.HOGPicView.as_view(), name='hog_pic'),
     path('contrast_algorithm/', views.contrast_algorithm, name='contrast_algorithm'),
     path('adjust_svm/', views.adjust_svm, name='adjust_svm'),
     path('create_svm_model/', views.ModelCreateView.as_view(), name='create_svm_model'),

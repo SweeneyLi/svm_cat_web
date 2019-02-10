@@ -5,18 +5,23 @@
 
 {% block content %}
 
-<h1>First Step</h1>
-<h3>prepare_data</h3>
+    <h1>First Step</h1>
+    <h3>prepare_data</h3>
 
+    {% if error_message %}
+        <div class="errors">
+            {{ error_message }}
+        </div>
+    {% endif %}
 
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-    {% for field in prepare_data_form %}
-    <div class="fieldWrapper">
-        {{ field.label_tag }} {{ field }}
-    </div>
-    {% endfor %}
-    <input type="submit" value="确定" />
-</form>
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        {% for field in form %}
+            <div class="fieldWrapper">
+                {{ field.label_tag }} {{ field }}
+            </div>
+        {% endfor %}
+           <input type="submit" value="确定"/>
+    </form>
 
 
 {% endblock %}

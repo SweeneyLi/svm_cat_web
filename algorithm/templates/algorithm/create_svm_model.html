@@ -6,15 +6,20 @@
 {% block content %}
 
 
-<h3>create_svm_model</h3>
+    <h3>create_svm_model</h3>
 
+    {% if error_message %}
+        <div class="errors">
+            {{ error_message }}
+        </div>
+    {% endif %}
 
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-    {{ form.as_p }}
-     <input type="submit" value="Save" />
-</form>
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save"/>
+    </form>
 
-<a href="{% url 'alogrithm:train_svm_model' %}">train_svm_model</a><br>
+    <a href="{% url 'alogrithm:train_svm_model' %}">train_svm_model</a><br>
 
 {% endblock %}
 

@@ -4,9 +4,8 @@ from .models import SVMModel
 from django.db.models import Count
 from django.conf import settings
 import json
+import re
 
-
-# TODO: all the valid of forms
 
 class PrepareDataForm(forms.Form):
     test_pic = forms.ImageField()
@@ -30,16 +29,12 @@ class PrepareDataForm(forms.Form):
         )
 
     def is_valid(self):
-        # run the parent validation first
-        valid = super(PrepareDataForm, self).is_valid()
 
-        if not valid:
-            return valid
-        elif self.fields['test_category_negative'] == self.fields['test_category_positive']:
-            self._errors['same_category'] = 'test_category_negative should diff from test_category_positive'
+        if self.data['test_category_negative'] == self.data['test_category_positive']:
+            self._errors = 'test_category_negative should diff from test_category_positive'
             return False
         else:
-            return valid
+            return True
 
 
 class HOGPicForm(forms.Form):
@@ -48,6 +43,18 @@ class HOGPicForm(forms.Form):
     pixels_per_cell = forms.CharField(initial='(16,16)')
     cells_per_block = forms.CharField(initial='(2,2)')
     is_color = forms.BooleanField(initial=True, required=False)
+
+    def is_valid(self):
+
+        for field in ['pic_size', 'pixels_per_cell', 'cells_per_block']:
+            if not re.match(r'^\(\d+,\d+\)$', self.data[field]):
+                self._errors = 'The ' + field + ' is a wrong format ! '
+                return False
+        if int(self.data['orientations']) >= 0:
+            return True
+        else:
+            self._errors = 'The orientations should be int and bigger than 0'
+            return False
 
 
 class ContrastAlgorithmForm(forms.Form):

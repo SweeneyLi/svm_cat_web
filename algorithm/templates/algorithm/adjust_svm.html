@@ -5,26 +5,32 @@
 
 {% block content %}
 
-<h1>Fourth Step</h1>
-<h3>adjust_svm</h3>
+    <h1>Fourth Step</h1>
+    <h3>adjust_svm</h3>
 
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-    {% for field in svm_parameter_form %}
-    <div class="fieldWrapper">
-        {{ field.label_tag }} {{ field }}
-    </div>
-    {% endfor %}
-    <input type="submit" value="确定" />
-</form>
+    {% if error_message %}
+        <div class="errors">
+            {{ error_message }}
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        {% for field in svm_parameter_form %}
+            <div class="fieldWrapper">
+                {{ field.label_tag }} {{ field }}
+            </div>
+        {% endfor %}
+           <input type="submit" value="确定"/>
+    </form>
 
 
-{% if results %}
-    <p>best_score: {{ results.best_score }}</p>
-    <p>best_params: {{ results.best_params }}</p>
-    {% for mean, std, param in results.cv_results %}
-        <p>mean: {{ mean }}; std: {{ std }}; param: {{ param }}</p>
-    {% endfor %}
-{% endif %}
+    {% if results %}
+        <p>best_score: {{ results.best_score }}</p>
+        <p>best_params: {{ results.best_params }}</p>
+        {% for mean, std, param in results.cv_results %}
+            <p>mean: {{ mean }}; std: {{ std }}; param: {{ param }}</p>
+        {% endfor %}
+    {% endif %}
 
     <a href="{% url 'alogrithm:adjust_ensemble_learning' %}">adjust_ensemble_learning</a>
 

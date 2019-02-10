@@ -5,26 +5,25 @@
 
 {% block content %}
 
-<h3>cat_identification</h3>
+    <h3>cat_identification</h3>
 
-{{ error_message }}
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-{{ form.as_p }}
-    {% for field in cat_identification_form %}
-    <div class="fieldWrapper">
-        {{ field.label_tag }} {{ field }}
-    </div>
-    {% endfor %}
-    <input type="submit" value="确定" />
-</form>
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+        {% for field in cat_identification_form %}
+            <div class="fieldWrapper">
+                {{ field.label_tag }} {{ field }}
+            </div>
+        {% endfor %}
+           <input type="submit" value="确定"/>
+    </form>
 
     {% if result %}
         {{ result }}
     {% endif %}
-{#{% if hog_picture %}#}
-{#  <p><img src="{{ hog_picture }}"/></p>#}
-{#{% endif %}#}
+    {#{% if hog_picture %}#}
+    {#  <p><img src="{{ hog_picture }}"/></p>#}
+    {#{% endif %}#}
 
-{#    <br><a href="{% url 'alogrithm:contrast_algorithm' %}">contrast_algorithm</a>#}
+    {#    <br><a href="{% url 'alogrithm:contrast_algorithm' %}">contrast_algorithm</a>#}
 {% endblock %}
 

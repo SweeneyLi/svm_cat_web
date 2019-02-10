@@ -5,35 +5,38 @@
 
 {% block content %}
 
-<h1>Third Step</h1>
-<h3>Contrast Algorithm</h3>
+    <h1>Third Step</h1>
+    <h3>Contrast Algorithm</h3>
+
+    {% if error_message %}
+        <div class="errors">
+            {{ error_message }}
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+
+
+        {% for field in contrast_algorithm_form %}
+            <div class="fieldWrapper">
+                {{ field.label_tag }} {{ field }}
+            </div>
+        {% endfor %}
+
+           <input type="submit" value="确定"/>
+    </form>
+
+    {% if results %}
+         <p>{{ results }}</p>
+    {% endif %}
+
+    {% if algorithm_picture %}
+         <p><img src="{{ algorithm_picture }}"/></p>
+    {% endif %}
 
 
 
-
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-
-
-    {% for field in contrast_algorithm_form %}
-    <div class="fieldWrapper">
-        {{ field.label_tag }} {{ field }}
-    </div>
-    {% endfor %}
-
-    <input type="submit" value="确定" />
-</form>
-
-{% if results %}
-  <p>{{ results }}</p>
-{% endif %}
-
-{% if algorithm_picture %}
-  <p><img src="{{ algorithm_picture }}"/></p>
-{% endif %}
-
-
-
-<br><a href="{% url 'alogrithm:adjust_svm' %}">adjust_svm</a>
+    <br><a href="{% url 'alogrithm:adjust_svm' %}">adjust_svm</a>
 
 {% endblock %}
 
