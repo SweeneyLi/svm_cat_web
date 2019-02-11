@@ -369,34 +369,41 @@ def execute_train_model(user_id, model_name, train_category_positive, train_cate
     label = np.array(np.repeat(1, pic_vector.shape[0]))
     label[len(positive_pic):] = 0
 
-    x_train, x_test, y_train, y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
-
     the_path = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id), model_name + '.model')
     with open(the_path, 'rb') as model_f:
         svm_model = joblib.load(model_f)
 
+    x_train, x_test, y_train, y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
+
     if model.is_standard:
         scaler = StandardScaler().fit(x_train)
 
-        rescaledX = scaler.transform(x_train)
-        svm_model.fit(X=rescaledX, y=y_train)
+        rescaled_x = scaler.transform(x_train)
+        svm_model.fit(X=rescaled_x, y=y_train)
 
-        rescaled_validationX = scaler.transform(x_test)
-        predictions = svm_model.predict(rescaled_validationX)
+        if validation_size != 0:
+            rescaled_validation_x = scaler.transform(x_test)
+            predictions = svm_model.predict(rescaled_validation_x)
 
-        svm_model.fit(rescaled_validationX, y_test)
+            svm_model.fit(rescaled_validation_x, y_test)
 
     else:
         svm_model.fit(X=x_train, y=y_train)
-        predictions = model.predict(x_test)
-        svm_model.fit(x_test, y_test)
-
-    return_dict['accuracy_score'] = accuracy_score(y_test, predictions)
-    return_dict['confusion_matrix'] = confusion_matrix(y_test, predictions)
-    return_dict['classification_report'] = classification_report(y_test, predictions)
+        if validation_size != 0:
+            predictions = model.predict(x_test)
+            svm_model.fit(x_test, y_test)
 
     model.train_num += 1
-    model.recently_accuracy_score = accuracy_score(y_test, predictions)
+    if validation_size != 0:
+        return_dict['accuracy_score'] = accuracy_score(y_test, predictions)
+        return_dict['confusion_matrix'] = confusion_matrix(y_test, predictions)
+        return_dict['classification_report'] = classification_report(y_test, predictions)
+
+        model.recently_accuracy_score = accuracy_score(y_test, predictions)
+    else:
+        return_dict = None
+
+
     model.save()
 
     with open(the_path, 'wb') as f:

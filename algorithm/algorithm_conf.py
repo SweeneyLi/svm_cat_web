@@ -25,6 +25,7 @@ def eval_pic_path(user_id, relative=True):
         return path.join(settings.MEDIA_ROOT, 'algorithm', 'hog_picture',
                          user_id + '_evaluate_algorithm.png')
 
+
 # params in svm
 num_folds = 10
 seed = 7

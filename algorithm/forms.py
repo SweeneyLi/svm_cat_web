@@ -111,7 +111,7 @@ class EnsembleParamsForm(forms.Form):
 
     ensemble_learning = forms.ChoiceField(label='ensemble_learning',
                                           choices=ensemble_learning_list)
-    n_estimators = forms.CharField(label='n_estimators', initial='[10,900]')
+    n_estimators = forms.CharField(label='n_estimators', initial='10,900')
 
     def __init__(self, user_id, *args, **kwargs):
         super(EnsembleParamsForm, self).__init__(*args, **kwargs)
@@ -123,17 +123,21 @@ class EnsembleParamsForm(forms.Form):
             'C': algorithm_info[str(user_id)]['model_para']['best_params']['C'],
             'kernel': algorithm_info[str(user_id)]['model_para']['best_params']['kernel']
         }
-    #
-    # def is_valid(self):
-    #
-    #     for a_C in self.data['C'].strip().split(','):
-    #         if not is_float(a_C):
-    #             self._errors = 'The format of C is wrong! '
-    #             return False
-    #     if 'kernel' not in self.data:
-    #         return False
-    #     else:
-    #         return True
+
+    def is_valid(self):
+
+        for a_C in self.data['C'].strip().split(','):
+            if not is_float(a_C):
+                self._errors = 'The format of C is wrong! '
+                return False
+        for a_est in self.data['n_estimators'].strip().split(','):
+            if not a_est.isdigit():
+                self._errors = 'The format of n_estimatot is wrong! '
+                return False
+        if 'kernel' not in self.data:
+            return False
+        else:
+            return True
 
 
 class TrainLogForm(forms.Form):
@@ -165,15 +169,14 @@ class TrainLogForm(forms.Form):
         )
 
     def is_valid(self):
-        valid = super(TrainLogForm, self).is_valid()
-
-        if not valid:
-            return valid
-        elif self.fields['train_category_negative'] == self.fields['train_category_positive']:
-            self._errors['same_category'] = 'test_category_negative should diff from test_category_positive'
+        if not (0.0 <= float(self.data['validation_size']) < 1.0):
+            self._errors = 'validation_size should between 0 and 1'
+            return False
+        if self.data['train_category_negative'] == self.data['train_category_positive']:
+            self._errors = 'test_category_negative should diff from test_category_positive'
             return False
         else:
-            return valid
+            return True
 
 
 class CatIdentificationForm(forms.Form):

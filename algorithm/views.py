@@ -221,36 +221,36 @@ class AdjustSVMView(FormView):
                        'results': return_dict})
 
 
-def adjust_svm(request):
-    if request.method == 'POST':
-        user_id = str(request.user.id)
-        C = request.POST.get('C').split(',')
-        C = list(map(lambda a: float(a), C))
-        kernel = request.POST.getlist('kernel')
+class AdjustEnsembleLearningView(FormView):
+    form_class = EnsembleParamsForm
 
-        manager = mp.Manager()
-        return_dict = manager.dict()
-        proc = mp.Process(target=execute_adjust_svm, args=(user_id, C, kernel, return_dict))
-        proc.daemon = True
-        proc.start()
-        proc.join()
+    def get_form(self, form_class=None):
+        form_class = self.get_form_class()
+        return form_class(self.request.user.id, **self.get_form_kwargs())
 
-        svm_parameter_form = SVMParameterForm(request.POST)
-        return render(request, 'algorithm/adjust_svm.html',
-                      {'svm_parameter_form': svm_parameter_form,
-                       'results': return_dict})
-    else:
-        svm_parameter_form = SVMParameterForm()
-        return render(request, 'algorithm/adjust_svm.html', {'svm_parameter_form': svm_parameter_form})
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(request, 'algorithm/adjust_ensemble_learning.html',
+                      {'form': form})
 
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
 
-def adjust_ensemble_learning(request):
-    if request.method == 'POST':
-        user_id = request.user.id
-        C = float(request.POST.get('C'))
-        kernel = request.POST.get('kernel')
-        n_estimators = eval(request.POST.get('n_estimators'))
-        ensemble_learning = request.POST.get('ensemble_learning')
+    def form_invalid(self, form, **kwargs):
+        return render(self.request, 'algorithm/adjust_ensemble_learning.html',
+                      {'form': form, 'error_message': form.errors
+                       })
+
+    def form_valid(self, form, **kwargs):
+        user_id = self.request.user.id
+        C = float(form.data['C'])
+        kernel = self.request.POST.get('kernel')
+        n_estimators = eval(form.data['n_estimators'])
+        ensemble_learning = form.data['ensemble_learning']
 
         manager = mp.Manager()
         return_dict = manager.dict()
@@ -260,14 +260,9 @@ def adjust_ensemble_learning(request):
         proc.start()
         proc.join()
 
-        ensemble_params_form = EnsembleParamsForm(user_id, request.POST)
-        return render(request, 'algorithm/adjust_ensemble_learning.html',
-                      {'ensemble_params_form': ensemble_params_form,
+        return render(self.request, 'algorithm/adjust_ensemble_learning.html',
+                      {'form': form,
                        'results': return_dict})
-    else:
-        ensemble_params_form = EnsembleParamsForm(request.user.id)
-        return render(request, 'algorithm/adjust_ensemble_learning.html',
-                      {'ensemble_params_form': ensemble_params_form})
 
 
 class ModelCreateView(CreateView):
@@ -322,7 +317,7 @@ class ModelCreateView(CreateView):
 
         if form.data['ensemble_learning'] == 'BaggingClassifier':
             svm_model = BaggingClassifier(base_estimator=svm_model, n_estimators=form.data['n_estimators'])
-        elif form.data['AdaBoostClassifier'] == 'AdaBoostClassifier':
+        elif form.data['ensemble_learning'] == 'AdaBoostClassifier':
             svm_model = AdaBoostClassifier(base_estimator=svm_model, n_estimators=form.data['n_estimators'])
 
         the_dir = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id))
@@ -334,6 +329,68 @@ class ModelCreateView(CreateView):
             joblib.dump(svm_model, model_f)
 
         return super().form_valid(form)
+
+
+class TrainSVMModelView(FormView):
+    form_class = TrainLogForm
+
+    def get_form(self, form_class=None):
+        form_class = self.get_form_class()
+        return form_class(self.request.user.id, **self.get_form_kwargs())
+
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(request, 'algorithm/train_svm_model.html',
+                      {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
+
+    def form_invalid(self, form, **kwargs):
+        return render(self.request, 'algorithm/train_svm_model.html',
+                      {'form': form, 'error_message': form.errors
+                       })
+
+    def form_valid(self, form, **kwargs):
+        user_id = self.request.user.id
+        model_name = eval(form.data['model_name'])['model_name']
+        train_category_positive_dict = eval(form.data['train_category_positive'])
+        train_category_negative_dict = eval(form.data['train_category_negative'])
+
+        train_category_positive = train_category_positive_dict['category']
+        positive_num = train_category_positive_dict['num_category']
+        train_category_negative = train_category_negative_dict['category']
+        negative_num = train_category_negative_dict['num_category']
+        validation_size = float(form.data['validation_size'])
+
+        # train the model
+        manager = mp.Manager()
+        return_dict = manager.dict()
+        proc = mp.Process(target=execute_train_model, args=(
+            user_id, model_name, train_category_positive, train_category_negative, validation_size, return_dict
+        ))
+        proc.daemon = True
+        proc.start()
+        proc.join()
+
+        train_log = ModelTrainLog(user_id=user_id, model_name=model_name,
+                                  train_category_positive=train_category_positive,
+                                  positive_num=positive_num,
+                                  train_category_negative=train_category_negative,
+                                  negative_num=negative_num,
+                                  validation_size=validation_size,
+                                  accuracy_score=return_dict['accuracy_score'] if validation_size != 0 else 0)
+        train_log.save()
+
+        form = self.get_form()
+        # TODO：format the result in page
+        return render(self.request, 'algorithm/train_svm_model.html',
+                      {'form': form,
+                       'result': return_dict})
 
 
 def train_svm_model(request):
