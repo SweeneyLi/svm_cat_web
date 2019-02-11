@@ -457,12 +457,11 @@ def execute_adjust_ensemble(user_id, C, kernel, ensemble_learning, n_estimators,
 def execute_cat_identification(user_id, model_name, show_probility, return_dict):
     model_db = SVMModel.objects.get(user_id=user_id, model_name=model_name)
 
-    the_path = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id), model_name + '.model')
-    with open(the_path, 'rb') as model_f:
+    saved_model_ = saved_model_path(user_id, model_name)
+    with open(saved_model_, 'rb') as model_f:
         model = joblib.load(model_f)
 
-    pic_root_dir = path.join(settings.MEDIA_ROOT, 'predict_images',
-                             str(user_id))
+    pic_root_dir = pre_pic_root_path(user_id)
     pic_list = os.listdir(os.path.join(pic_root_dir))
 
     img_list = []

@@ -23,14 +23,15 @@
     </form>
 
 
-    {% if result %}
-        {{ result.accuracy_score }}<br>
-        <hr>
-        {{ result.confusion_matrix }}<br>
-        <hr>
-        {{ result.classification_report }}<br>
-        <hr>
-    {% endif %}
 
+        {{ accuracy_score }}<br>
+        <hr>
+        {{ confusion_matrix|linebreaks }}<br>
+        <hr>
+        {{ classification_report|linebreaks }}<br>
+        <hr>
+
+
+    <a href="{% url 'alogrithm:cat_identification' %}">cat_identification</a>
 {% endblock %}
 

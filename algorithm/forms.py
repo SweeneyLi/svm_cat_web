@@ -102,10 +102,9 @@ class SVMParameterForm(forms.Form):
 class EnsembleParamsForm(forms.Form):
     C = forms.FloatField(label='C')
     kernel_list = (('linear', 'linear'), ('poly', 'poly'), ('rbf', 'rbf'), ('sigmoid', 'sigmoid'))
-    kernel = forms.MultipleChoiceField(label='kernel',
-                                       choices=kernel_list,
-                                       widget=forms.CheckboxSelectMultiple()
-                                       )
+    kernel = forms.ChoiceField(label='kernel',
+                               choices=kernel_list
+                               )
 
     ensemble_learning_list = (('AdaBoostClassifier', 'AdaBoostClassifier'), ('BaggingClassifier', 'BaggingClassifier'))
 

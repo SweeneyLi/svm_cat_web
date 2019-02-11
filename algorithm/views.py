@@ -14,7 +14,7 @@ from os import path, mkdir
 import json
 import shutil
 
-
+# template
 class template(FormView):
     form_class = PrepareDataForm
 
@@ -390,51 +390,9 @@ class TrainSVMModelView(FormView):
         # TODO：format the result in page
         return render(self.request, 'algorithm/train_svm_model.html',
                       {'form': form,
-                       'result': return_dict})
-
-
-def train_svm_model(request):
-    if request.method == 'POST':
-        user_id = request.user.id
-        model_name = eval(request.POST.get('model_name'))['model_name']
-        train_category_positive_dict = eval(request.POST.get('train_category_positive'))
-        train_category_negative_dict = eval(request.POST.get('train_category_negative'))
-
-        train_category_positive = train_category_positive_dict['category']
-        positive_num = train_category_positive_dict['num_category']
-        train_category_negative = train_category_negative_dict['category']
-        negative_num = train_category_negative_dict['num_category']
-        validation_size = float(request.POST.get('validation_size'))
-
-        # train the model
-        manager = mp.Manager()
-        return_dict = manager.dict()
-        proc = mp.Process(target=execute_train_model, args=(
-            user_id, model_name, train_category_positive, train_category_negative, validation_size, return_dict
-        ))
-        proc.daemon = True
-        proc.start()
-        proc.join()
-
-        train_log = ModelTrainLog(user_id=user_id, model_name=model_name,
-                                  train_category_positive=train_category_positive,
-                                  positive_num=positive_num,
-                                  train_category_negative=train_category_negative,
-                                  negative_num=negative_num,
-                                  validation_size=validation_size,
-                                  accuracy_score=return_dict['accuracy_score'])
-        train_log.save()
-
-        train_log_form = TrainLogForm(request.user.id)
-
-        # TODO：format the result in page
-        return render(request, 'algorithm/train_svm_model.html',
-                      {'train_log_form': train_log_form,
-                       'result': return_dict})
-    else:
-        train_log_form = TrainLogForm(request.user.id)
-        return render(request, 'algorithm/train_svm_model.html',
-                      {'train_log_form': train_log_form})
+                       'accuracy_score': return_dict['accuracy_score'],
+                       'classification_report': mark_safe(return_dict['classification_report']),
+                       'confusion_matrix': mark_safe(return_dict['confusion_matrix'])})
 
 
 class ModelListView(ListView):
@@ -454,10 +412,22 @@ class ModelDetail(DetailView):
     template_name = 'algorithm/model_detail.html'
 
 
-def cat_identification(request):
-    user_id = request.user.id
-    if request.method == 'POST':
-        model_name = eval(request.POST.get('model_name'))['model_name']
+class CatIdentificationView(FormView):
+    form_class = CatIdentificationForm
+
+    def get_form(self, form_class=None):
+        form_class = self.get_form_class()
+        return form_class(self.request.user.id, **self.get_form_kwargs())
+
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(self.request, 'algorithm/cat_identification.html',
+                      {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        user_id = self.request.user.id
+        model_name = eval(form.data['model_name'])['model_name']
 
         model_db = SVMModel.objects.get(user_id=user_id, model_name=model_name)
         if model_db.train_num == 0:
@@ -465,41 +435,32 @@ def cat_identification(request):
             return render(request, 'algorithm/cat_identification.html',
                           {'cat_identification_form': cat_identification_form,
                            'error_message': 'The trained model could predict, please train it'})
+        else:
+            files = request.FILES.getlist('file')
+            show_probility = request.POST.get('show_probility')
 
-        files = request.FILES.getlist('file')
-        show_probility = request.POST.get('show_probility')
+            # save the files
+            pre_pic_root = pre_pic_root_path(user_id)
+            if path.exists(pre_pic_root):
+                shutil.rmtree(pre_pic_root)
+            mkdir(pre_pic_root)
 
-        # save the files
-        saved_pic_root = path.join(settings.MEDIA_ROOT, 'predict_images',
-                                   str(user_id))
-        if path.exists(saved_pic_root):
-            shutil.rmtree(saved_pic_root)
-        mkdir(saved_pic_root)
+            for f in files:
+                pic_name = f.name
+                with open(os.path.join(pre_pic_root, pic_name), 'wb+') as destination:
+                    for chunk in f.chunks():
+                        destination.write(chunk)
 
-        for f in files:
-            pic_name = f.name
-            with open(os.path.join(saved_pic_root, pic_name), 'wb+') as destination:
-                for chunk in f.chunks():
-                    destination.write(chunk)
+            manager = mp.Manager()
+            return_dict = manager.dict()
+            proc = mp.Process(target=execute_cat_identification, args=(
+                user_id, model_name, show_probility, return_dict
+            ))
+            proc.daemon = True
+            proc.start()
+            proc.join()
 
-        manager = mp.Manager()
-        return_dict = manager.dict()
-        proc = mp.Process(target=execute_cat_identification, args=(
-            user_id, model_name, show_probility, return_dict
-        ))
-        proc.daemon = True
-        proc.start()
-        proc.join()
-
-        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
-            algorithm_info = json.load(load_f)
-
-        cat_identification_form = CatIdentificationForm(request.user.id)
-        return render(request, 'algorithm/cat_identification.html',
-                      {'cat_identification_form': cat_identification_form,
-                       'result': return_dict
-                       })
-    else:
-        cat_identification_form = CatIdentificationForm(request.user.id)
-        return render(request, 'algorithm/cat_identification.html',
-                      {'cat_identification_form': cat_identification_form})
+            return render(request, 'algorithm/cat_identification.html',
+                          {'form': form,
+                           'result': return_dict
+                           })
