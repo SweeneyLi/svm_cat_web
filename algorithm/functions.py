@@ -309,7 +309,6 @@ def execute_adjust_svm(user_id, c, kernel, return_dict):
     :return: results
     """
 
-    # TODO: optimizate the parameter
     with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
         feature_vector = pickle.load(load_f)
 

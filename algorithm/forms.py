@@ -79,7 +79,7 @@ class EvaluateAlgoritmForm(forms.Form):
 
 
 class SVMParameterForm(forms.Form):
-    C = forms.CharField(initial='0.1, 0.3, 0.5, 0.7, 0.9, 1.0')
+    C = forms.CharField(initial='0.1, 0.3, 0.5, 0.7, 0.9, 1.0', widget=forms.Textarea)
     kernel_list = (('linear', 'linear'), ('poly', 'poly'), ('rbf', 'rbf'), ('sigmoid', 'sigmoid'))
     kernel = forms.MultipleChoiceField(label='kernel',
                                        choices=kernel_list,
@@ -148,7 +148,6 @@ class TrainLogForm(forms.Form):
     def __init__(self, user_id, *args, **kwargs):
         super(TrainLogForm, self).__init__(*args, **kwargs)
 
-        # TODO: format the choice at page
         self.fields['model_name'] = forms.ModelChoiceField(
             queryset=SVMModel.objects.filter(user_id=user_id).values('model_name').distinct().order_by('-update_time'),
             empty_label="---------",
