@@ -420,7 +420,7 @@ class ModelDeleteView(DeleteView):
 
     def get_queryset(self):
         # return self.model.objects.filter(user_id=self.request.user.id)
-        return self.model.objects.filter(user_id=self.kwargs['pk'])
+        return self.model.objects.filter(id=self.kwargs['pk'])
 
 
 class CatIdentificationView(FormView):

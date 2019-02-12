@@ -6,13 +6,11 @@ app_name = 'picture'
 
 urlpatterns = [
 
-    # 展示所有图片
-    path('', views.PicList.as_view(), name='pic_list'),
+    path('pic_list/', views.PicList.as_view(), name='pic_list'),
 
-    # 上传图片
-    re_path(r'^pic/upload/$', views.PicUpload.as_view(), name='pic_upload'),
+    re_path(r'^upload/$', views.PicUpload.as_view(), name='pic_upload'),
 
-    # 展示图片
-    re_path(r'^pic/(?P<pk>\d+)/$', views.PicDetail.as_view(), name='pic_detail'),
+    re_path(r'^pic_detail/(?P<pk>\d+)/$', views.PicDetail.as_view(), name='pic_detail'),
 
+    re_path(r'^pic_delete/(?P<pk>\w+)/$', views.PicDeleteView.as_view(), name='pic_delete'),
 ]
