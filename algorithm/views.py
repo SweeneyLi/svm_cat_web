@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DetailView, FormView
+from django.views.generic import CreateView, ListView, DetailView, FormView, DeleteView
 from django.utils.safestring import mark_safe
 
 from .forms import *
@@ -13,6 +13,7 @@ import multiprocessing as mp
 from os import path, mkdir
 import json
 import shutil
+
 
 # template
 class template(FormView):
@@ -405,11 +406,21 @@ class ModelListView(ListView):
             filter(user_id=self.request.user.id).order_by('recently_accuracy_score', '-update_time')
 
 
-class ModelDetail(DetailView):
+class ModelDetailView(DetailView):
     model = SVMModel
     Context_object_name = 'model_detail'
 
     template_name = 'algorithm/model_detail.html'
+
+
+class ModelDeleteView(DeleteView):
+    model = SVMModel
+    success_url = reverse_lazy('alogrithm:model_list')
+    template_name = 'algorithm/model_delete.html'
+
+    def get_queryset(self):
+        # return self.model.objects.filter(user_id=self.request.user.id)
+        return self.model.objects.filter(user_id=self.kwargs['pk'])
 
 
 class CatIdentificationView(FormView):

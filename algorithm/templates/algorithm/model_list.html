@@ -19,9 +19,11 @@
             {{ model.create_time }}--
             {{ model.update_time }}--
             {{ model.recently_accuracy_score }}--
+        <a href="{% url 'alogrithm:model_delete' model.id %}">model_delete</a>
         </ul>
     {% endfor %}
 {% endif %}
+
 
 
 {% endblock %}

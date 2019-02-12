@@ -1,0 +1,22 @@
+
+{% extends 'system/base.html' %}
+{% load staticfiles %}
+
+{% block title %}model_list{% endblock %}
+
+{% block content %}
+
+
+<h3>model_list</h3>
+
+
+
+<form method="post">{% csrf_token %}
+    <p>Are you sure you want to delete "{{ svmmodel }}"?</p>
+    <input type="submit" value="Confirm" />
+</form>
+
+
+
+{% endblock %}
+
