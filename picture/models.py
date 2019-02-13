@@ -11,7 +11,6 @@ def user_directory_path(instance, filename):
     return os.path.join('upload_images', str(instance.user_id), instance.category, filename)
 
 
-# Create your models here.
 class Picture(models.Model):
     user_id = models.IntegerField('user_id')
     pic_name = models.CharField('pic_name', max_length=255, default='')
@@ -21,10 +20,24 @@ class Picture(models.Model):
     upload_date = models.DateField(default=date.today)
 
     def __str__(self):
-        # // TODO: Chinese
         return self.pic_name
 
-# # 对于使用Django自带的通用视图非常重要
-#     def get_absolute_url(self):
-#         return reverse('picture:pic_detail', args=[str(self.id)])
+
+# class UploadCategory(models.Model):
+#     user_id = models.IntegerField('user_id')
+#     cate_id = models.IntegerField('cate_id')
 #
+#     cate_num = models.IntegerField('cate_num')
+#
+#     update_time = models.DateTimeField('update_time', auto_now_add=True)
+#     create_time = models.DateTimeField('create_time', auto_now=True)
+#
+#
+# class UploadPicture(models.Model):
+#     cate_name = models.CharField('cate_name', max_length=100, default='')
+#
+#     pic_name = models.CharField('pic_name', max_length=100, default='')
+#     path = models.ImageField("path", upload_to=user_directory_path, blank=False)
+#     pic_size = models.CharField('pic_size', max_length=20, default='')
+#
+#     upload_date = models.DateField(default=date.today)

@@ -26,7 +26,8 @@
 
 
         {% else %}
-            <li>还没有上传新图片</li>
+            <li>No uploaded Picture!</li>
+            <a href="{% url 'picture:pic_upload' %}">upload_picture</a>
         {% endif %}
     </ul>
     <p><a href="{% url 'picture:pic_upload' %}">上传新图片</a></p>

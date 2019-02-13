@@ -15,7 +15,7 @@ urlpatterns = [
     path('train_svm_model/', views.TrainSVMModelView.as_view(), name='train_svm_model'),
     path('model_list/', views.ModelListView.as_view(), name='model_list'),
     re_path(r'^model_detail/(?P<pk>\d+)/$', views.ModelDetailView.as_view(), name='model_detail'),
-    re_path(r'^model_delete/(?P<pk>\d+)/$', views.ModelDeleteView.as_view(), name='model_delete'),
+    re_path(r'^model_delete/(?P<pk>\w+)/$', views.ModelDeleteView.as_view(), name='model_delete'),
     # path('model_delete/', views.ModelDeleteView.as_view(), name='model_delete'),
 
     path('cat_identification/', views.CatIdentificationView.as_view(), name='cat_identification'),

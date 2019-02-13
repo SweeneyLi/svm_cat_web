@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, FormView, DeleteView
@@ -418,9 +419,25 @@ class ModelDeleteView(DeleteView):
     success_url = reverse_lazy('alogrithm:model_list')
     template_name = 'algorithm/model_delete.html'
 
+    # def get(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     context = self.get_context_data(object=self.object)
+    #     return self.render_to_response(context)
+
     def get_queryset(self):
-        # return self.model.objects.filter(user_id=self.request.user.id)
-        return self.model.objects.filter(id=self.kwargs['pk'])
+        return self.model.objects.filter(user_id=self.request.user.id)
+
+    def delete(self, request, *args, **kwargs):
+        user_id = self.request.user.id
+        queryset = self.get_object()
+        model_name = queryset.model_name
+
+        model_path = saved_model_path(user_id, model_name)
+        os.remove(model_path)
+
+        response = super(ModelDeleteView, self).delete(request, *args, **kwargs)
+
+        return response
 
 
 class CatIdentificationView(FormView):
@@ -444,7 +461,7 @@ class CatIdentificationView(FormView):
         if model_db.train_num == 0:
             cat_identification_form = CatIdentificationForm(request.user.id)
             return render(request, 'algorithm/cat_identification.html',
-                          {'cat_identification_form': cat_identification_form,
+                          {'form': form,
                            'error_message': 'The trained model could predict, please train it'})
         else:
             files = request.FILES.getlist('file')

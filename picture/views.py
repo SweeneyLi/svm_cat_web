@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView, DeleteView
 from django.urls import reverse_lazy
@@ -9,6 +10,8 @@ from datetime import datetime, timedelta
 from .forms import FileUploadModelForm
 from .models import Picture
 from django.conf import settings
+
+import shutil
 
 
 class PicList(ListView):
@@ -63,8 +66,36 @@ class PicDeleteView(DeleteView):
     success_url = reverse_lazy('picture:pic_list')
     template_name = 'picture/picture_delete.html'
 
-    def get_queryset(self):
+    def get(self, request, *args, **kwargs):
+        cate_pic = self.get_object()
+        context ={
+            'category': cate_pic[0].category,
+            'cate_num': len(cate_pic),
+            'pic_list': [pic.pic_name for pic in cate_pic]
+        }
 
+        return self.render_to_response(context)
+
+    def get_queryset(self):
         return self.model.objects.filter(
-            user_id=self.request.user.id, category=self.kwargs['pk']
+            user_id=self.request.user.id
         )
+
+    def get_object(self, queryset=None):
+        queryset = self.get_queryset()
+
+        category = self.kwargs['pk']
+
+        obj = queryset.filter(category=category)
+        return obj
+
+    def delete(self, request, *args, **kwargs):
+        response = super(PicDeleteView, self).delete(request, *args, **kwargs)
+
+        user_id = self.request.user.id
+        category = self.kwargs['pk']
+
+        category_path = path.join(settings.MEDIA_ROOT, 'upload_images', str(user_id), category)
+        shutil.rmtree(category_path)
+
+        return response
