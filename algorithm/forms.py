@@ -110,7 +110,7 @@ class EnsembleParamsForm(forms.Form):
 
     ensemble_learning = forms.ChoiceField(label='ensemble_learning',
                                           choices=ensemble_learning_list)
-    n_estimators = forms.CharField(label='n_estimators', initial='10,900')
+    n_estimators = forms.CharField(label='n_estimators', initial='1,10')
 
     def __init__(self, user_id, *args, **kwargs):
         super(EnsembleParamsForm, self).__init__(*args, **kwargs)

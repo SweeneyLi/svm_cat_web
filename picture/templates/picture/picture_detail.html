@@ -12,7 +12,7 @@
   <p><img src="{{ picture.path.url }}"/></p>
 {% endif %}
 
-<p>上传日期: {{ picture.upload_date | date:"Y-m-j" }} </p>
+<p>upload_time: {{ picture.upload_date | date:"Y-m-j" }} </p>
 <p><a href="{% url 'picture:pic_list' %}">picture_list</a> |
     <a href="{% url 'picture:pic_upload' %}">upload_picture</a></p>
 {% endblock %}
