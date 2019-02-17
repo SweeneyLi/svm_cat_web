@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>index</title>
-</head>
-<body>
-{% include 'system/base.html' %}
-<h1>Welcome to the SVM-based cat recognition system </h1>
+{% extends 'system/base.html' %}
+{% load staticfiles %}
+
+{% block title %}index{% endblock %}
+
+{% block content %}
+
+    <h1>Welcome to the SVM-based cat recognition system </h1>
 
 
 {% if user.id %}
@@ -34,5 +33,6 @@
     <a href="{% url 'user:login' %}">login</a>
     <a href="{% url 'user:register' %}">register</a>
 {% endif %}
-</body>
-</html>
+
+{% endblock %}
+

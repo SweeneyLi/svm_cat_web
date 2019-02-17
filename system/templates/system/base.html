@@ -44,6 +44,7 @@
                 {% if user.id %}
                     <li><a href="{% url 'picture:pic_list' %}">My images</a></li>
                     <li><a href="{% url 'alogrithm:model_list' %}">My models</a></li>
+                    <li><a href="{% url 'user:logout' %}">Logout</a></li>
                 {% else %}
                     <li><a href="{% url 'user:login' %}">login</a></li>
                     <li><a href="{% url 'user:register' %}">register</a></li>
