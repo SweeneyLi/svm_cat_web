@@ -2,37 +2,48 @@
 {% load staticfiles %}
 
 {% block title %}index{% endblock %}
+{% block css %}
+    <link href="{% static 'css/index.css' %}" rel="stylesheet"/>{% endblock %}
 
 {% block content %}
 
-    <h1>Welcome to the SVM-based cat recognition system </h1>
+    <div class="content-container">
+        <div id="header" class="container-fluid">
+            <h1>SVM-based Cat Recognition</h1>
+            <p class="lead">Create your own model to locate cat</p>
+            <a class="btn btn-primary" href="{% url 'picture:pic_upload' %}">Upload your pictures</a>
+            <a class="btn btn-primary" href="{% url 'alogrithm:prepare_data' %}">Make your model</a>
+        </div>
+
+        <div class="container">
+            {% if user.id %}
+                <p>Hello {{ user }}~miao</p><br>
+                <a href="{% url 'user:profile' user.id %}">profile</a><br>
+                |<a href="{% url 'picture:pic_upload' %}">upload</a><br>
+                |<a href="{% url 'picture:pic_list' %}">pic_list</a><br><br><br>
+
+                |<a href="{% url 'alogrithm:prepare_data' %}">prepare_data</a><br>
+                |<a href="{% url 'alogrithm:hog_pic' %}">hog_pic</a><br><br>
+
+                |<a href="{% url 'alogrithm:eval_alg' %}">evaluate_algotithm</a><br>
+                |<a href="{% url 'alogrithm:adjust_svm' %}">adjust_svm</a><br><br>
+                |<a href="{% url 'alogrithm:adjust_ensemble_learning' %}">adjust_ensemble_learning</a><br><br>
+
+                |<a href="{% url 'alogrithm:create_svm_model' %}">create_svm_model</a><br>
+                |<a href="{% url 'alogrithm:train_svm_model' %}">train_svm_model</a><br>
+                |<a href="{% url 'alogrithm:model_list' %}">model_list</a><br><br>
 
 
-{% if user.id %}
-    <p>Hello {{ user }}~miao</p><br>
-    <a href="{% url 'user:profile' user.id %}">profile</a><br>
-    |<a href="{% url 'picture:pic_upload' %}">upload</a><br>
-    |<a href="{% url 'picture:pic_list' %}">pic_list</a><br><br><br>
+                |<a href="{% url 'alogrithm:cat_identification' %}">cat_identification</a><br>
+                <br>
+                |<a href="{% url 'user:logout' %}">logout</a><br>
+            {% else %}
+                <a href="{% url 'user:login' %}">login</a>
+                <a href="{% url 'user:register' %}">register</a>
+            {% endif %}
 
-    |<a href="{% url 'alogrithm:prepare_data' %}">prepare_data</a><br>
-    |<a href="{% url 'alogrithm:hog_pic' %}">hog_pic</a><br><br>
-
-    |<a href="{% url 'alogrithm:eval_alg' %}">evaluate_algotithm</a><br>
-    |<a href="{% url 'alogrithm:adjust_svm' %}">adjust_svm</a><br><br>
-    |<a href="{% url 'alogrithm:adjust_ensemble_learning' %}">adjust_ensemble_learning</a><br><br>
-
-    |<a href="{% url 'alogrithm:create_svm_model' %}">create_svm_model</a><br>
-    |<a href="{% url 'alogrithm:train_svm_model' %}">train_svm_model</a><br>
-    |<a href="{% url 'alogrithm:model_list' %}">model_list</a><br><br>
-
-
-    |<a href="{% url 'alogrithm:cat_identification' %}">cat_identification</a><br>
-    <br>
-    |<a href="{% url 'user:logout' %}">logout</a><br>
-{% else %}
-    <a href="{% url 'user:login' %}">login</a>
-    <a href="{% url 'user:register' %}">register</a>
-{% endif %}
+        </div>
+    </div>
 
 {% endblock %}
 

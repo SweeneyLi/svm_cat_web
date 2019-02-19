@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
 
 from .forms import RegistrationForm, LoginForm, ProfileForm, PwdChangeForm
 from .models import UserProfile
@@ -57,7 +56,7 @@ def login(request):
 
             if user.is_active:
                 auth.login(request, user)
-                return HttpResponseRedirect(reverse('user:profile', args=[user.id]))
+                return HttpResponseRedirect(reverse('system:index'))
 
             else:
                 # 登陆失败
@@ -69,13 +68,11 @@ def login(request):
     return render(request, 'user/login.html', {'form': form})
 
 
-@login_required
 def profile(request, pk):
     user = get_object_or_404(User, pk=pk)
     return render(request, 'user/profile.html', {'user': user})
 
 
-@login_required
 def profile_update(request, pk):
     user = get_object_or_404(User, pk=pk)
     user_profile = get_object_or_404(UserProfile, user=user)
@@ -101,13 +98,11 @@ def profile_update(request, pk):
     return render(request, 'user/profile_update.html', {'form': form, 'user': user})
 
 
-@login_required
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect("/accounts/login/")
 
 
-@login_required
 def pwd_change(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == "POST":
