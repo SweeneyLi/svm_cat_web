@@ -15,6 +15,7 @@
         {% for pic in pic_list %}
             {{ pic }}<br>
         {% endfor %}
+    <input type="submit" href="{% url 'picture:pic_list' %}" value="Cancel"/>
         <input type="submit" value="Confirm"/>
     </form>
 

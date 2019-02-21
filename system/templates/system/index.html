@@ -15,28 +15,20 @@
             <div id="content-in-header">
                 <h1>SVM-Based Cat Identification</h1>
                 <p class="lead">Create your own model to locate cat</p>
-                <a class="btn btn-primary" href="{% url 'picture:pic_upload' %}">Upload pictures</a>
-                <a class="btn btn-primary" href="{% url 'alogrithm:prepare_data' %}">Design model</a>
+                <a class="btn btn-primary" href="{% url 'alogrithm:prepare_data' %}">Make Your Model</a>
+                <a class="btn btn-primary" href="{% url 'alogrithm:train_svm_model' %}">Train model</a>
+                <a class="btn btn-primary" href="{% url 'alogrithm:cat_identification' %}">Use model</a>
             </div>
         </div>
 
         <div id="how-it-works" class="container-fluid content">
             <div class="container">
-                <hr>
-                <div class="container">
-                    {% if user.id %}
-                        |<a href="{% url 'alogrithm:create_svm_model' %}">create_svm_model</a><br>
-                        |<a href="{% url 'alogrithm:train_svm_model' %}">train_svm_model</a><br>
 
-                        |<a href="{% url 'alogrithm:cat_identification' %}">cat_identification</a><br>
-                        <br>
-                    {% else %}
-                        <a href="{% url 'user:login' %}">login</a>
-                        <a href="{% url 'user:register' %}">register</a>
-                    {% endif %}
+                <ul class="nav nav-list">
+                    <li class="divider"></li>
+                    <hr>
+                </ul>
 
-                </div>
-                <hr>
                 <h1>Make your own model to identificate your cute cat!</h1>
                 <p class="lead">You can follow my steps to make you own model with svm to idenetify your cat.</p>
                 <ol class="list-unstyled row stylized">
@@ -55,7 +47,7 @@
                     <li class="col-md-4 col-sm-6">
                         <h3>Make! Train! Identificating!</h3>
                         <p>Make the model by the parameter you created, and train it again and again.
-                        Finally you can use it to idenetificate your cat.</p>
+                            Finally you can use it to idenetificate your cat.</p>
                         <img class="img-responsive" src="{% static 'picture/index-T_F.jpg' %}"/>
                     </li>
                 </ol>

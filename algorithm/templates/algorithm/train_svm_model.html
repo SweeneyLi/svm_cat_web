@@ -4,22 +4,21 @@
 {% block title %}train_svm_model{% endblock %}
 
 {% block content %}
+    <div class="container">
+        <h3>train_svm_model</h3>
 
-    <h3>train_svm_model</h3>
+        {% if message %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endif %}
 
-    {% if message %}
-        <div class="alert alert-warning">{{ message }}</div>
-    {% endif %}
-
-    <form method="post" enctype="multipart/form-data">{% csrf_token %}
-        {% for field in form %}
-            <div class="fieldWrapper">
-                {{ field.label_tag }} {{ field }}
-            </div>
-        {% endfor %}
-           <input type="submit" value="confirm"/>
-    </form>
-
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
+            {% for field in form %}
+                <div class="fieldWrapper">
+                    {{ field.label_tag }} {{ field }}
+                </div>
+            {% endfor %}
+               <input type="submit" value="confirm"/>
+        </form>
 
 
         {{ accuracy_score }}<br>
@@ -30,6 +29,7 @@
         <hr>
 
 
-    <a href="{% url 'alogrithm:cat_identification' %}">cat_identification</a>
+        <a href="{% url 'alogrithm:cat_identification' %}">cat_identification</a>
+    </div>
 {% endblock %}
 

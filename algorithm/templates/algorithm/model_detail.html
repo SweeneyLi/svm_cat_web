@@ -6,8 +6,7 @@
 {% block content %}
     <div class="container">
 
-
-        <h3>{{ SVMModel.model_name }}</h3>
+        <h3>Model_Details</h3>
 
         {% if svmmodel %}
             * model_name:{{ svmmodel.model_name }}<br>
@@ -26,9 +25,9 @@
             * is_color:{{ svmmodel.is_color }}<br>
 
         {% endif %}
-
+        <p><a href="{% url 'alogrithm:model_list' %}">model_list</a> |
     </div>
-    <p><a href="{% url 'alogrithm:model_list' %}">model_list</a> |
+
 
 {% endblock %}
 

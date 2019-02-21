@@ -4,27 +4,28 @@
 {% block title %}cat_identification{% endblock %}
 
 {% block content %}
+    <div class="container">
+        <h3>cat_identification</h3>
+        {% if message %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
+            {% for field in form %}
+                <div class="fieldWrapper">
+                    {{ field.label_tag }} {{ field }}
+                </div>
+            {% endfor %}
+               <input type="submit" value="confirm"/>
+        </form>
 
-    <h3>cat_identification</h3>
-    {% if message %}
-        <div class="alert alert-warning">{{ message }}</div>
-    {% endif %}
-    <form method="post" enctype="multipart/form-data">{% csrf_token %}
-        {% for field in form %}
-            <div class="fieldWrapper">
-                {{ field.label_tag }} {{ field }}
-            </div>
-        {% endfor %}
-           <input type="submit" value="confirm"/>
-    </form>
+        {% if result %}
+            {{ result }}
+        {% endif %}
+        {#{% if hog_picture %}#}
+        {#  <p><img src="{{ hog_picture }}"/></p>#}
+        {#{% endif %}#}
 
-    {% if result %}
-        {{ result }}
-    {% endif %}
-    {#{% if hog_picture %}#}
-    {#  <p><img src="{{ hog_picture }}"/></p>#}
-    {#{% endif %}#}
-
-    {#    <br><a href="{% url 'alogrithm:contrast_algorithm' %}">contrast_algorithm</a>#}
+        {#    <br><a href="{% url 'alogrithm:contrast_algorithm' %}">contrast_algorithm</a>#}
+    </div>
 {% endblock %}
 

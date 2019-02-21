@@ -4,24 +4,21 @@
 {% block title %}model_list{% endblock %}
 
 {% block content %}
-
     <div class="container">
-
-
         <h3>model_list</h3>
-
-
 
         {% if model_list %}
             {% for model in model_list %}
                 <ul>
-                    <a href="{% url 'alogrithm:model_detail' model.id %}">
-                        {{ model.model_name }}</a>--
-                    {{ model.train_num }}--
-                    {{ model.create_time }}--
-                    {{ model.update_time }}--
-                    {{ model.recently_accuracy_score }}--
-                    <a href="{% url 'alogrithm:model_delete' model.id %}">model_delete</a>
+                    <li>model_name:<a href="{% url 'alogrithm:model_detail' model.id %}">
+                        {{ model.model_name }}</a></li>
+                    <li>train_num: {{ model.train_num }}</li>
+                    <li>create_time: {{ model.create_time }}</li>
+                    <li>update_time: {{ model.update_time }}</li>
+                    <li>recently_accuracy_score: {{ model.recently_accuracy_score }}</li>
+                    <li>
+                        <a href="{% url 'alogrithm:model_delete' model.id %}">model_delete</a>
+                    </li>
                 </ul>
             {% endfor %}
         {% else %}
@@ -30,6 +27,5 @@
         {% endif %}
 
     </div>
-
 {% endblock %}
 

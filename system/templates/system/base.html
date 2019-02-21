@@ -38,7 +38,9 @@
             <ul class="nav navbar-nav">
 
                 <li><a href="{% url 'alogrithm:prepare_data' %}"
-                       style="font-weight: bold; text-decoration: underline;">Before making</a></li>
+                       style="font-weight: bold; text-decoration: underline;">Making model</a></li>
+                <li><a href="{% url 'alogrithm:train_svm_model' %}">train_svm_model</a></li>
+                <li><a href="{% url 'alogrithm:cat_identification' %}">Cat identification</a></li>
                 <li><a href="{% url 'picture:pic_upload' %}">Upload_Picture</a></li>
             </ul>
             <ul class="nav navbar-nav pull-right">
@@ -65,15 +67,18 @@
 
 {% block content %}{% endblock %}
 
-<div id="footer" class="container">
-<nav class="navbar navbar-default navbar-fixed-bottom">
-    <div class="navbar-inner navbar-content-center">
-        <p class="text-muted credit" style="padding: 10px;">
-            Made by Sweeney
-        </p>
-    </div>
-</nav>
-</div>
+
+{#<footer id="footer" class="container-fluid" style="margin-top: 0px;">#}
+{#    <div class="container">#}
+{#        <div class="row">#}
+{#            <div class="col-md-3 col-sm-6 col-xs-12">#}
+{#                <ul class="list-unstyled">#}
+{#                    Made by Sweeney#}
+{#                </ul>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</footer>#}
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
