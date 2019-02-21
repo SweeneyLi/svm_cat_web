@@ -19,7 +19,7 @@ def Step(request, pk):
     pk = int(pk)
     if 0 < pk < 7:
         return redirect(step_dict[pk]['url'])
-    elif pk <= 0 :
+    elif pk <= 0:
         return redirect(step_dict[1]['url'])
     else:
         return redirect(step_dict[len(step_dict) - 1]['url'])
@@ -33,7 +33,15 @@ class template(FormView):
         pass
 
     def get(self, request, *args, **kwargs):
-        pass
+        form = None
+
+        return render(request, 'algorithm/form.html',
+                      {'form': form,
+                       'step': 2,
+                       'title': step_dict[2]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       'picture': None
+                       })
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -80,10 +88,11 @@ class PrepareDataView(FormView):
                       {'form': form,
                        'step': 1,
                        'title': step_dict[1]['name'],
-                       'remark': '123123123',
+                       'remark': mark_safe('<button>1233</button>'),
                        'picture': None,
-                       'error': form.errors
+                       'message': form.errors
                        })
+
     def form_valid(self, form, **kwargs):
 
         user_id = str(self.request.user.id)
@@ -128,7 +137,6 @@ class PrepareDataView(FormView):
         return redirect('alogrithm:hog_pic')
 
 
-
 class HOGPicView(FormView):
     form_class = HOGPicForm
 
@@ -151,8 +159,15 @@ class HOGPicView(FormView):
             return self.form_invalid(form, **kwargs)
 
     def form_invalid(self, form, **kwargs):
-        return render(self.request, 'algorithm/hog_pic.html',
-                      {'form': form, 'message': form.errors})
+
+        return render(self.request, 'algorithm/form.html',
+                      {'form': form,
+                       'step': 2,
+                       'title': step_dict[2]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       'picture': None,
+                       'message': form.errors
+                       })
 
     def form_valid(self, form, **kwargs):
         pic_size = eval(form.data['pic_size'])
@@ -195,8 +210,13 @@ class EvaluateAlgorithmView(FormView):
         proc.start()
         proc.join()
 
-        return render(request, 'algorithm/contrast_algorithm.html',
-                      {'form': form})
+        return render(request, 'algorithm/form.html',
+                      {'form': form,
+                       'step': 3,
+                       'title': step_dict[3]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       'picture': None
+                       })
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -211,9 +231,12 @@ class EvaluateAlgorithmView(FormView):
 
         eval_pic = eval_pic_path(user_id)
 
-        return render(self.request, 'algorithm/contrast_algorithm.html',
+        return render(request, 'algorithm/form.html',
                       {'form': form,
-                       'eval_pic': eval_pic,
+                       'step': 3,
+                       'title': step_dict[3]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       'picture': eval_pic
                        })
 
 
@@ -222,7 +245,12 @@ class AdjustSVMView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(request, 'algorithm/adjust_svm.html', {'form': form})
+        return render(request, 'algorithm/form.html',
+                      {'form': form,
+                       'step': 4,
+                       'title': step_dict[4]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       })
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -232,8 +260,12 @@ class AdjustSVMView(FormView):
             return self.form_invalid(form, **kwargs)
 
     def form_invalid(self, form, **kwargs):
-        return render(self.request, 'algorithm/adjust_svm.html',
-                      {'form': form, 'message': form.errors
+        return render(self.request, 'algorithm/form.html',
+                      {'form': form,
+                       'step': 4,
+                       'title': step_dict[4]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       'message': form.errors
                        })
 
     def form_valid(self, form, **kwargs):
@@ -250,9 +282,13 @@ class AdjustSVMView(FormView):
         proc.start()
         proc.join()
 
-        return render(self.request, 'algorithm/adjust_svm.html',
+        return render(self.request, 'algorithm/form.html',
                       {'form': form,
-                       'results': return_dict})
+                       'step': 4,
+                       'title': step_dict[4]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       'results': return_dict
+                       })
 
 
 class AdjustEnsembleLearningView(FormView):
@@ -264,8 +300,12 @@ class AdjustEnsembleLearningView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(request, 'algorithm/adjust_ensemble_learning.html',
-                      {'form': form})
+        return render(self.request, 'algorithm/form.html',
+                      {'form': form,
+                       'step': 5,
+                       'title': step_dict[5]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       })
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -275,8 +315,12 @@ class AdjustEnsembleLearningView(FormView):
             return self.form_invalid(form, **kwargs)
 
     def form_invalid(self, form, **kwargs):
-        return render(self.request, 'algorithm/adjust_ensemble_learning.html',
-                      {'form': form, 'message': form.errors
+        return render(self.request, 'algorithm/form.html',
+                      {'form': form,
+                       'step': 5,
+                       'title': step_dict[5]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       'message': form.errors
                        })
 
     def form_valid(self, form, **kwargs):
@@ -294,21 +338,34 @@ class AdjustEnsembleLearningView(FormView):
         proc.start()
         proc.join()
 
-        return render(self.request, 'algorithm/adjust_ensemble_learning.html',
+        return render(self.request, 'algorithm/form.html',
                       {'form': form,
-                       'results': return_dict})
+                       'step': 5,
+                       'title': step_dict[5]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       'results': return_dict
+                       })
 
 
 class ModelCreateView(CreateView):
-    template_name = 'algorithm/create_svm_model.html'
+    template_name = 'algorithm/form.html'
     model = SVMModel
     fields = ['model_name', 'comment', 'pic_size', 'orientations',
               'pixels_per_cell', 'cells_per_block', 'is_color',
               'is_standard', 'C', 'kernel', 'ensemble_learning',
               'n_estimators']
 
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(self.request, 'algorithm/form.html',
+                      {'form': form,
+                       'step': 6,
+                       'title': step_dict[6]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       })
+
     def get_success_url(self):
-        return reverse_lazy('alogrithm:train_svm_model')
+        return reverse_lazy('alogrithm:model_list')
 
     def get_form_kwargs(self):
         kwargs = super(ModelCreateView, self).get_form_kwargs()
@@ -341,8 +398,13 @@ class ModelCreateView(CreateView):
 
         # judge the same model_name
         if SVMModel.objects.filter(user_id=user_id, model_name=form.data['model_name']).exists():
-            form.add_error(None, "The model_name is created!")
-            return super().form_invalid(form)
+            return render(self.request, 'algorithm/form.html',
+                          {'form': form,
+                           'step': 6,
+                           'title': step_dict[6]['name'],
+                           'remark': mark_safe('<button>1233</button>'),
+                           'message': "The model_name is created!"
+                           })
 
         form.instance.user_id = user_id
 

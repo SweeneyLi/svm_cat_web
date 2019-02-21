@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class SVMModel(models.Model):
     user_id = models.IntegerField('user_id')
     model_name = models.CharField('model_name', max_length=50)
-    comment = models.CharField('comment', max_length=255, default='')
+    comment = models.CharField('comment', max_length=255, default='', blank=True)
 
     train_num = models.IntegerField('train_num', default=0)
     update_time = models.DateTimeField('update_time', auto_now_add=True)
@@ -27,13 +27,13 @@ class SVMModel(models.Model):
     ensemble_learning_choice = [('BaggingClassifier', 'BaggingClassifier'),
                                 ('AdaBoostClassifier', 'AdaBoostClassifier'),
                                 ('None', 'None')]
-    ensemble_learning = models.CharField('ensemble_learning', choices=ensemble_learning_choice, max_length=50, default='None')
+    ensemble_learning = models.CharField('ensemble_learning', choices=ensemble_learning_choice, max_length=50,
+                                         default='None')
     n_estimators = models.IntegerField('n_estimators', default=0)
 
     def __str__(self):
         # // TODO: Chinese
         return self.model_name
-
 
 
 class ModelTrainLog(models.Model):

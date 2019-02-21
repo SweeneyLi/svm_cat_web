@@ -33,6 +33,7 @@ step_dict = {
         'name': 'create_svm_model',
         'url': reverse_lazy('alogrithm:create_svm_model')
     },
+
 }
 
 

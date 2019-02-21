@@ -79,7 +79,7 @@ class EvaluateAlgoritmForm(forms.Form):
 
 
 class SVMParameterForm(forms.Form):
-    C = forms.CharField(initial='0.1, 0.3, 0.5, 0.7, 0.9, 1.0', widget=forms.Textarea)
+    C = forms.CharField(initial='0.1, 0.3, 0.5, 0.7, 0.9, 1.0', widget=forms.Textarea(attrs={'rows': 1, 'cols': 25}))
     kernel_list = (('linear', 'linear'), ('poly', 'poly'), ('rbf', 'rbf'), ('sigmoid', 'sigmoid'))
     kernel = forms.MultipleChoiceField(label='kernel',
                                        choices=kernel_list,

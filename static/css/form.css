@@ -1,16 +1,18 @@
 /*label{*/
-	/*display: block;*/
-	/*width:5rem;*/
-	/*font-size: 18px;*/
-    /*font-family: HelveticaNeue-Light ;*/
-	/*!*text-align-last: justify;*!*/
+/*display: block;*/
+/*width:5rem;*/
+/*font-size: 18px;*/
+/*font-family: HelveticaNeue-Light ;*/
+/*!*text-align-last: justify;*!*/
 /*}*/
 /*!* 兼容safari *!*/
 /*label:after {*/
-    /*content: '';*/
-    /*width: 100%;*/
-    /*display: inline-block;*/
+/*content: '';*/
+/*width: 100%;*/
+/*display: inline-block;*/
 /*}*/
 body {
     background-color: #eee;
 }
+
+
