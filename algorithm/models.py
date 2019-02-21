@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class SVMModel(models.Model):
     user_id = models.IntegerField('user_id')
     model_name = models.CharField('model_name', max_length=50)
+    comment = models.CharField('comment', max_length=255, default='')
 
     train_num = models.IntegerField('train_num', default=0)
     update_time = models.DateTimeField('update_time', auto_now_add=True)
@@ -32,6 +33,7 @@ class SVMModel(models.Model):
     def __str__(self):
         # // TODO: Chinese
         return self.model_name
+
 
 
 class ModelTrainLog(models.Model):

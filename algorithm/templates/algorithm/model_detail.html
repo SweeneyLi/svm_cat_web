@@ -4,27 +4,28 @@
 {% block title %}model_detail{% endblock %}
 
 {% block content %}
-<h3>{{ SVMModel.model_name }}</h3>
+    <h3>{{ SVMModel.model_name }}</h3>
 
-{% if svmmodel %}
-* model_name:{{ svmmodel.model_name}}<br>
-* train_num:{{ svmmodel.train_num}}<br>
-* create_time:{{ svmmodel.create_time}}<br>
-* update_time:{{ svmmodel.update_time}}<br>
-* accuracy_score:{{ svmmodel.accuracy_score}}<br>
-* C:{{ svmmodel.C}}<br>
-* kernel:{{ svmmodel.kernel}}<br>
-* is_standard:{{ svmmodel.is_standard}}<br>
-* pic_size:{{ svmmodel.pic_size}}<br>
-* orientations:{{ svmmodel.orientations}}<br>
-* pixels_per_cell:{{ svmmodel.pixels_per_cell}}<br>
-* cells_per_block:{{ svmmodel.cells_per_block}}<br>
-* is_color:{{ svmmodel.is_color}}<br>
+    {% if svmmodel %}
+        * model_name:{{ svmmodel.model_name }}<br>
+        * comment:{{ svmmodel.comment }}<br>
+        * train_num:{{ svmmodel.train_num }}<br>
+        * create_time:{{ svmmodel.create_time }}<br>
+        * update_time:{{ svmmodel.update_time }}<br>
+        * accuracy_score:{{ svmmodel.accuracy_score }}<br>
+        * C:{{ svmmodel.C }}<br>
+        * kernel:{{ svmmodel.kernel }}<br>
+        * is_standard:{{ svmmodel.is_standard }}<br>
+        * pic_size:{{ svmmodel.pic_size }}<br>
+        * orientations:{{ svmmodel.orientations }}<br>
+        * pixels_per_cell:{{ svmmodel.pixels_per_cell }}<br>
+        * cells_per_block:{{ svmmodel.cells_per_block }}<br>
+        * is_color:{{ svmmodel.is_color }}<br>
 
-{% endif %}
+    {% endif %}
 
 
-<p><a href="{% url 'alogrithm:model_list' %}">model_list</a> |
+    <p><a href="{% url 'alogrithm:model_list' %}">model_list</a> |
 
 {% endblock %}
 

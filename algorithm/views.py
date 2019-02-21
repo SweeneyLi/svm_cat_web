@@ -270,7 +270,7 @@ class AdjustEnsembleLearningView(FormView):
 class ModelCreateView(CreateView):
     template_name = 'algorithm/create_svm_model.html'
     model = SVMModel
-    fields = ['model_name', 'pic_size', 'orientations',
+    fields = ['model_name', 'comment', 'pic_size', 'orientations',
               'pixels_per_cell', 'cells_per_block', 'is_color',
               'is_standard', 'C', 'kernel', 'ensemble_learning',
               'n_estimators']
