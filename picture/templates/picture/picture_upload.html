@@ -4,10 +4,15 @@
 {% block title %}picture_upload{% endblock %}
 
 {% block content %}
-<h3>upload picture</h3>
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="confirm" />
-</form>
+    <div class="container">
+
+
+        <h3>upload picture</h3>
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
+               {{ form.as_p }}
+               <input type="submit" value="confirm"/>
+        </form>
+
+    </div>
 {% endblock %}
 

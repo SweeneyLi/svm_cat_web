@@ -4,34 +4,36 @@
 {% block title %}Contrast Algorithm{% endblock %}
 
 {% block content %}
-
-    <h1>Third Step</h1>
-    <h3>Evaluate Algorithm</h3>
+    <div class="container">
 
 
-    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        <h1>Third Step</h1>
+        <h3>Evaluate Algorithm</h3>
 
 
-        {% for field in form %}
-            <div class="fieldWrapper">
-                {{ field.label_tag }} {{ field }}
-            </div>
-        {% endfor %}
-
-           <input type="submit" value="confirm"/>
-    </form>
-
-    {% if results %}
-         <p>{{ results }}</p>
-    {% endif %}
-
-    {% if eval_pic %}
-         <p><img src="{{ eval_pic }}"/></p>
-    {% endif %}
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
 
 
+            {% for field in form %}
+                <div class="fieldWrapper">
+                    {{ field.label_tag }} {{ field }}
+                </div>
+            {% endfor %}
 
-    <br><a href="{% url 'alogrithm:adjust_svm' %}">adjust_svm</a>
+               <input type="submit" value="confirm"/>
+        </form>
 
+        {% if results %}
+             <p>{{ results }}</p>
+        {% endif %}
+
+        {% if eval_pic %}
+             <p><img src="{{ eval_pic }}"/></p>
+        {% endif %}
+
+
+
+        <br><a href="{% url 'alogrithm:adjust_svm' %}">adjust_svm</a>
+    </div>
 {% endblock %}
 

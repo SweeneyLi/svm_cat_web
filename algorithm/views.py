@@ -1,6 +1,4 @@
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse, redirect
-from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, FormView, DeleteView
 from django.utils.safestring import mark_safe
 
@@ -14,6 +12,17 @@ import multiprocessing as mp
 from os import path, mkdir
 import json
 import shutil
+
+
+# turn step to specific url
+def Step(request, pk):
+    pk = int(pk)
+    if 0 < pk < 7:
+        return redirect(step_dict[pk]['url'])
+    elif pk <= 0 :
+        return redirect(step_dict[1]['url'])
+    else:
+        return redirect(step_dict[len(step_dict) - 1]['url'])
 
 
 # template
@@ -35,7 +44,7 @@ class template(FormView):
 
     def form_invalid(self, form, **kwargs):
         return render(self.request, 'algorithm/choose_pic_category.html',
-                      {'form': form, 'error_message': form.errors
+                      {'form': form, 'message': form.errors
                        })
 
     def form_valid(self, form, **kwargs):
@@ -51,8 +60,13 @@ class PrepareDataView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(request, 'algorithm/choose_pic_category.html',
-                      {'form': form})
+        return render(request, 'algorithm/form.html',
+                      {'form': form,
+                       'step': 1,
+                       'title': step_dict[1]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       'picture': None
+                       })
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -62,11 +76,14 @@ class PrepareDataView(FormView):
             return self.form_invalid(form, **kwargs)
 
     def form_invalid(self, form, **kwargs):
-        return render(self.request, 'algorithm/choose_pic_category.html',
+        return render(self.request, 'algorithm/form.html',
                       {'form': form,
-                       'error_message': form.errors
+                       'step': 1,
+                       'title': step_dict[1]['name'],
+                       'remark': '123123123',
+                       'picture': None,
+                       'error': form.errors
                        })
-
     def form_valid(self, form, **kwargs):
 
         user_id = str(self.request.user.id)
@@ -108,7 +125,8 @@ class PrepareDataView(FormView):
         with open(settings.ALGORITHM_JSON_PATH, 'w') as f:
             json.dump(algorithm_info, f)
 
-        return redirect(reverse('alogrithm:hog_pic'))
+        return redirect('alogrithm:hog_pic')
+
 
 
 class HOGPicView(FormView):
@@ -116,7 +134,14 @@ class HOGPicView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(request, 'algorithm/hog_pic.html', {'form': form})
+        # return render(request, 'algorithm/hog_pic.html', {'form': form})
+        return render(request, 'algorithm/form.html',
+                      {'form': form,
+                       'step': 2,
+                       'title': step_dict[2]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       'picture': None
+                       })
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -127,7 +152,7 @@ class HOGPicView(FormView):
 
     def form_invalid(self, form, **kwargs):
         return render(self.request, 'algorithm/hog_pic.html',
-                      {'form': form, 'error_message': form.errors})
+                      {'form': form, 'message': form.errors})
 
     def form_valid(self, form, **kwargs):
         pic_size = eval(form.data['pic_size'])
@@ -146,9 +171,16 @@ class HOGPicView(FormView):
         # get the saved png to show in page
         hog_pic = hog_pic_path(user_id)
 
-        return render(self.request, 'algorithm/hog_pic.html',
+        # return render(self.request, 'algorithm/hog_pic.html',
+        #               {'form': form,
+        #                'hog_pic': hog_pic,
+        #                })
+        return render(self.request, 'algorithm/form.html',
                       {'form': form,
-                       'hog_pic': hog_pic,
+                       'step': 2,
+                       'title': step_dict[2]['name'],
+                       'remark': mark_safe('<button>1233</button>'),
+                       'picture': hog_pic
                        })
 
 
@@ -201,7 +233,7 @@ class AdjustSVMView(FormView):
 
     def form_invalid(self, form, **kwargs):
         return render(self.request, 'algorithm/adjust_svm.html',
-                      {'form': form, 'error_message': form.errors
+                      {'form': form, 'message': form.errors
                        })
 
     def form_valid(self, form, **kwargs):
@@ -244,7 +276,7 @@ class AdjustEnsembleLearningView(FormView):
 
     def form_invalid(self, form, **kwargs):
         return render(self.request, 'algorithm/adjust_ensemble_learning.html',
-                      {'form': form, 'error_message': form.errors
+                      {'form': form, 'message': form.errors
                        })
 
     def form_valid(self, form, **kwargs):
@@ -354,7 +386,7 @@ class TrainSVMModelView(FormView):
 
     def form_invalid(self, form, **kwargs):
         return render(self.request, 'algorithm/train_svm_model.html',
-                      {'form': form, 'error_message': form.errors
+                      {'form': form, 'message': form.errors
                        })
 
     def form_valid(self, form, **kwargs):
@@ -462,7 +494,7 @@ class CatIdentificationView(FormView):
             cat_identification_form = CatIdentificationForm(request.user.id)
             return render(request, 'algorithm/cat_identification.html',
                           {'form': form,
-                           'error_message': 'The trained model could predict, please train it'})
+                           'message': 'The trained model could predict, please train it'})
         else:
             files = request.FILES.getlist('file')
             show_probility = request.POST.get('show_probility')

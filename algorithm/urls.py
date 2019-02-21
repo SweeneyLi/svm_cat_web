@@ -5,6 +5,9 @@ from . import views
 app_name = 'alogrithm'
 
 urlpatterns = [
+
+    re_path(r'^step/(?P<pk>\d+)/$', views.Step, name='step'),
+
     path('prepare_data', views.PrepareDataView.as_view(), name='prepare_data'),
     path('hog_pic/', views.HOGPicView.as_view(), name='hog_pic'),
     path('eval_alg/', views.EvaluateAlgorithmView.as_view(), name='eval_alg'),

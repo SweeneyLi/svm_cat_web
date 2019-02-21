@@ -1,5 +1,39 @@
 from os import path
 from django.conf import settings
+from django.urls import reverse_lazy
+
+# params in svm
+num_folds = 10
+seed = 7
+scoring = 'accuracy'
+
+
+step_dict = {
+    1: {
+        'name': 'prepare_data',
+        'url': reverse_lazy('alogrithm:prepare_data')
+    },
+    2: {
+        'name': 'hog_pic',
+        'url': reverse_lazy('alogrithm:hog_pic')
+    },
+    3: {
+        'name': 'eval_alg',
+        'url': reverse_lazy('alogrithm:eval_alg')
+    },
+    4: {
+        'name': 'adjust_svm',
+        'url': reverse_lazy('alogrithm:adjust_svm')
+    },
+    5: {
+        'name': 'adjust_ensemble_learning',
+        'url': reverse_lazy('alogrithm:adjust_ensemble_learning')
+    },
+    6: {
+        'name': 'create_svm_model',
+        'url': reverse_lazy('alogrithm:create_svm_model')
+    },
+}
 
 
 # save the input pic
@@ -35,7 +69,3 @@ def saved_model_path(user_id, model_name):
     return path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id), model_name + '.model')
 
 
-# params in svm
-num_folds = 10
-seed = 7
-scoring = 'accuracy'

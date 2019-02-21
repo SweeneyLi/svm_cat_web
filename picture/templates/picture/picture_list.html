@@ -4,33 +4,36 @@
 {% block title %}picture_list{% endblock %}
 
 {% block content %}
-    <h3>图片列表</h3>
-    <ul>
-        {% if picture_list %}
+    <div class="container">
+        <h3>图片列表</h3>
+        <ul>
+            {% if picture_list %}
 
-            {% regroup picture_list by category as pictures %}
-            <ul>
-                {% for category, pic_info in pictures %}
-                    <li>{{ category }}
-                    <a href="{% url 'picture:pic_delete' category %}">category_delete</a>
-                        <ul>
-                            {% for pic in pic_info %}
-                                <li>{{ pic.upload_date | date:"Y-m-j" }}-----
-                                    <a href="{% url 'picture:pic_detail' pic.id %}">{{ pic.pic_name }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                {% endfor %}
-            </ul>
+                {% regroup picture_list by category as pictures %}
+                <ul>
+                    {% for category, pic_info in pictures %}
+                        <li>{{ category }}
+                            <a href="{% url 'picture:pic_delete' category %}">category_delete</a>
+                            <ul>
+                                {% for pic in pic_info %}
+                                    <li>{{ pic.upload_date | date:"Y-m-j" }}-----
+                                        <a href="{% url 'picture:pic_detail' pic.id %}">{{ pic.pic_name }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
 
 
-        {% else %}
-            <li>No uploaded Picture!</li>
-            <a href="{% url 'picture:pic_upload' %}">upload_picture</a>
-        {% endif %}
-    </ul>
-    <p><a href="{% url 'picture:pic_upload' %}">upload</a></p>
+            {% else %}
+                <li>No uploaded Picture!</li>
+                <a href="{% url 'picture:pic_upload' %}">upload_picture</a>
+            {% endif %}
+        </ul>
+        <p><a href="{% url 'picture:pic_upload' %}">upload</a></p>
+    </div>
+
 {% endblock %}
 
 

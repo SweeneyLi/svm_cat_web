@@ -4,21 +4,23 @@
 {% block title %}registration{% endblock %}
 
 {% block content %}
-<div class="form-wrapper">
-   <form method="post" action="" enctype="multipart/form-data">
-      {% csrf_token %}
-      {% for field in form %}
-           <div class="fieldWrapper">
-        {{ field.errors }}
-        {{ field.label_tag }} {{ field }}
-        {% if field.help_text %}
-             <p class="help">{{ field.help_text|safe }}</p>
-        {% endif %}
-           </div>
-        {% endfor %}
-      <div class="button-wrapper submit">
-         <input type="submit" value="Submit" />
-      </div>
-   </form>
-</div>
+    <div class="container">
+        <div class="form-wrapper">
+            <form method="post" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="fieldWrapper">
+                        {{ field.errors }}
+                        {{ field.label_tag }} {{ field }}
+                        {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="button-wrapper submit">
+                    <input type="submit" value="Submit"/>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

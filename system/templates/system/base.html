@@ -22,7 +22,7 @@
 <body>
 
 
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-default navbar-static-top">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -37,14 +37,15 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
 
-                <li><a href="{% url 'alogrithm:create_svm_model' %}"
-                       style="font-weight: bold; text-decoration: underline;">CREATE YOUR OWN</a></li>
-                <li><a href="#">Add somethings</a></li>
+                <li><a href="{% url 'alogrithm:prepare_data' %}"
+                       style="font-weight: bold; text-decoration: underline;">Before making</a></li>
+                <li><a href="{% url 'picture:pic_upload' %}">Upload_Picture</a></li>
             </ul>
             <ul class="nav navbar-nav pull-right">
 
                 {% if user.id %}
                     <li><a class="nav-glyphicon" href="{% url 'picture:pic_list' %}">My images</a></li>
+                    <li><a class="nav-glyphicon" href="{% url 'alogrithm:model_list' %}">My Models</a></li>
                     <li><a class="nav-glyphicon" href="{% url 'user:profile' user.id %}" title="Settings"><span
                             class="glyphicon glyphicon-cog"></span></a></li>
                     <li><a class="nav-glyphicon" href="{% url 'user:logout' %}" title="Logout"><span
@@ -64,10 +65,15 @@
 
 {% block content %}{% endblock %}
 
-
+<nav class="navbar navbar-default navbar-fixed-bottom">
+    <hr>
+    <p class="bottom">Made by Sweeney</p>
+</nav>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+
+<link href="{% static 'css/form.css' %}" rel="stylesheet"/>
 </body>
 </html>

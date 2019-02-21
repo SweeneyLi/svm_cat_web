@@ -1,4 +1,3 @@
-
 {% extends 'system/base.html' %}
 {% load staticfiles %}
 
@@ -7,16 +6,16 @@
 {% block content %}
 
 
-<h3>model</h3>
+    <h3>model</h3>
 
 
+    <div class="container">
+        <form method="post">{% csrf_token %}
+            <p>Are you sure you want to delete "{{ svmmodel.model_name }}"?</p>
+            <input type="submit" value="Confirm"/>
+        </form>
 
-<form method="post">{% csrf_token %}
-    <p>Are you sure you want to delete "{{ svmmodel.model_name }}"?</p>
-    <input type="submit" value="Confirm" />
-</form>
 
-
-
+    </div>
 {% endblock %}
 

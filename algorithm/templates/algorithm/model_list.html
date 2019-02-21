@@ -5,29 +5,31 @@
 
 {% block content %}
 
-
-    <h3>model_list</h3>
-
+    <div class="container">
 
 
-    {% if model_list %}
-        {% for model in model_list %}
-            <ul>
-                <a href="{% url 'alogrithm:model_detail' model.id %}">
-                    {{ model.model_name }}</a>--
-                {{ model.train_num }}--
-                {{ model.create_time }}--
-                {{ model.update_time }}--
-                {{ model.recently_accuracy_score }}--
-                <a href="{% url 'alogrithm:model_delete' model.id %}">model_delete</a>
-            </ul>
-        {% endfor %}
-    {% else %}
-        No model!
-        <a href="{% url 'alogrithm:create_svm_model' %}">create_model</a>
-    {% endif %}
+        <h3>model_list</h3>
 
 
+
+        {% if model_list %}
+            {% for model in model_list %}
+                <ul>
+                    <a href="{% url 'alogrithm:model_detail' model.id %}">
+                        {{ model.model_name }}</a>--
+                    {{ model.train_num }}--
+                    {{ model.create_time }}--
+                    {{ model.update_time }}--
+                    {{ model.recently_accuracy_score }}--
+                    <a href="{% url 'alogrithm:model_delete' model.id %}">model_delete</a>
+                </ul>
+            {% endfor %}
+        {% else %}
+            No model!
+            <a href="{% url 'alogrithm:create_svm_model' %}">create_model</a>
+        {% endif %}
+
+    </div>
 
 {% endblock %}
 

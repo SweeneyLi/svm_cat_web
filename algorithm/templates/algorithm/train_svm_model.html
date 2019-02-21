@@ -7,10 +7,8 @@
 
     <h3>train_svm_model</h3>
 
-    {% if error_message %}
-        <div class="errors">
-            {{ error_message }}
-        </div>
+    {% if message %}
+        <div class="alert alert-warning">{{ message }}</div>
     {% endif %}
 
     <form method="post" enctype="multipart/form-data">{% csrf_token %}

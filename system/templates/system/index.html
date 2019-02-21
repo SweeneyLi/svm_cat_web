@@ -3,7 +3,8 @@
 
 {% block title %}index{% endblock %}
 {% block css %}
-    <link href="{% static 'css/index.css' %}" rel="stylesheet"/>{% endblock %}
+    <link href="{% static 'css/index.css' %}" rel="stylesheet"/>
+{% endblock %}
 
 {% block content %}
 
@@ -11,11 +12,11 @@
 
 
         <div id="header" class="container-fluid">
-            <div>
+            <div id="content-in-header">
                 <h1>SVM-Based Cat Identification</h1>
                 <p class="lead">Create your own model to locate cat</p>
-                <a class="btn btn-primary" href="{% url 'picture:pic_upload' %}">Upload your pictures</a>
-                <a class="btn btn-primary" href="{% url 'alogrithm:prepare_data' %}">Make your model</a>
+                <a class="btn btn-primary" href="{% url 'picture:pic_upload' %}">Upload pictures</a>
+                <a class="btn btn-primary" href="{% url 'alogrithm:prepare_data' %}">Design model</a>
             </div>
         </div>
 
@@ -24,25 +25,11 @@
                 <hr>
                 <div class="container">
                     {% if user.id %}
-                        <a href="{% url 'user:profile' user.id %}">profile</a><br>
-                        |<a href="{% url 'picture:pic_upload' %}">upload</a><br>
-                        |<a href="{% url 'picture:pic_list' %}">pic_list</a><br><br><br>
-
-                        |<a href="{% url 'alogrithm:prepare_data' %}">prepare_data</a><br>
-                        |<a href="{% url 'alogrithm:hog_pic' %}">hog_pic</a><br><br>
-
-                        |<a href="{% url 'alogrithm:eval_alg' %}">evaluate_algotithm</a><br>
-                        |<a href="{% url 'alogrithm:adjust_svm' %}">adjust_svm</a><br><br>
-                        |<a href="{% url 'alogrithm:adjust_ensemble_learning' %}">adjust_ensemble_learning</a><br><br>
-
                         |<a href="{% url 'alogrithm:create_svm_model' %}">create_svm_model</a><br>
                         |<a href="{% url 'alogrithm:train_svm_model' %}">train_svm_model</a><br>
-                        |<a href="{% url 'alogrithm:model_list' %}">model_list</a><br><br>
-
 
                         |<a href="{% url 'alogrithm:cat_identification' %}">cat_identification</a><br>
                         <br>
-                        |<a href="{% url 'user:logout' %}">logout</a><br>
                     {% else %}
                         <a href="{% url 'user:login' %}">login</a>
                         <a href="{% url 'user:register' %}">register</a>
@@ -50,28 +37,29 @@
 
                 </div>
                 <hr>
-                <h1>Turn any photo into an artwork &ndash; for free!</h1>
-                <p class="lead">We use an algorithm inspired by the human brain. It uses the stylistic elements of one
-                    image
-                    to draw the content of another. Get your own artwork in just three steps.</p>
+                <h1>Make your own model to identificate your cute cat!</h1>
+                <p class="lead">You can follow my steps to make you own model with svm to idenetify your cat.</p>
                 <ol class="list-unstyled row stylized">
                     <li class="col-md-4 col-sm-6">
                         <h3>Upload photo</h3>
-                        <p>The first picture defines the scene you would like to have painted.</p>
-                        <img class="img-responsive" src="https://deepart-io.s3.amazonaws.com/img/content.jpg"/>
+                        <p>Upload two categories, one is your want to identify,
+                            the other is you want to discriminate
+                            and a test picture to find appropriate parameter in dealing picture</p>
+                        <img class="img-responsive" src="{% static 'picture/index-upload.jpg' %}"/>
                     </li>
                     <li class="col-md-4 col-sm-6">
-                        <h3>Choose style</h3>
-                        <p>Choose among predefined styles or upload your own style image.</p>
-                        <img class="img-responsive" src="https://deepart-io.s3.amazonaws.com/img/style.jpg"/>
+                        <h3>Choose parameter</h3>
+                        <p>Follow my steps to locate the parameter fit your model</p><br><br>
+                        <img class="img-responsive" src="{% static 'picture/index-svm.png' %}"/>
                     </li>
                     <li class="col-md-4 col-sm-6">
-                        <h3>Submit</h3>
-                        <p>Our servers paint the image for you. You get an email when it's done.</p>
-                        <img class="img-responsive" src="https://deepart-io.s3.amazonaws.com/img/result.jpg"/>
+                        <h3>Make! Train! Identificating!</h3>
+                        <p>Make the model by the parameter you created, and train it again and again.
+                        Finally you can use it to idenetificate your cat.</p>
+                        <img class="img-responsive" src="{% static 'picture/index-T_F.jpg' %}"/>
                     </li>
                 </ol>
-                <a class="btn btn-primary" role="button" href="/hire/">Try it now</a>
+                <a class="btn btn-primary" role="button" href="{% url 'alogrithm:prepare_data' %}">Try it now</a>
             </div>
         </div>
 
