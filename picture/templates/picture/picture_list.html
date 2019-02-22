@@ -2,6 +2,9 @@
 {% load staticfiles %}
 
 {% block title %}picture_list{% endblock %}
+{% block css %}
+
+{% endblock %}
 
 {% block content %}
     <div class="container">
@@ -30,20 +33,42 @@
 
                             </h3>
                         </div>
-                        <div id="collapse{{ category }}" class="panel-collapse collapse in">
+                        <div id="collapse{{ category }}" class="panel-collapse collapse">
                             <div class="panel-body">
-                                <ul>
+                                <table class="table  table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Picture Name</th>
+                                        <th>Picture Size</th>
+                                        <th>Upload Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
                                     {% for pic in pic_info %}
-                                        <li>{{ pic.upload_date | date:"Y-m-j" }}-----
-                                            <a href="{% url 'picture:pic_detail' pic.id %}">{{ pic.pic_name }}</a>
-                                            <button type="button" class="fas fa-minus"
-                                                    data-href="{% url 'picture:pic_delete' pic.id %}"
-                                                    data-toggle="modal"
-                                                    data-target="#modalConfirmDelete">
-                                            </button>
-                                        </li>
-                                    {% endfor %}
 
+
+
+                                        <tr>
+                                            <th scope="row">{{ forloop.counter }}</th>
+                                            <td>{{ pic.pic_name }}</td>
+                                            <td>{{ pic.pic_size }}</td>
+                                            <td>{{ pic.upload_date| date:"Y-m-j" }}</td>
+                                            <td><a id="{{ pic.name }}Link" title="Click"
+                                                   href="#" onclick="Pic_Detail('{{ pic.path.url }}')" ;return false;">
+                                                {{ pic.pic_name }}
+                                                </a>/
+                                                <button type="button" class="fas fa-minus"
+                                                        data-href="{% url 'picture:pic_delete' pic.id %}"
+                                                        data-toggle="modal"
+                                                        data-target="#modalConfirmDelete">
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
                                 </ul>
                             </div>
                         </div>
@@ -81,16 +106,22 @@
             </div>
         </div>
     </div>
+    <div id="picture">
+    </div>
 
 {% endblock %}
 
 {% block extra_js %}
     <script type="text/javascript">
-        {#$(function () {#}
-        {#    {% with fir_pic=picture_list|first %}#}
-        {#        $('#collapse{{ fir_pic.category }}').collapse('show')#}
-        {#    {% endwith %}#}
-        {##}
+        $(function () {
+            {% with fir_pic=picture_list|first %}
+                $('#collapse{{ fir_pic.category }}').collapse('show')
+            {% endwith %}
+        });
+
+        function Pic_Detail(path) {
+            document.getElementById("picture").innerHTML = "<img src=" + path + ">";
+        }
 
         $('#modalConfirmDelete').on('show.bs.modal', function (e) {
             $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
