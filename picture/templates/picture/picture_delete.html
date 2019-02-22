@@ -9,7 +9,6 @@
     <h3>picture</h3>
 
 
-
     <form method="post">{% csrf_token %}
         <p>Are you sure you want to delete "{{ category }} " and {{ cate_num }} pictures?</p>
         {% for pic in pic_list %}

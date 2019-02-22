@@ -6,59 +6,49 @@
 {% block content %}
     <div class="container">
         <h3>图片列表</h3>
-        <ul>
-            {% if picture_list %}
+
+        {% if picture_list %}
+            <div class="panel-group" id="accordion">
 
                 {% regroup picture_list by category as pictures %}
-                <ul>
-                    {% for category, pic_info in pictures %}
-                        <li>{{ category }}
-                            <a href="{% url 'picture:pic_delete' category %}">category_delete</a>
-                            <ul>
-                                {% for pic in pic_info %}
-                                    <li>{{ pic.upload_date | date:"Y-m-j" }}-----
-                                        <a href="{% url 'picture:pic_detail' pic.id %}">{{ pic.pic_name }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% endfor %}
-                </ul>
+                {% for category, pic_info in pictures %}
 
-<div class="panel-group" id="accordion">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion"
-				   href="#collapseOne">
-					点击我进行展开，再次点击我进行折叠。第 1 部分--hide 方法
-				</a>
-			</h4>
-		</div>
-		<div id="collapseOne" class="panel-collapse collapse in">
-			<div class="panel-body">
-				Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-				nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-				lomo.
-			</div>
-		</div>
-	</div>
-
-</div>
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion"
+                                   href="#collapseThree">
+                                    {{ category }}
+                                </a>-------------->
+                                <a href="{% url 'picture:pic_delete' category %}">category delete</a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <ul>
+                                    {% for pic in pic_info %}
+                                        <li>{{ pic.upload_date | date:"Y-m-j" }}-----
+                                            <a href="{% url 'picture:pic_detail' pic.id %}">{{ pic.pic_name }}</a>
+                                            -------------->
+                                            <a href="{% url 'picture:pic_delete' pic.id %}">picture delete</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
 
 
-
-            {% else %}
-                <li>No uploaded Picture!</li>
-                <a href="{% url 'picture:pic_upload' %}">upload_picture</a>
-            {% endif %}
-        </ul>
-        <p><a href="{% url 'picture:pic_upload' %}">upload</a></p>
+                {% endfor %}
+        {% else %}
+            <li>No uploaded Picture!</li>
+        {% endif %}
+        <div class="text-center">
+            <p><a href="{% url 'picture:pic_upload' %}">upload</a></p>
+        </div>
     </div>
 
-<script type="text/javascript">
-	$(function () { $('#collapseOne').collapse('show')});
-</script>
 {% endblock %}
 
 

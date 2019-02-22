@@ -66,16 +66,6 @@ class PicDeleteView(DeleteView):
     success_url = reverse_lazy('picture:pic_list')
     template_name = 'picture/picture_delete.html'
 
-    def get(self, request, *args, **kwargs):
-        cate_pic = self.get_object()
-        context ={
-            'category': cate_pic[0].category,
-            'cate_num': len(cate_pic),
-            'pic_list': [pic.pic_name for pic in cate_pic]
-        }
-
-        return self.render_to_response(context)
-
     def get_queryset(self):
         return self.model.objects.filter(
             user_id=self.request.user.id
@@ -84,10 +74,22 @@ class PicDeleteView(DeleteView):
     def get_object(self, queryset=None):
         queryset = self.get_queryset()
 
-        category = self.kwargs['pk']
-
-        obj = queryset.filter(category=category)
+        parameter = self.kwargs['pk']
+        if parameter.isdigit():
+            obj = queryset.filter(pic_name=parameter)
+        else:
+            obj = queryset.filter(category=parameter)
         return obj
+
+    def get(self, request, *args, **kwargs):
+        cate_pic = self.get_object()
+        context = {
+            'category': cate_pic[0].category,
+            'cate_num': len(cate_pic),
+            'pic_list': [pic.pic_name for pic in cate_pic]
+        }
+
+        return self.render_to_response(context)
 
     def delete(self, request, *args, **kwargs):
         response = super(PicDeleteView, self).delete(request, *args, **kwargs)
