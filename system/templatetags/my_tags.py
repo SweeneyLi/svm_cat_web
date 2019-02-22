@@ -1,8 +1,10 @@
 from django import template
+import re
 
 register = template.Library()
 
 
+@register.filter()
 def num_to_English(num):
     num_English_dict = {
         1: 'First',
@@ -16,9 +18,16 @@ def num_to_English(num):
     return num_English_dict[int(num)]
 
 
-register.filter(num_to_English)
+@register.filter()
+def field_type(field):
+    return re.findall(r'"\w+"', str(field))[0].strip('"')
 
-#
-# @register.filter(name='get_pic_name')
-# def get_pic_name(path):
-#     return path.split('/')[-1]
+
+@register.filter()
+def label_with_classes(value, arg):
+    return value.label_tag(attrs={'class': arg})
+
+
+@register.filter()
+def widget_with_classes(value, arg):
+    return value.as_widget(attrs={'class': arg})

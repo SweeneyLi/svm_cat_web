@@ -34,10 +34,25 @@
                     <form method="post" enctype="multipart/form-data">{% csrf_token %}
                         {% for field in form %}
 
-                            <div class="form-group">
-                                {{ field.label_tag }}
-                                {{ field }}
-                            </div>
+                            -{{ field|field_type }}-
+
+                            {% if field|field_type == 'text' %}
+                                <div class="md-form form-lg">
+                                    {{ field|widget_with_classes:'form-control form-control-lg' }}
+                                    <h3>{{ field.label }}</h3>
+                                    {#                                    <h3>{{ field|label_with_classes:'' }}</h3>#}
+
+
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+
+                                    {{ field.label_tag }}
+                                    {{ field }}
+                                </div>
+                            {% endif %}
+
+
 
                         {% endfor %}
                         <button type="submit" class="btn btn-default">Submit</button>

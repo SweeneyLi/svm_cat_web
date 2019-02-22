@@ -19,7 +19,9 @@ def is_float(str):
 
 
 class PrepareDataForm(forms.Form):
-    test_pic = forms.ImageField()
+    test_pic = forms.ImageField(widget=forms.FileInput(attrs={
+        'class': 'custom-file-input'
+    }))
     test_category_positive = forms.ModelChoiceField(Picture.objects.none())
     test_category_negative = forms.ModelChoiceField(Picture.objects.none())
     validation_size = forms.FloatField(initial=0.2)
@@ -38,6 +40,11 @@ class PrepareDataForm(forms.Form):
             ),
             empty_label="---------",
         )
+
+
+        self.fields['test_category_positive'].widget.attrs.update({
+            'class': "browser-default custom-select"
+        })
 
     def is_valid(self):
 
