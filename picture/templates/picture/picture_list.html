@@ -16,7 +16,7 @@
                     <div class="panel panel-info">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <a class="h2-responsive" data-toggle="collapse" data-parent="#accordion"
+                                <a class="h2" data-toggle="collapse" data-parent="#accordion"
                                    href="#collapse{{ category }}">
                                     {{ category }}
                                 </a>
@@ -30,17 +30,12 @@
 
                             </h3>
                         </div>
-                        <div id="collapse{{ category }}" class="panel-collapse collapse">
+                        <div id="collapse{{ category }}" class="panel-collapse collapse in">
                             <div class="panel-body">
                                 <ul>
                                     {% for pic in pic_info %}
                                         <li>{{ pic.upload_date | date:"Y-m-j" }}-----
                                             <a href="{% url 'picture:pic_detail' pic.id %}">{{ pic.pic_name }}</a>
-                                            {#                                            <button type="button" class="btn btn-outline-danger btn-rounded"#}
-                                            {#                                                    data-href="{% url 'picture:pic_delete' pic.id %}"#}
-                                            {#                                                    data-toggle="modal"#}
-                                            {#                                                    data-target="#modalConfirmDelete">delete#}
-                                            {#                                            </button>#}
                                             <button type="button" class="fas fa-minus"
                                                     data-href="{% url 'picture:pic_delete' pic.id %}"
                                                     data-toggle="modal"
@@ -48,21 +43,17 @@
                                             </button>
                                         </li>
                                     {% endfor %}
+
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    </div>
-
-
                 {% endfor %}
+            </div>
+
         {% else %}
             <h2 class="text-warning">No uploaded Picture!</h2>
         {% endif %}
-        <div class="text-center">
-            <p><a class="btn btn-primary btn-rounded btn-lg btn-block" ripple-radius
-                  href="{% url 'picture:pic_upload' %}">upload</a></p>
-        </div>
 
     </div>
 
@@ -95,11 +86,11 @@
 
 {% block extra_js %}
     <script type="text/javascript">
-        {% with fir_pic=picture_list|first %}
-            $(function () {
-                $('#collapse{{ fir_pic.category }}').collapse('show')
-            });
-        {% endwith %}
+        {#$(function () {#}
+        {#    {% with fir_pic=picture_list|first %}#}
+        {#        $('#collapse{{ fir_pic.category }}').collapse('show')#}
+        {#    {% endwith %}#}
+        {##}
 
         $('#modalConfirmDelete').on('show.bs.modal', function (e) {
             $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));

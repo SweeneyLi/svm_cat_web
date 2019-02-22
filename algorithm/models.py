@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class SVMModel(models.Model):
     user_id = models.IntegerField('user_id')
     model_name = models.CharField('model_name', max_length=50)
-    comment = models.CharField('comment', max_length=255, default='', blank=True)
+    comment = models.TextField('comment', max_length=255, default='', blank=True)
 
     train_num = models.IntegerField('train_num', default=0)
     update_time = models.DateTimeField('update_time', auto_now_add=True)
