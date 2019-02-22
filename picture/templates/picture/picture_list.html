@@ -26,7 +26,8 @@
                                 &nbsp;/&nbsp;
                                 {{ pic_info|length }} picture{{ pic_info|length| pluralize }}
 
-                                <button type="button" class="fas fa-folder-minus"
+                                <button name="{{ category }} and {{ pic_info|length }} picture{{ pic_info|length| pluralize }} "
+                                        type="button" class="fas fa-folder-minus"
                                         data-href="{% url 'picture:pic_delete' category %}" data-toggle="modal"
                                         data-target="#modalConfirmDelete">
                                 </button>
@@ -35,14 +36,18 @@
                         </div>
                         <div id="collapse{{ category }}" class="panel-collapse collapse">
                             <div class="panel-body">
+
+                                <div id="picture">
+                                </div>
+
                                 <table class="table  table-striped">
                                     <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Picture Name</th>
-                                        <th>Picture Size</th>
-                                        <th>Upload Date</th>
-                                        <th>Action</th>
+                                        <th style="font-size: 15px">#</th>
+                                        <th style="font-size: 15px">Picture Name</th>
+                                        <th style="font-size: 15px">Picture Size</th>
+                                        <th style="font-size: 15px">Upload Date</th>
+                                        <th style="font-size: 15px">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -52,14 +57,19 @@
 
                                         <tr>
                                             <th scope="row">{{ forloop.counter }}</th>
-                                            <td>{{ pic.pic_name }}</td>
-                                            <td>{{ pic.pic_size }}</td>
-                                            <td>{{ pic.upload_date| date:"Y-m-j" }}</td>
-                                            <td><a id="{{ pic.name }}Link" title="Click"
-                                                   href="#" onclick="Pic_Detail('{{ pic.path.url }}')" ;return false;">
-                                                {{ pic.pic_name }}
-                                                </a>/
+                                            <td style="font-size: 15px">
+                                                <div class="cart">
+                                                    <a data-toggle="tooltip"
+                                                       title="<img src='{{ pic.path.url }}' />">
+                                                        {{ pic.pic_name }}
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td style="font-size: 15px">{{ pic.pic_size }}</td>
+                                            <td style="font-size: 15px">{{ pic.upload_date| date:"Y-m-j" }}</td>
+                                            <td style="font-size: 15px">
                                                 <button type="button" class="fas fa-minus"
+                                                        name="{{ pic.pic_name }}"
                                                         data-href="{% url 'picture:pic_delete' pic.id %}"
                                                         data-toggle="modal"
                                                         data-target="#modalConfirmDelete">
@@ -79,7 +89,7 @@
         {% else %}
             <h2 class="text-warning">No uploaded Picture!</h2>
         {% endif %}
-
+        <a class="btn btn-block btn-blue" href="{% url 'picture:pic_upload' %}">Upload</a>
     </div>
 
     <!--Modal: modalConfirmDelete-->
@@ -106,8 +116,7 @@
             </div>
         </div>
     </div>
-    <div id="picture">
-    </div>
+
 
 {% endblock %}
 
@@ -119,13 +128,18 @@
             {% endwith %}
         });
 
-        function Pic_Detail(path) {
-            document.getElementById("picture").innerHTML = "<img src=" + path + ">";
-        }
+        $('a[data-toggle="tooltip"]').tooltip({
+            animated: 'fade',
+            placement: 'left',
+            html: true
+        });
 
         $('#modalConfirmDelete').on('show.bs.modal', function (e) {
-            $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-            $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
+            var href = $(e.relatedTarget).data('href');
+            file_name = $(e.relatedTarget)[0].getAttribute('name')
+
+            $(this).find('.btn-ok').attr('href', href);
+            $('.debug-url').html('Delete File: <strong>' + file_name + '</strong>');
         });
 
     </script>
