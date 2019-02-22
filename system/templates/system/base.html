@@ -11,13 +11,17 @@
     <!-- Bootstrap -->
     <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-{% block css %}{% endblock %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css">
+    <!-- Material Design Bootstrap -->
+    <link href="{% static 'MDB-Free_4.7.3/css/mdb.min.css' %}" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link href="{% static 'MDB-Free_4.7.3/css/style.css' %}" rel="stylesheet">
+    <!-- font-awesome -->
+    <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}">
+
+    <!-- Mine Css -->
+    <link href="{% static 'css/form.css' %}" rel="stylesheet"/>
+    {% block css %}{% endblock %}
 </head>
 <body>
 
@@ -86,7 +90,13 @@
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
 
-<link href="{% static 'css/form.css' %}" rel="stylesheet"/>
+<script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/jquery-3.3.1.min.js' %}"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/popper.min.js' %}"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/bootstrap.min.js' %}"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/mdb.min.js' %}"></script>
 {% block extra_js %}{% endblock extra_js %}
 
 </body>
