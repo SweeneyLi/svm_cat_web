@@ -22,7 +22,7 @@ def Step(request, pk):
     elif pk <= 0:
         return redirect(step_dict[1]['url'])
     else:
-        return redirect(step_dict[len(step_dict) - 1]['url'])
+        return redirect(step_dict[len(step_dict)]['url'])
 
 
 # template
@@ -412,9 +412,9 @@ class ModelCreateView(CreateView):
         svm_model = SVC(C=float(form.data['C']), kernel=form.data['kernel'], probability=True)
 
         if form.data['ensemble_learning'] == 'BaggingClassifier':
-            svm_model = BaggingClassifier(base_estimator=svm_model, n_estimators=form.data['n_estimators'])
+            svm_model = BaggingClassifier(base_estimator=svm_model, n_estimators=int(form.data['n_estimators']))
         elif form.data['ensemble_learning'] == 'AdaBoostClassifier':
-            svm_model = AdaBoostClassifier(base_estimator=svm_model, n_estimators=form.data['n_estimators'])
+            svm_model = AdaBoostClassifier(base_estimator=svm_model, n_estimators=int(form.data['n_estimators']))
 
         the_dir = path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id))
         if not path.exists(the_dir):
