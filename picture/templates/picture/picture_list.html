@@ -5,7 +5,7 @@
 
 {% block content %}
     <div class="container">
-        <h3>图片列表</h3>
+        <h1 class="text-primary">Picture List</h1>
 
         {% if picture_list %}
             <div class="panel-group" id="accordion">
@@ -15,22 +15,37 @@
 
                     <div class="panel panel-info">
                         <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion"
-                                   href="#collapseThree">
+                            <h3 class="panel-title">
+                                <a class="h2-responsive" data-toggle="collapse" data-parent="#accordion"
+                                   href="#collapse{{ category }}">
                                     {{ category }}
-                                </a>-------------->
-                                <a href="{% url 'picture:pic_delete' category %}">category delete</a>
-                            </h4>
+                                </a>
+                                &nbsp;/&nbsp;
+                                {{ pic_info|length }} picture{{ pic_info|length| pluralize }}
+
+                                <button type="button" class="fas fa-folder-minus"
+                                        data-href="{% url 'picture:pic_delete' category %}" data-toggle="modal"
+                                        data-target="#modalConfirmDelete">
+                                </button>
+
+                            </h3>
                         </div>
-                        <div id="collapseThree" class="panel-collapse collapse">
+                        <div id="collapse{{ category }}" class="panel-collapse collapse">
                             <div class="panel-body">
                                 <ul>
                                     {% for pic in pic_info %}
                                         <li>{{ pic.upload_date | date:"Y-m-j" }}-----
                                             <a href="{% url 'picture:pic_detail' pic.id %}">{{ pic.pic_name }}</a>
-                                            -------------->
-                                            <a href="{% url 'picture:pic_delete' pic.id %}">picture delete</a>
+                                            {#                                            <button type="button" class="btn btn-outline-danger btn-rounded"#}
+                                            {#                                                    data-href="{% url 'picture:pic_delete' pic.id %}"#}
+                                            {#                                                    data-toggle="modal"#}
+                                            {#                                                    data-target="#modalConfirmDelete">delete#}
+                                            {#                                            </button>#}
+                                            <button type="button" class="fas fa-minus"
+                                                    data-href="{% url 'picture:pic_delete' pic.id %}"
+                                                    data-toggle="modal"
+                                                    data-target="#modalConfirmDelete">
+                                            </button>
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -42,14 +57,56 @@
 
                 {% endfor %}
         {% else %}
-            <li>No uploaded Picture!</li>
+            <h2 class="text-warning">No uploaded Picture!</h2>
         {% endif %}
         <div class="text-center">
-            <p><a href="{% url 'picture:pic_upload' %}">upload</a></p>
+            <p><a class="btn btn-primary btn-rounded btn-lg btn-block" ripple-radius
+                  href="{% url 'picture:pic_upload' %}">upload</a></p>
+        </div>
+
+    </div>
+
+    <!--Modal: modalConfirmDelete-->
+    <div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+            <!--Content-->
+            <div class="modal-content text-center">
+                <!--Header-->
+                <div class="modal-header d-flex justify-content-center">
+                    <p class="heading">Are you sure to delete?</p>
+                </div>
+                <!--Body-->
+                <div class="modal-body">
+
+                    <i class="fas fa-times fa-4x animated rotateIn"></i>
+                </div>
+                <div class="debug-url"></div>
+                <!--Footer-->
+                <div class="modal-footer flex-center">
+                    <a href="" class="btn  btn-outline-danger btn-ok">Yes</a>
+                    <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+                </div>
+            </div>
         </div>
     </div>
 
 {% endblock %}
 
+{% block extra_js %}
+    <script type="text/javascript">
+        {% with fir_pic=picture_list|first %}
+            $(function () {
+                $('#collapse{{ fir_pic.category }}').collapse('show')
+            });
+        {% endwith %}
+
+        $('#modalConfirmDelete').on('show.bs.modal', function (e) {
+            $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+            $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
+        });
+
+    </script>
+{% endblock extra_js %}
 
 

@@ -5,7 +5,7 @@
 
 {% block content %}
     <div class="container">
-        <h3>model_list</h3>
+        <h1 class="text-primary">model_list</h1>
 
         {% if model_list %}
             {% for model in model_list %}
@@ -24,11 +24,17 @@
 
                 </ul>
             {% endfor %}
+            <div class="text-center">
+                <p><a class="btn btn-primary btn-rounded btn-lg btn-block"
+                      href="{% url 'alogrithm:train_svm_model' %}">train model</a></p>
+            </div>
         {% else %}
-            No model!
-            <a href="{% url 'alogrithm:create_svm_model' %}">create_model</a>
+            <p class="warning">
+            <h2 class="text-warning">No uploaded Picture!</h2>
+            </p>
+            <p><a class="btn btn-primary btn-rounded btn-lg btn-block"
+                  href="{% url 'alogrithm:create_svm_model' %}">create model</a></p>
         {% endif %}
-        <a href="{% url 'alogrithm:train_svm_model' %}">train model</a>
 
     </div>
 

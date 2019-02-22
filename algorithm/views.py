@@ -511,12 +511,9 @@ class ModelDetailView(DetailView):
 class ModelDeleteView(DeleteView):
     model = SVMModel
     success_url = reverse_lazy('alogrithm:model_list')
-    template_name = 'algorithm/model_delete.html'
 
-    # def get(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     context = self.get_context_data(object=self.object)
-    #     return self.render_to_response(context)
+    def get(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
 
     def get_queryset(self):
         return self.model.objects.filter(user_id=self.request.user.id)

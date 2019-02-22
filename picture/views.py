@@ -12,7 +12,7 @@ from .models import Picture
 from django.conf import settings
 
 import shutil
-
+import os
 
 class PicList(ListView):
     context_object_name = 'picture_list'
@@ -64,7 +64,6 @@ class PicUpload(FormView):
 class PicDeleteView(DeleteView):
     model = Picture
     success_url = reverse_lazy('picture:pic_list')
-    template_name = 'picture/picture_delete.html'
 
     def get_queryset(self):
         return self.model.objects.filter(
@@ -76,28 +75,28 @@ class PicDeleteView(DeleteView):
 
         parameter = self.kwargs['pk']
         if parameter.isdigit():
-            obj = queryset.filter(pic_name=parameter)
+            obj = queryset.filter(id=parameter)
         else:
             obj = queryset.filter(category=parameter)
         return obj
 
     def get(self, request, *args, **kwargs):
-        cate_pic = self.get_object()
-        context = {
-            'category': cate_pic[0].category,
-            'cate_num': len(cate_pic),
-            'pic_list': [pic.pic_name for pic in cate_pic]
-        }
-
-        return self.render_to_response(context)
+        return self.delete(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
-        response = super(PicDeleteView, self).delete(request, *args, **kwargs)
+
 
         user_id = self.request.user.id
-        category = self.kwargs['pk']
+        parameter = self.kwargs['pk']
 
-        category_path = path.join(settings.MEDIA_ROOT, 'upload_images', str(user_id), category)
-        shutil.rmtree(category_path)
+        if parameter.isdigit():
+            queryset = self.get_queryset()
+            pic_path = str(queryset.filter(id=parameter).get().path)
+            absolute_path = path.join(settings.MEDIA_ROOT, pic_path)
+            os.remove(absolute_path)
+        else:
+            category_path = path.join(settings.MEDIA_ROOT, 'upload_images', str(user_id), parameter)
+            shutil.rmtree(category_path)
 
+        response = super(PicDeleteView, self).delete(request, *args, **kwargs)
         return response
