@@ -68,10 +68,20 @@
 
 {% block extra_js %}
     <script type="text/javascript">
-        $('#modalConfirmDelete').on('show.bs.modal', function (e) {
-            $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-            {#$('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');#}
+
+        // tooltip component(show image)
+        $('a[data-toggle="tooltip"]').tooltip({
+            animated: 'fade',
+            placement: 'left',
+            html: true
         });
 
+        // show the delete modal
+        $('#modalConfirmDelete').on('show.bs.modal', function (e) {
+            var href = $(e.relatedTarget).data('href');
+            file_name = $(e.relatedTarget)[0].getAttribute('name').replace("DeleteButton", '');
+            $(this).find('.btn-ok').attr('href', href);
+            $('.debug-url').html('Delete Files: <strong>' + file_name + '</strong>');
+        });
     </script>
 {% endblock extra_js %}

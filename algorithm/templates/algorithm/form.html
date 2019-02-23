@@ -33,9 +33,10 @@
                     <form method="post" enctype="multipart/form-data">{% csrf_token %}
                         {% for field in form %}
 
-                            -{{ field|field_type }}-
+                            {#                            -{{ field|field_type }}-#}
 
                             {% if field|field_type == 'text' %}
+
                                 <div class="md-form input-group input-group-lg">
                                     <div class="input-group-prepend ">
                                         <span class="input-group-text md-addon"
@@ -45,41 +46,50 @@
                                     </div>
                                     {{ field|widget_with_classes:'form-control' }}
                                 </div>
+
                             {% elif  field|field_type == 'checkbox' %}
+
                                 <div class="custom-control custom-checkbox">
                                     {{ field|widget_with_classes:'custom-control-input' }}
-                                    <label class="custom-control-label" for="defaultUnchecked">{{ field.label }}</label>
+                                    <label class="custom-control-label">{{ field.label }}</label>
                                 </div>
+
+
                             {% elif  field|field_type == 'comment' %}
+
                                 <div class="md-form amber-textarea active-amber-textarea-2">
                                     <i class="fas fa-pencil-alt prefix"></i>
-                                    <textarea type="text" name="comment" class="md-textarea form-control"
-                                              rows="3"></textarea>
-                                    <span class="input-group-text md-addon"
-                                          id="inputGroupMaterial-sizing-lg">
-                                            {{ field.label }}
-                                        </span>
+                                    <textarea type="text" name="{{ field|field_type }}" id="id_comment" class="md-textarea form-control"
+                                              rows="2" cols="10"></textarea>
+                                    {{ field.label_tag }}
                                 </div>
+
+                            {% elif  field|field_type == 'C' %}
+
+                                <div class="md-form amber-textarea active-amber-textarea-2">
+                                    <i class="fas fa-pencil-alt prefix"></i>
+                                    {{ field|widget_with_classes:'md-textarea form-control' }}
+                                    {{ field.label_tag }}
+                                </div>
+
                             {% elif  field|field_type == 'number' %}
 
+                                {{ field.label_tag }}
                                 <div class="md-form">
-
-                                    <span class="input-group-text md-addon"
-                                          id="inputGroupMaterial-sizing-lg">
-                                            {{ field.label }}
-                                        </span>
                                     {{ field|widget_with_classes:'form-control' }}
                                 </div>
-                            {% elif  field|field_type == 'file' %}
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Upload</span>
-                                    </div>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="inputGroupFile01">
-                                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-                                    </div>
-                                </div>
+
+
+                                {#                            {% elif  field|field_type == 'file' %}#}
+                                {#                                <div class="input-group mb-3">#}
+                                {#                                    <div class="input-group-prepend">#}
+                                {#                                        <span class="input-group-text">Upload</span>#}
+                                {#                                    </div>#}
+                                {#                                    <div class="custom-file">#}
+                                {#                                        <input type="file" class="custom-file-input" id="inputGroupFile01">#}
+                                {#                                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>#}
+                                {#                                    </div>#}
+                                {#                                </div>#}
 
                             {% else %}
                                 <div class="form-group">
