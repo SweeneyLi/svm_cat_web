@@ -29,13 +29,14 @@
                       href="{% url 'alogrithm:train_svm_model' %}">train model</a></p>
             </div>
         {% else %}
-            <p class="warning">
-            <h2 class="text-warning">No uploaded Picture!</h2>
-            </p>
-            <p><a class="btn btn-primary btn-rounded btn-lg btn-block"
-                  href="{% url 'alogrithm:create_svm_model' %}">create model</a></p>
+            <div class="warning">
+                <h2 class="text-warning">No uploaded Picture!</h2>
+            </div>
         {% endif %}
-
+        <div class="footer">
+            <a class="btn btn-primary btn-rounded btn-lg btn-block"
+               href="{% url 'alogrithm:create_svm_model' %}">create model</a>
+        </div>
     </div>
 
 
@@ -69,6 +70,19 @@
 {% block extra_js %}
     <script type="text/javascript">
 
+        // show the firstt collapse category
+        {% with fir_model=model_list|first %}
+            $('#collapse{{ fir_model.model_name }}').collapse('show')
+        {% endwith %}
+
+        // table order component
+        {% for model_name, _ in model_list %}
+
+            $('#{{ model_name }}DataTable').DataTable({
+                "order": [[3, "desc"]]
+            });
+            $('.dataTables_length').addClass('bs-select');
+        {% endfor %}
         // tooltip component(show image)
         $('a[data-toggle="tooltip"]').tooltip({
             animated: 'fade',
