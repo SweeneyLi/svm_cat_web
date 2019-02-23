@@ -14,8 +14,6 @@
 body {
     background-color: #eee;
 }
-table th td {
-    font-size: 20px !important;
+.pagination .page-item .page-link{
+    font-size: 10px !important;
 }
-
-
