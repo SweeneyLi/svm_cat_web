@@ -4,36 +4,47 @@
 {% block title %}profile_update{% endblock %}
 
 {% block content %}
+
     <div class="container">
+    <h2>Profile Update</h2>
 
-
-        <h2>Account Info</h2>
-        <ul>
-            <li>Username: {{ user.username }} </li>
-            <li>Email: {{ user.email }} </li>
-
-        </ul>
-        <h2>Update My Profile</h2>
-
-        <div class="form-wrapper">
-            <form method="post" action="" enctype="multipart/form-data">
-                {% csrf_token %}
+    <div class="row">
+        <div class="col-md-6">
+            {% if form.errors %}
+                <div class="alert alert-warning">{{ form.errors }}</div>
+            {% endif %}
+            {% load my_tags %}
+            <form method="post" enctype="multipart/form-data">{% csrf_token %}
                 {% for field in form %}
-                    <div class="fieldWrapper">
-                        {{ field.errors }}
-                        {{ field.label_tag }} {{ field }}
-                        {% if field.help_text %}
-                            <p class="help">{{ field.help_text|safe }}</p>
-                        {% endif %}
+                    <div class="md-form input-group input-group-lg">
+                        <div class="input-group-prepend ">
+                                        <span class="input-group-text md-addon"
+                                              id="inputGroupMaterial-sizing-lg">
+                                            {{ field.label }}
+                                        </span>
+                        </div>
+                        {{ field|widget_with_classes:'form-control' }}
                     </div>
                 {% endfor %}
-                <div class="button-wrapper submit">
-                    <input type="submit" value="Update"/>
-                </div>
+                <p>
+                    <button type="reset" class="btn btn-outline-secondary waves-effect">Reset</button>
+                       
+                    <button type="submit" class="btn btn-outline-success waves-effect">Submit</button>
+                </p>
             </form>
         </div>
-
-        <a href="{% url 'user:logout' %}">Logout</a> |
-        <a href="{% url 'user:pwd_change' user.id %}">Password change</a>
+        <div class="col-md-6">
+            <img class="img-responsive mx-auto" src="{% static '/img/LXH-1.jpg' %}">
+            {% if result %}
+                {{ result }}
+            {% endif %}
+            <hr>
+        </div>
+        <div class="col-md-12">
+            <a class="btn btn-lg btn-light-blue btn-block" href="{% url 'user:profile' %}">My Profile</a>
+        </div>
     </div>
+
 {% endblock %}
+
+

@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse, redirect
-from django.views.generic import CreateView, ListView, DetailView, FormView, DeleteView
+from django.views.generic import CreateView, ListView, DetailView, FormView, DeleteView, View
 from django.utils.safestring import mark_safe
 
 from .forms import *
@@ -35,7 +35,7 @@ class template(FormView):
     def get(self, request, *args, **kwargs):
         form = None
 
-        return render(request, 'algorithm/form.html',
+        return render(request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 2,
                        'title': step_dict[2]['name'],
@@ -68,7 +68,7 @@ class PrepareDataView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(request, 'algorithm/form.html',
+        return render(request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 1,
                        'title': step_dict[1]['name'],
@@ -84,7 +84,7 @@ class PrepareDataView(FormView):
             return self.form_invalid(form, **kwargs)
 
     def form_invalid(self, form, **kwargs):
-        return render(self.request, 'algorithm/form.html',
+        return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 1,
                        'title': step_dict[1]['name'],
@@ -143,7 +143,7 @@ class HOGPicView(FormView):
     def get(self, request, *args, **kwargs):
         form = self.get_form()
         # return render(request, 'algorithm/hog_pic.html', {'form': form})
-        return render(request, 'algorithm/form.html',
+        return render(request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 2,
                        'title': step_dict[2]['name'],
@@ -160,7 +160,7 @@ class HOGPicView(FormView):
 
     def form_invalid(self, form, **kwargs):
 
-        return render(self.request, 'algorithm/form.html',
+        return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 2,
                        'title': step_dict[2]['name'],
@@ -190,7 +190,7 @@ class HOGPicView(FormView):
         #               {'form': form,
         #                'hog_pic': hog_pic,
         #                })
-        return render(self.request, 'algorithm/form.html',
+        return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 2,
                        'title': step_dict[2]['name'],
@@ -210,7 +210,7 @@ class EvaluateAlgorithmView(FormView):
         proc.start()
         proc.join()
 
-        return render(request, 'algorithm/form.html',
+        return render(request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 3,
                        'title': step_dict[3]['name'],
@@ -231,7 +231,7 @@ class EvaluateAlgorithmView(FormView):
 
         eval_pic = eval_pic_path(user_id)
 
-        return render(request, 'algorithm/form.html',
+        return render(request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 3,
                        'title': step_dict[3]['name'],
@@ -245,7 +245,7 @@ class AdjustSVMView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(request, 'algorithm/form.html',
+        return render(request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 4,
                        'title': step_dict[4]['name'],
@@ -260,7 +260,7 @@ class AdjustSVMView(FormView):
             return self.form_invalid(form, **kwargs)
 
     def form_invalid(self, form, **kwargs):
-        return render(self.request, 'algorithm/form.html',
+        return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 4,
                        'title': step_dict[4]['name'],
@@ -282,7 +282,7 @@ class AdjustSVMView(FormView):
         proc.start()
         proc.join()
 
-        return render(self.request, 'algorithm/form.html',
+        return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 4,
                        'title': step_dict[4]['name'],
@@ -300,7 +300,7 @@ class AdjustEnsembleLearningView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(self.request, 'algorithm/form.html',
+        return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 5,
                        'title': step_dict[5]['name'],
@@ -315,7 +315,7 @@ class AdjustEnsembleLearningView(FormView):
             return self.form_invalid(form, **kwargs)
 
     def form_invalid(self, form, **kwargs):
-        return render(self.request, 'algorithm/form.html',
+        return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 5,
                        'title': step_dict[5]['name'],
@@ -338,7 +338,7 @@ class AdjustEnsembleLearningView(FormView):
         proc.start()
         proc.join()
 
-        return render(self.request, 'algorithm/form.html',
+        return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 5,
                        'title': step_dict[5]['name'],
@@ -348,7 +348,7 @@ class AdjustEnsembleLearningView(FormView):
 
 
 class ModelCreateView(CreateView):
-    template_name = 'algorithm/form.html'
+    template_name = 'algorithm/model_form.html'
     model = SVMModel
     fields = ['model_name', 'comment', 'pic_size', 'orientations',
               'pixels_per_cell', 'cells_per_block', 'is_color',
@@ -357,7 +357,7 @@ class ModelCreateView(CreateView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(self.request, 'algorithm/form.html',
+        return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 6,
                        'title': step_dict[6]['name'],
@@ -398,7 +398,7 @@ class ModelCreateView(CreateView):
 
         # judge the same model_name
         if SVMModel.objects.filter(user_id=user_id, model_name=form.data['model_name']).exists():
-            return render(self.request, 'algorithm/form.html',
+            return render(self.request, 'algorithm/model_form.html',
                           {'form': form,
                            'step': 6,
                            'title': step_dict[6]['name'],
@@ -473,7 +473,7 @@ class TrainSVMModelView(FormView):
         proc.start()
         proc.join()
 
-        train_log = ModelTrainLog(user_id=user_id, model_name=model_name,
+        train_log = ModelTrainLog(user_id=user_id, model_id=return_dict['model_id'],
                                   train_category_positive=train_category_positive,
                                   positive_num=positive_num,
                                   train_category_negative=train_category_negative,
@@ -501,12 +501,36 @@ class ModelListView(ListView):
             filter(user_id=self.request.user.id).order_by('recently_accuracy_score', '-update_time')
 
 
-class ModelDetailView(DetailView):
-    model = SVMModel
-    Context_object_name = 'model_detail'
+class ModelDetailView(View):
 
-    template_name = 'algorithm/model_detail.html'
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs['pk']
+        the_model = SVMModel.objects.all().filter(user_id=self.request.user.id, id=pk).values()[0]
 
+        train_log = ModelTrainLog.objects.all().filter(model_id=the_model['id'])
+        return render(request, 'algorithm/model_detail.html',
+                      {
+                          'model': the_model,
+                          'train_log': train_log
+                      })
+
+
+# class ModelDetailView(DetailView):
+#
+#     def get_object(self, queryset=None):
+#         pk = self.kwargs.get(self.pk_url_kwarg)
+#         the_model = SVMModel.objects.filter(user_id=self.request.user.id, id=pk).get()
+#         train_log = ModelTrainLog.objects.filter(model_id=the_model.id)
+#         model_info = {
+#             'model': the_model,
+#             'train_log': train_log
+#         }
+#         return model_info
+#
+#     def get(self, request, *args, **kwargs):
+#         model_info = self.get_object()
+#         return render(request, 'algorithm/model_detail.html', {'model_info': model_info})
+#
 
 class ModelDeleteView(DeleteView):
     model = SVMModel

@@ -10,3 +10,4 @@ Start at: 2019/1/22
 + every font
 + every link to icon or button
 + loading
++ divide

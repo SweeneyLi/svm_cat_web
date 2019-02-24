@@ -57,7 +57,7 @@
                 {% if user.id %}
                     <li><a class="nav-glyphicon" href="{% url 'picture:pic_list' %}">My images</a></li>
                     <li><a class="nav-glyphicon" href="{% url 'alogrithm:model_list' %}">My Models</a></li>
-                    <li><a class="nav-glyphicon" href="{% url 'user:profile' user.id %}" title="Settings"><span
+                    <li><a class="nav-glyphicon" href="{% url 'user:profile' %}" title="Settings"><span
                             class="glyphicon glyphicon-cog"></span></a></li>
                     <li><a class="nav-glyphicon" href="{% url 'user:logout' %}" title="Logout"><span
                             class="glyphicon glyphicon-log-out"></span></a></li>
@@ -93,12 +93,13 @@
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
 
 {#<script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/jquery-3.3.1.min.js' %}"></script>#}
 <!-- Bootstrap tooltips -->
 <script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/popper.min.js' %}"></script>
 <!-- Bootstrap core JavaScript -->
+<script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+
 {#<script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/bootstrap.min.js' %}"></script>#}
 <!-- MDB core JavaScript -->
 <script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/mdb.min.js' %}"></script>

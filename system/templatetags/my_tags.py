@@ -31,3 +31,9 @@ def label_with_classes(value, arg):
 @register.filter()
 def widget_with_classes(value, arg):
     return value.as_widget(attrs={'class': arg})
+
+@register.filter()
+def remainder(value, oper):
+    print(type(value))
+    print(value)
+    return value % int(oper)

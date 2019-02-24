@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.views.generic import FormView
 
 from .forms import RegistrationForm, LoginForm, ProfileForm, PwdChangeForm
 from .models import UserProfile
@@ -68,34 +69,43 @@ def login(request):
     return render(request, 'user/login.html', {'form': form})
 
 
-def profile(request, pk):
-    user = get_object_or_404(User, pk=pk)
-    return render(request, 'user/profile.html', {'user': user})
+def profile(request):
+    user_id = request.user.id
+    userProfile = get_object_or_404(User, pk=user_id)
+    return render(request, 'user/profile.html', {'user': userProfile})
 
 
-def profile_update(request, pk):
-    user = get_object_or_404(User, pk=pk)
-    user_profile = get_object_or_404(UserProfile, user=user)
+class ProfileUpdateView(FormView):
+    form_class = ProfileForm
 
-    if request.method == "POST":
-        form = ProfileForm(request.POST)
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(request, 'system/common_form.html',
+                      {'form': form,
+                       'title': 'Profile Update',
+                       'pic_url': '/static/img/LXH-1.jpg',
+                       'next_url': reverse_lazy('user:profile'),
+                       'next_name': 'Profile'
+                       })
 
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
         if form.is_valid():
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.save()
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
 
-            user_profile.org = form.cleaned_data['org']
-            user_profile.telephone = form.cleaned_data['telephone']
-            user_profile.save()
+    def form_invalid(self, form, **kwargs):
+        return render(self.request, 'system/common_form.html',
+                      {'form': form,
+                       'title': 'Profile Update',
+                       'pic_url': '/img/LXH-2.jpg',
+                       'next_url': reverse_lazy('user:profile'),
+                       'message': form.errors
+                       })
 
-            return HttpResponseRedirect(reverse('user:profile', args=[user.id]))
-    else:
-        default_data = {'first_name': user.first_name, 'last_name': user.last_name,
-                        'org': user_profile.org, 'telephone': user_profile.telephone, }
-        form = ProfileForm(default_data)
-
-    return render(request, 'user/profile_update.html', {'form': form, 'user': user})
+    def form_valid(self, form, **kwargs):
+        return redirect('user:profile')
 
 
 def logout(request):
@@ -103,8 +113,9 @@ def logout(request):
     return HttpResponseRedirect("/accounts/login/")
 
 
-def pwd_change(request, pk):
-    user = get_object_or_404(User, pk=pk)
+def pwd_change(request):
+    user_id = request.user.id
+    user = get_object_or_404(User, pk=user_id)
     if request.method == "POST":
         form = PwdChangeForm(request.POST)
 
@@ -119,7 +130,11 @@ def pwd_change(request, pk):
                 new_password = form.cleaned_data['password2']
                 user.set_password(new_password)
                 user.save()
-                return HttpResponseRedirect("/accounts/login/")
+
+                return redirect('user:logout')
+                # form = LoginForm()
+                # return render(request, 'user/login.html', {'form': form,
+                #                                            'message': 'Please login again with new password!'})
 
             else:
                 return render(request, 'user/pwd_change.html', {'form': form,
@@ -127,5 +142,4 @@ def pwd_change(request, pk):
                                                                 'message': 'Old password is wrong. Try again'})
     else:
         form = PwdChangeForm()
-
-    return render(request, 'user/pwd_change.html', {'form': form, 'user': user})
+        return render(request, 'user/pwd_change.html', {'form': form, 'user': user})

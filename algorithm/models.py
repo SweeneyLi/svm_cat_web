@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class SVMModel(models.Model):
     user_id = models.IntegerField('user_id')
     model_name = models.CharField('model_name', max_length=50)
-    comment = models.TextField('comment', max_length=255, default='', blank=True)
+    comment = models.TextField('comment', max_length=255, blank=True)
 
     train_num = models.IntegerField('train_num', default=0)
     update_time = models.DateTimeField('update_time', auto_now_add=True)
@@ -39,11 +39,12 @@ class SVMModel(models.Model):
 class ModelTrainLog(models.Model):
     user_id = models.IntegerField('user_id')
     train_time = models.DateTimeField('train_time', auto_now_add=True)
-    model_name = models.CharField('model_name', max_length=100)
+    model_id = models.IntegerField('model_id')
 
+    accuracy_score = models.FloatField('accuracy_score', max_length=100, default=0)
     train_category_positive = models.CharField('train_category_positive', max_length=100)
     positive_num = models.IntegerField('positive_num')
     train_category_negative = models.CharField('train_category_negative', max_length=100)
     negative_num = models.IntegerField('negative_num')
     validation_size = models.FloatField('validation_size')
-    accuracy_score = models.FloatField('accuracy_score', max_length=100, default=0)
+

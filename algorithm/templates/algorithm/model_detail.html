@@ -3,31 +3,204 @@
 
 {% block title %}model_detail{% endblock %}
 
+{% block css %}
+    <style>
+
+        #bottomTable {
+            border-top: 1px dashed #333;
+        }
+
+
+    </style>
+{% endblock css %}
+
 {% block content %}
     <div class="container">
 
         <h3>Model_Details</h3>
+        <div class="row">
+            <div id="topTable">
+                <table class="table table-striped table-bordered  table-hover table-responsive-lg text-nowrap"
+                       cellspacing="0" width="100%">
+                    <caption>Model Info</caption>
+                    {#                     <thead class=" rgba-cyan-slight brown-text">#}
+                    {#                    <tr>#}
+                    {#                        <th scope="col" style="font-size: 15px">Model info</th>#}
+                    {#                        <th scope="col" style="font-size: 15px"></th>#}
+                    {#                        <th scope="col" style="font-size: 15px">parameter</th>#}
+                    {#                        <th scope="col" style="font-size: 15px"></th>#}
+                    {#                    </tr>#}
+                    {#                     </thead>#}
+                    <tbody>
+                    <tr>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">model_name:</th>
+                        <th colspan="2" style="font-size: 15px">{{ model.model_name }}</th>
+                    </tr>
+                    <tr>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">comment:</th>
+                        <th colspan="2" style="font-size: 15px">{{ model.comment }}</th>
+                    </tr>
+                    <tr>
 
-        {% if svmmodel %}
-            * model_name:{{ svmmodel.model_name }}<br>
-            * comment:{{ svmmodel.comment }}<br>
-            * train_num:{{ svmmodel.train_num }}<br>
-            * create_time:{{ svmmodel.create_time }}<br>
-            * update_time:{{ svmmodel.update_time }}<br>
-            * accuracy_score:{{ svmmodel.accuracy_score }}<br>
-            * C:{{ svmmodel.C }}<br>
-            * kernel:{{ svmmodel.kernel }}<br>
-            * is_standard:{{ svmmodel.is_standard }}<br>
-            * pic_size:{{ svmmodel.pic_size }}<br>
-            * orientations:{{ svmmodel.orientations }}<br>
-            * pixels_per_cell:{{ svmmodel.pixels_per_cell }}<br>
-            * cells_per_block:{{ svmmodel.cells_per_block }}<br>
-            * is_color:{{ svmmodel.is_color }}<br>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">train_num:</th>
+                        <th style="font-size: 15px">{{ model.train_num }}</th>
 
-        {% endif %}
-        <p><a href="{% url 'alogrithm:model_list' %}">model_list</a> |
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">update_time:</th>
+                        <th style="font-size: 15px">{{ model.update_time }}</th>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">
+                            recently_accuracy_score:
+                        </th>
+                        <th style="font-size: 15px">{{ model.recently_accuracy_score }}</th>
+                    </tr>
+                    <tr>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">C:</th>
+                        <th style="font-size: 15px">{{ model.C }}</th>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">kernel_choice:</th>
+                        <th style="font-size: 15px">{{ model.kernel_choice }}</th>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">kernel:</th>
+                        <th style="font-size: 15px">{{ model.kernel }}</th>
+                    </tr>
+                    <tr>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">is_standard:</th>
+                        <th style="font-size: 15px">{{ model.is_standard }}</th>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">is_color:</th>
+                        <th style="font-size: 15px">{{ model.is_color }}</th>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">pic_size:</th>
+                        <th style="font-size: 15px">{{ model.pic_size }}</th>
+                    </tr>
+                    <tr>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">orientations:</th>
+                        <th style="font-size: 15px">{{ model.orientations }}</th>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">pixels_per_cell:
+                        </th>
+                        <th style="font-size: 15px">{{ model.pixels_per_cell }}</th>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">cells_per_block:
+                        </th>
+                        <th style="font-size: 15px">{{ model.cells_per_block }}</th>
+                    </tr>
+                    <tr>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">create_time:</th>
+                        <th style="font-size: 15px">{{ model.create_time }}</th>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">ensemble_learning:
+                        </th>
+                        <th style="font-size: 15px">{{ model.ensemble_learning }}</th>
+                        <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">n_estimators:</th>
+                        <th style="font-size: 15px">{{ model.n_estimators }}</th>
+                    </tr>
+
+
+                    </tbody>
+
+                </table>
+                <div class="footer">
+                    <a type="button" class="btn btn-lg btn-danger btn-block "
+                       name="{{ model.model_name }}DeleteButton"
+                       data-href="{% url 'alogrithm:model_delete' model.id %}"
+                       data-toggle="modal"
+                       data-target="#modalConfirmDelete">
+                        delete the model
+                    </a>
+                </div>
+
+            </div>
+            {% if train_log %}
+                <div id="bottomTable">
+                <table id="modelDataTable"
+                       class="table table-striped table-bordered  table-hover table-responsive-lg text-nowrap"
+                       cellspacing="0" width="100%">
+                    <caption>The Model '{{ model.model_name }}'s Train Log</caption>
+                    <thead class=" rgba-cyan-slight brown-text">
+                    <tr>
+                        <th scope="col" style="font-size: 15px">#</th>
+                        <th scope="col" style="font-size: 15px">train time</th>
+                        <th scope="col" style="font-size: 15px">accuracy score</th>
+                        <th scope="col" style="font-size: 15px">train category positive</th>
+                        <th scope="col" style="font-size: 15px">positive num</th>
+                        <th scope="col" style="font-size: 15px">train category negative</th>
+                        <th scope="col" style="font-size: 15px">negative num</th>
+                        <th scope="col" style="font-size: 15px">validation size</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for log in train_log %}
+                        <tr>
+                            <th style="font-size: 13px">{{ forloop.counter }}</th>
+                            <th style="font-size: 13px">{{ log.train_time }}</th>
+                            <th style="font-size: 13px">{{ log.accuracy_score }}</th>
+                            <th style="font-size: 13px">{{ log.train_category_positive }}</th>
+                            <th style="font-size: 13px">{{ log.positive_num }}</th>
+                            <th style="font-size: 13px">{{ log.train_category_negative }}</th>
+                            <th style="font-size: 13px">{{ log.negative_num }}</th>
+                            <th style="font-size: 13px">{{ log.validation_size }}</th>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+
+                <div class="warning">
+                    <h2 class="text-warning text-center">
+                        This Model isn't trained.
+                    </h2>
+                </div>
+            {% endif %}
+            </div>
+            <div>
+                <p><a class="btn btn-lg btn-light-blue btn-block"
+                      href="{% url 'alogrithm:train_svm_model' %}">train model</a>
+                </p>
+
+                <a class="btn btn-lg btn-light-blue btn-block"
+                   href="{% url 'alogrithm:create_svm_model' %}">create model</a>
+            </div>
+        </div>
+
+
     </div>
 
+    <!--Modal: modalConfirmDelete-->
+    <div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+            <!--Content-->
+            <div class="modal-content text-center">
+                <!--Header-->
+                <div class="modal-header d-flex justify-content-center">
+                    <p class="heading">Are you sure to delete?</p>
+                </div>
+                <!--Body-->
+                <div class="modal-body">
+
+                    <i class="fas fa-times fa-4x animated rotateIn"></i>
+                </div>
+                <div class="debug-url"></div>
+                <!--Footer-->
+                <div class="modal-footer flex-center">
+                    <a href="" class="btn  btn-outline-danger btn-ok">Yes</a>
+                    <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
 
+        // table order component
+        $('#modelDataTable').DataTable({
+            "order": [[3, "desc"]]
+        });
+        $('.dataTables_length').addClass('bs-select');
+        // tooltip component(show image)
+
+
+        // show the delete modal
+        $('#modalConfirmDelete').on('show.bs.modal', function (e) {
+            var href = $(e.relatedTarget).data('href');
+            file_name = $(e.relatedTarget)[0].getAttribute('name').replace("DeleteButton", '');
+            $(this).find('.btn-ok').attr('href', href);
+            $('.debug-url').html('Delete Model: <strong>' + file_name + '</strong>');
+        });
+    </script>
+{% endblock extra_js %}

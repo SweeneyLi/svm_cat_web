@@ -30,7 +30,7 @@
                                 {{ pic_info|length }} picture{{ pic_info|length| pluralize }}
 
                                 <button name="{{ category }}--{{ pic_info|length }} picture{{ pic_info|length| pluralize }} "
-                                        type="button" class="fas fa-folder-minus"
+                                        type="button" class="fas fa-folder-minus red-text mr-3"
                                         data-href="{% url 'picture:pic_delete' category %}" data-toggle="modal"
                                         data-target="#modalConfirmDelete">
                                 </button>
@@ -44,22 +44,20 @@
                                 </div>
 
                                 <table id="{{ category }}DataTable"
-                                       class="table  table-striped table-bordered table-sm table-hover "
+                                       class="table  table-striped table-hover table-responsive-lg text-nowrap"
                                        cellspacing="0" width="100%">
+                                <caption>List of pictures</caption>
                                     <thead>
                                     <tr>
-                                        <th class="th-sm" style="font-size: 15px">#</th>
-                                        <th class="th-sm" style="font-size: 15px">Picture Name</th>
-                                        <th class="th-sm" style="font-size: 15px">Picture Size</th>
-                                        <th class="th-sm" style="font-size: 15px">Upload Date</th>
-                                        <th class="th-sm" style="font-size: 15px">Delete</th>
+                                        <th class="th-sm" scope="col" style="font-size: 15px">#</th>
+                                        <th class="th-sm" scope="col" style="font-size: 15px">Picture Name</th>
+                                        <th class="th-sm" scope="col" style="font-size: 15px">Picture Size</th>
+                                        <th class="th-sm" scope="col" style="font-size: 15px">Upload Date</th>
+                                        <th class="th-sm" scope="col" style="font-size: 15px">Delete</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     {% for pic in pic_info|dictsort:"pic_size"|dictsortreversed:"upload_date" %}
-
-
-
                                         <tr>
                                             <th style="font-size: 15px" scope="row">{{ forloop.counter }}</th>
                                             <td style="font-size: 15px">
@@ -72,9 +70,10 @@
                                                 </div>
                                             </td>
                                             <td style="font-size: 15px">{{ pic.pic_size }}</td>
-                                            <td style="font-size: 15px">{{ pic.upload_date| date:"Y-m-j" }}</td>
+{#                                            <td style="font-size: 15px">{{ pic.upload_date| date:"Y-m-j" }}</td>#}
+                                            <td style="font-size: 15px">{{ pic.upload_date }}</td>
                                             <td style="font-size: 15px">
-                                                <button type="button" class="fas fa-minus"
+                                                <button type="button" class="fas fa-minus red-text"
                                                         name="{{ pic.pic_name }}DeleteButton"
                                                         data-href="{% url 'picture:pic_delete' pic.id %}"
                                                         data-toggle="modal"
@@ -98,7 +97,7 @@
             </div>
         {% endif %}
         <div class="footer">
-            <a class="btn btn-block btn-blue" href="{% url 'picture:pic_upload' %}">Upload</a>
+            <a class="btn btn-lg btn-light-blue btn-block" href="{% url 'picture:pic_upload' %}">Upload</a>
         </div>
 
     </div>

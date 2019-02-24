@@ -13,8 +13,8 @@ class SVMModelAdmin(admin.ModelAdmin):
 
 @admin.register(ModelTrainLog)
 class ModelTrainLogAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_id', 'train_time', 'model_name', 'accuracy_score')
+    list_display = ('id', 'user_id', 'train_time', 'model_id', 'accuracy_score')
 
-    search_fields = ('user_id', 'model_name')
+    search_fields = ('user_id', 'model_id')
 
-    list_filter = ['user_id', 'model_name']
+    list_filter = ['user_id', 'model_id']

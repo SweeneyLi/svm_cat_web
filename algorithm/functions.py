@@ -402,7 +402,7 @@ def execute_train_model(user_id, model_name, train_category_positive, train_cate
     else:
         return_dict = None
 
-
+    return_dict['model_id'] = model.id
     model.save()
 
     with open(the_path, 'wb') as f:
