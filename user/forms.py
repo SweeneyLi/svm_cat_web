@@ -87,6 +87,7 @@ class LoginForm(forms.Form):
 
 class ProfileForm(forms.Form):
 
+    email = forms.CharField(label='Email', max_length=50, required=False)
     first_name = forms.CharField(label='First Name', max_length=50, required=False)
     last_name = forms.CharField(label='Last Name', max_length=50, required=False)
     org = forms.CharField(label='Organization', max_length=50, required=False)
@@ -120,4 +121,5 @@ class PwdChangeForm(forms.Form):
             raise forms.ValidationError("Password mismatch. Please enter again.")
 
         return password2
+
 

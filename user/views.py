@@ -7,6 +7,7 @@ from django.views.generic import FormView
 
 from .forms import RegistrationForm, LoginForm, ProfileForm, PwdChangeForm
 from .models import UserProfile
+from system.url_conf import *
 
 
 def register(request):
@@ -77,15 +78,26 @@ def profile(request):
 
 class ProfileUpdateView(FormView):
     form_class = ProfileForm
+    view_name = 'profileUpdate'
+
+    def get_form_kwargs(self):
+        kwargs = super(ProfileUpdateView, self).get_form_kwargs()
+        user_id = str(self.request.user.id)
+        user = User.objects.get(id=user_id)
+
+        kwargs['initial']['email'] = user.email
+        kwargs['initial']['first_name'] = user.first_name
+        kwargs['initial']['last_name'] = user.last_name
+        kwargs['initial']['org'] = user.profile.org
+        kwargs['initial']['telephone'] = user.profile.telephone
+        return kwargs
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
+
         return render(request, 'system/common_form.html',
                       {'form': form,
-                       'title': 'Profile Update',
-                       'pic_url': '/static/img/LXH-1.jpg',
-                       'next_url': reverse_lazy('user:profile'),
-                       'next_name': 'Profile'
+                       'url_info': url_dict[self.view_name]
                        })
 
     def post(self, request, *args, **kwargs):
@@ -98,48 +110,71 @@ class ProfileUpdateView(FormView):
     def form_invalid(self, form, **kwargs):
         return render(self.request, 'system/common_form.html',
                       {'form': form,
-                       'title': 'Profile Update',
-                       'pic_url': '/img/LXH-2.jpg',
-                       'next_url': reverse_lazy('user:profile'),
-                       'message': form.errors
+                       'url_info': url_dict[self.view_name],
                        })
 
     def form_valid(self, form, **kwargs):
+        user_id = str(self.request.user.id)
+        user = User.objects.get(id=user_id)
+        user.email = form.cleaned_data['email']
+        user.first_name = form.cleaned_data['first_name']
+        user.last_name = form.cleaned_data['last_name']
+        user.save()
+
+        user.profile.org = form.cleaned_data['org']
+        user.profile.telephone = form.cleaned_data['telephone']
+        user.profile.save()
         return redirect('user:profile')
+
+
+class PwdChangeView(FormView):
+    form_class = PwdChangeForm
+    view_name = 'pwdChange'
+
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(request, 'system/common_form.html',
+                      {'form': form,
+                       'url_info': url_dict[self.view_name],
+                       })
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
+
+    def form_invalid(self, form, **kwargs):
+        return render(self.request, 'system/common_form.html',
+                      {'form': form,
+                       'url_info': url_dict[self.view_name],
+                       })
+
+    def form_valid(self, form, **kwargs):
+        user_id = self.request.user.id
+        user = get_object_or_404(User, pk=user_id)
+
+        password = form.cleaned_data['old_password']
+        username = user.username
+
+        user = auth.authenticate(username=username, password=password)
+
+        if user is not None and user.is_active:
+            new_password = form.cleaned_data['password2']
+            user.set_password(new_password)
+            user.save()
+
+            return redirect('user:logout')
+        else:
+            form._errors = 'Origin password is wrong. Try again'
+            return render(self.request, 'system/common_form.html',
+                          {'form': form,
+                           'url_info': url_dict[self.view_name],
+                           # 'message': 'Old password is wrong. Try again'
+                           })
 
 
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect("/accounts/login/")
-
-
-def pwd_change(request):
-    user_id = request.user.id
-    user = get_object_or_404(User, pk=user_id)
-    if request.method == "POST":
-        form = PwdChangeForm(request.POST)
-
-        if form.is_valid():
-
-            password = form.cleaned_data['old_password']
-            username = user.username
-
-            user = auth.authenticate(username=username, password=password)
-
-            if user is not None and user.is_active:
-                new_password = form.cleaned_data['password2']
-                user.set_password(new_password)
-                user.save()
-
-                return redirect('user:logout')
-                # form = LoginForm()
-                # return render(request, 'user/login.html', {'form': form,
-                #                                            'message': 'Please login again with new password!'})
-
-            else:
-                return render(request, 'user/pwd_change.html', {'form': form,
-                                                                'user': user,
-                                                                'message': 'Old password is wrong. Try again'})
-    else:
-        form = PwdChangeForm()
-        return render(request, 'user/pwd_change.html', {'form': form, 'user': user})

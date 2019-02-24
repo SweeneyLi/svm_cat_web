@@ -142,7 +142,6 @@ class HOGPicView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        # return render(request, 'algorithm/hog_pic.html', {'form': form})
         return render(request, 'algorithm/model_form.html',
                       {'form': form,
                        'step': 2,
