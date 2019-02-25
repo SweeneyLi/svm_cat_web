@@ -79,18 +79,23 @@
                                 <div class="md-form">
                                     {{ field|widget_with_classes:'form-control' }}
                                 </div>
+                            {% elif field|field_type == 'file' %}
+                                <div class="input-default-wrapper mt-5" style="width: 300px; margin: 20px 0px 20px 0px">
 
+                                    <input type="file" id="file-with-multi-file" name="test_pic" class="input-default-js"
+                                           data-multiple-target="{target} files selected"
+                                           multiple>
 
-                                {#                            {% elif  field|field_type == 'file' %}#}
-                                {#                                <div class="input-group mb-3">#}
-                                {#                                    <div class="input-group-prepend">#}
-                                {#                                        <span class="input-group-text">Upload</span>#}
-                                {#                                    </div>#}
-                                {#                                    <div class="custom-file">#}
-                                {#                                        <input type="file" class="custom-file-input" id="inputGroupFile01">#}
-                                {#                                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>#}
-                                {#                                    </div>#}
-                                {#                                </div>#}
+                                    <label class="label-for-default-js rounded-right mb-3"
+                                           for="file-with-multi-file"><span
+                                            class="span-choose-file">Choose file</span>
+
+                                        <div class="float-right span-browse text-center" style="width: 100px">Browse
+                                        </div>
+
+                                    </label>
+
+                                </div>
 
                             {% else %}
                                 <div class="form-group">

@@ -2,72 +2,102 @@
 {% load staticfiles %}
 
 {% block title %}{{ url_info.title }}{% endblock %}
-
+{% block css %}
+    {#    <style>#}
+    {#        body, html {#}
+    {#            height: 100%;#}
+    {#        }#}
+    {##}
+    {#        .bg {#}
+    {#            background-image: url("/static/img/LXH/bg-1.jpg");#}
+    {#            height: 100%;#}
+    {#            background-position: center;#}
+    {#            background-repeat: no-repeat;#}
+    {#            background-size: cover;#}
+    {#        }#}
+    {#    </style>#}
+{% endblock css %}
 {% block content %}
-
     <div class="container">
-    <h2>{{ url_info.title }}</h2>
-
-    <div class="row">
-
-        <div class="col-md-6">
-
-            {% if result %}
-                {{ result }}
-            {% else %}
-                <div class="align-middle">
-                    <img class="img-responsive mx-auto" src="{{ url_info.pic_url }}">
-                </div>
-            {% endif %}
-            <hr>
+        <div class="mytitle">
+            <h2>{{ url_info.title }}</h2>
         </div>
-        <div class="col-md-6">
-            {% if form.errors %}
-                <div class="alert alert-warning">{{ form.errors }}</div>
-            {% endif %}
-            {% load my_tags %}
+        <div class="row">
 
-            <form method="post" enctype="multipart/form-data">{% csrf_token %}
-                {% for field in form %}
-                    {% if field|field_type == 'text' or field|field_type == 'password' or field|field_type == 'email' %}
+            <div class="col-md-6">
 
-                        <div class="md-form input-group input-group-lg">
-                            <div class="input-group-prepend ">
+                {% if result %}
+                    {{ result }}
+                {% else %}
+                    <div class="align-middle">
+                        <img class="img-responsive mx-auto" src="{{ url_info.pic_url }}">
+                    </div>
+                {% endif %}
+                <hr>
+            </div>
+            <div class="col-md-6">
+                {% if form.errors %}
+                    <div class="alert alert-warning">{{ form.errors }}</div>
+                {% endif %}
+                {% load my_tags %}
+
+                <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                    {% for field in form %}
+                        {% if field|field_type == 'text' or field|field_type == 'password' or field|field_type == 'email' %}
+
+                            <div class="md-form input-group input-group-lg">
+                                <div class="input-group-prepend ">
                                         <span class="input-group-text md-addon"
                                               id="inputGroupMaterial-sizing-lg">
                                             {{ field.label }}
                                         </span>
+                                </div>
+                                {{ field|widget_with_classes:'form-control' }}
                             </div>
-                            {{ field|widget_with_classes:'form-control' }}
-                        </div>
-                    {% else %}
-                        <div class="form-group">
-                            {{ field.label_tag }}
-                            {{ field }}
-                        </div>
-                    {% endif %}
+                        {% elif field|field_type == 'file' %}
+                            <div class="input-default-wrapper mt-5" style="width: 300px; margin: 20px 0px 20px 0px">
 
-                {% endfor %}
+                                <input type="file" id="file-with-multi-file" name="file" class="input-default-js"
+                                       data-multiple-target="{target} files selected"
+                                       multiple>
+
+                                <label class="label-for-default-js rounded-right mb-3" for="file-with-multi-file"><span
+                                        class="span-choose-file">Choose file</span>
+
+                                    <div class="float-right span-browse text-center" style="width: 100px">Browse</div>
+
+                                </label>
+
+                            </div>
+
+                        {% else %}
+                            <div class="form-group">
+                                {{ field.label_tag }}
+                                {{ field }}
+                            </div>
+                        {% endif %}
+
+                    {% endfor %}
+                    <p>
+                        <button type="reset" class="btn btn-outline-secondary waves-effect">Reset</button>
+                        <button type="submit" class="btn btn-outline-success waves-effect">Submit</button>
+                    </p>
+                </form>
+                {% if success_message %}
+                    <div class="bg-info text-white text-center alert">
+                        {{ success_message }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-12 footer">
                 <p>
-                    <button type="reset" class="btn btn-outline-secondary waves-effect">Reset</button>
-                    <button type="submit" class="btn btn-outline-success waves-effect">Submit</button>
+                    <a class="btn btn-lg btn-light-blue btn-block"
+                       href="{{ url_info.next_url }}">{{ url_info.next_name }}</a>
                 </p>
-            </form>
-            {% if success_message %}
-                <div class="bg-info text-white text-center alert">
-                    {{ success_message }}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="col-md-12 footer">
-            <p>
-                <a class="btn btn-lg btn-light-blue btn-block"
-                   href="{{ url_info.next_url }}">{{ url_info.next_name }}</a>
-            </p>
+            </div>
         </div>
     </div>
-
 {% endblock %}
 
 

@@ -513,24 +513,6 @@ class ModelDetailView(View):
                           'train_log': train_log
                       })
 
-
-# class ModelDetailView(DetailView):
-#
-#     def get_object(self, queryset=None):
-#         pk = self.kwargs.get(self.pk_url_kwarg)
-#         the_model = SVMModel.objects.filter(user_id=self.request.user.id, id=pk).get()
-#         train_log = ModelTrainLog.objects.filter(model_id=the_model.id)
-#         model_info = {
-#             'model': the_model,
-#             'train_log': train_log
-#         }
-#         return model_info
-#
-#     def get(self, request, *args, **kwargs):
-#         model_info = self.get_object()
-#         return render(request, 'algorithm/model_detail.html', {'model_info': model_info})
-#
-
 class ModelDeleteView(DeleteView):
     model = SVMModel
     success_url = reverse_lazy('alogrithm:model_list')
