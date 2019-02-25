@@ -2,6 +2,7 @@ from django.shortcuts import render, reverse, redirect
 from django.views.generic import CreateView, ListView, DetailView, FormView, DeleteView, View
 from django.utils.safestring import mark_safe
 
+from system.url_conf import url_dict
 from .forms import *
 from .functions import *
 from .algorithm_conf import *
@@ -428,39 +429,47 @@ class ModelCreateView(CreateView):
 
 class TrainSVMModelView(FormView):
     form_class = TrainLogForm
+    view_name = 'trainSVMModel'
 
-    def get_form(self, form_class=None):
+    def get_form(self, form_class=None, reset=False):
         form_class = self.get_form_class()
-        return form_class(self.request.user.id, **self.get_form_kwargs())
+        if reset:
+            return form_class(self.request.user.id)
+        else:
+            return form_class(self.request.user.id, **self.get_form_kwargs())
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(request, 'algorithm/train_svm_model.html',
-                      {'form': form})
+        return render(request, 'system/common_form.html',
+                      {'form': form,
+                       'url_info': url_dict[self.view_name],
+                       })
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
+
         if form.is_valid():
             return self.form_valid(form, **kwargs)
         else:
             return self.form_invalid(form, **kwargs)
 
     def form_invalid(self, form, **kwargs):
-        return render(self.request, 'algorithm/train_svm_model.html',
-                      {'form': form, 'message': form.errors
+        return render(self.request, 'system/common_form.html',
+                      {'form': form,
+                       'url_info': url_dict[self.view_name],
                        })
 
     def form_valid(self, form, **kwargs):
         user_id = self.request.user.id
-        model_name = eval(form.data['model_name'])['model_name']
-        train_category_positive_dict = eval(form.data['train_category_positive'])
-        train_category_negative_dict = eval(form.data['train_category_negative'])
+        model_name = eval(self.request.POST['model_name'])['model_name']
+        train_category_positive_dict = eval(self.request.POST['train_category_positive'])
+        train_category_negative_dict = eval(self.request.POST['train_category_negative'])
 
         train_category_positive = train_category_positive_dict['category']
         positive_num = train_category_positive_dict['num_category']
         train_category_negative = train_category_negative_dict['category']
         negative_num = train_category_negative_dict['num_category']
-        validation_size = float(form.data['validation_size'])
+        validation_size = float(self.request.POST['validation_size'])
 
         # train the model
         manager = mp.Manager()
@@ -480,14 +489,14 @@ class TrainSVMModelView(FormView):
                                   validation_size=validation_size,
                                   accuracy_score=return_dict['accuracy_score'] if validation_size != 0 else 0)
         train_log.save()
-
-        form = self.get_form()
+        # TODO:error problem
+        form = self.get_form(reset=True)
         # TODO：format the result in page
-        return render(self.request, 'algorithm/train_svm_model.html',
+        return render(self.request, 'system/common_form.html',
                       {'form': form,
-                       'accuracy_score': return_dict['accuracy_score'],
-                       'classification_report': mark_safe(return_dict['classification_report']),
-                       'confusion_matrix': mark_safe(return_dict['confusion_matrix'])})
+                       'url_info': url_dict[self.view_name],
+                       'result': return_dict}
+                      )
 
 
 class ModelListView(ListView):
@@ -512,6 +521,7 @@ class ModelDetailView(View):
                           'model': the_model,
                           'train_log': train_log
                       })
+
 
 class ModelDeleteView(DeleteView):
     model = SVMModel
@@ -538,26 +548,31 @@ class ModelDeleteView(DeleteView):
 
 class CatIdentificationView(FormView):
     form_class = CatIdentificationForm
+    view_name = 'catIdentification'
 
-    def get_form(self, form_class=None):
+    def get_form(self, form_class=None, reset=False):
         form_class = self.get_form_class()
-        return form_class(self.request.user.id, **self.get_form_kwargs())
+        if reset:
+            return form_class(self.request.user.id)
+        else:
+            return form_class(self.request.user.id, **self.get_form_kwargs())
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(self.request, 'algorithm/cat_identification.html',
-                      {'form': form})
+        return render(self.request, 'system/common_form.html',
+                      {'form': form,
+                       'url_info': url_dict[self.view_name]})
 
     def post(self, request, *args, **kwargs):
-        form = self.get_form()
+        form = self.get_form(reset=True)
         user_id = self.request.user.id
-        model_name = eval(form.data['model_name'])['model_name']
+        model_name = eval(request.POST['model_name'])['model_name']
 
         model_db = SVMModel.objects.get(user_id=user_id, model_name=model_name)
         if model_db.train_num == 0:
-            cat_identification_form = CatIdentificationForm(request.user.id)
-            return render(request, 'algorithm/cat_identification.html',
+            return render(request, 'system/common_form.html',
                           {'form': form,
+                           'url_info': url_dict[self.view_name],
                            'message': 'The trained model could predict, please train it'})
         else:
             files = request.FILES.getlist('file')
@@ -584,7 +599,8 @@ class CatIdentificationView(FormView):
             proc.start()
             proc.join()
 
-            return render(request, 'algorithm/cat_identification.html',
+            return render(request, 'system/common_form.html',
                           {'form': form,
-                           'result': return_dict
+                           'result': return_dict,
+                           'url_info': url_dict[self.view_name]
                            })

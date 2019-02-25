@@ -77,11 +77,11 @@ class PicUploadView(FormView):
             pic = Picture(user_id=user_id, pic_name=pic_name, path=f, category=category, pic_size=pic_size)
             pic.save()
 
-        success_message = "You have uploaded " + str(len(files)) + "images to the " + category + "successfully."
+        message = "You have uploaded " + str(len(files)) + "images to the " + category + "successfully."
         return render(self.request, 'system/common_form.html',
                       {'form': form,
                        'url_info': url_dict[self.view_name],
-                       'success_message': success_message
+                       'success_message': message
                        })
 
 

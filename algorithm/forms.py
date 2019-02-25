@@ -41,7 +41,6 @@ class PrepareDataForm(forms.Form):
             empty_label="---------",
         )
 
-
         self.fields['test_category_positive'].widget.attrs.update({
             'class': "browser-default custom-select"
         })
@@ -157,7 +156,7 @@ class TrainLogForm(forms.Form):
 
         self.fields['model_name'] = forms.ModelChoiceField(
             queryset=SVMModel.objects.filter(user_id=user_id).values('model_name').distinct().order_by('-update_time'),
-            empty_label="---------",
+            empty_label="---------", to_field_name="model_name"
         )
 
         self.fields['train_category_positive'] = forms.ModelChoiceField(

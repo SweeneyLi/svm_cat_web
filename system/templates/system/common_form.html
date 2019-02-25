@@ -40,7 +40,11 @@
                     <div class="alert alert-warning">{{ form.errors }}</div>
                 {% endif %}
                 {% load my_tags %}
-
+                {% if message %}
+                    <div class="bg-info text-white text-center alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
                 <form method="post" enctype="multipart/form-data">{% csrf_token %}
                     {% for field in form %}
                         {% if field|field_type == 'text' or field|field_type == 'password' or field|field_type == 'email' %}
@@ -83,11 +87,7 @@
                         <button type="submit" class="btn btn-outline-success waves-effect">Submit</button>
                     </p>
                 </form>
-                {% if success_message %}
-                    <div class="bg-info text-white text-center alert">
-                        {{ success_message }}
-                    </div>
-                {% endif %}
+
             </div>
 
             <div class="col-md-12 footer">
@@ -95,6 +95,12 @@
                     <a class="btn btn-lg btn-light-blue btn-block"
                        href="{{ url_info.next_url }}">{{ url_info.next_name }}</a>
                 </p>
+                {% if url_info.next_url_2 %}
+                    <p>
+                        <a class="btn btn-lg btn-light-blue btn-block"
+                           href="{{ url_info.next_url_2 }}">{{ url_info.next_name_2 }}</a>
+                    </p>
+                {% endif %}
             </div>
         </div>
     </div>
