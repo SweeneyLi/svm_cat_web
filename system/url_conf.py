@@ -5,12 +5,18 @@ url_dict = {
         'title': 'Profile Update',
         'next_url': reverse_lazy('user:profile'),
         'next_name': 'My Profile',
-        'pic_url': '/static/img/LXH-1.jpg',
+        'pic_url': '/static/img/LXH/1.jpg',
     },
     'pwdChange': {
-        'title': 'PassWord Change',
+        'title': 'Password Change',
         'next_url': reverse_lazy('user:profile'),
         'next_name': 'My Profile',
-        'pic_url': '/static/img/LXH-1.jpg',
+        'pic_url': '/static/img/LXH/1.jpg',
+    },
+    'register': {
+        'title': 'Register',
+        'next_url': reverse_lazy('system:index'),
+        'next_name': 'Index',
+        'pic_url': '/static/img/LXH/8.jpg',
     },
 }

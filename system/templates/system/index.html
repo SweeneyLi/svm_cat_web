@@ -13,7 +13,7 @@
             text-align: center; /*设置文本水平居中*/
             overflow: hidden; /*防止内容超出容器或者产生自动换行*/
             margin: 0px;
-            background-image: url("/static/img/cat-painting.jpg");
+            background-image: url("/static/img/index/cat-painting.jpg");
             background-repeat: no-repeat;
             background-size: cover;
             -webkit-background-size: cover;
@@ -58,12 +58,7 @@
         <div id="how-it-works" class="container-fluid content">
             <div class="container">
 
-                <ul class="nav nav-list">
-                    <li class="divider"></li>
-                    <hr>
-                </ul>
-
-                <h1>Make your own model to identificate your cute cat!</h1>
+                <p><h1>Make your own model to identificate your cute cat!</h1></p>
                 <p class="lead">You can follow my steps to make you own model with svm to idenetify your cat.</p>
                 <ol class="list-unstyled row stylized">
                     <li class="col-md-4 col-sm-6">
@@ -71,18 +66,18 @@
                         <p>Upload two categories, one is your want to identify,
                             the other is you want to discriminate
                             and a test img to find appropriate parameter in dealing img</p>
-                        <img class="img-responsive" src="{% static 'img/index-upload.jpg' %}"/>
+                        <img class="img-responsive" src="{% static 'img/index/index-upload.jpg' %} alt="Upload""/>
                     </li>
                     <li class="col-md-4 col-sm-6">
                         <h3>Choose parameter</h3>
                         <p>Follow my steps to locate the parameter fit your model</p><br><br>
-                        <img class="img-responsive" src="{% static 'img/index-svm.png' %}"/>
+                        <img class="img-responsive" src="{% static 'img/index/index-svm.png' %} alt="svm"/>
                     </li>
                     <li class="col-md-4 col-sm-6">
                         <h3>Make! Train! Identificating!</h3>
                         <p>Make the model by the parameter you created, and train it again and again.
                             Finally you can use it to idenetificate your cat.</p>
-                        <img class="img-responsive" src="{% static 'img/index-T_F.jpg' %}"/>
+                        <img class="img-responsive" src="{% static 'img/index/index-T_F.jpg' %}" alt="T_F"/>
                     </li>
                 </ol>
                 <a class="btn btn-primary" role="button" href="{% url 'alogrithm:prepare_data' %}">Try it now</a>

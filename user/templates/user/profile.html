@@ -4,13 +4,21 @@
 {% block title %}profile{% endblock %}
 {% block css %}
     <style>
+        .row.display-flex {
+            display: flex;
+            flex-wrap: wrap;
+        }
 
+        .row.display-flex > [class*='col-'] {
+            display: flex;
+            flex-direction: column;
+        }
     </style>
 {% endblock %}
 {% block content %}
     <div class="container ">
 
-        <div class="row">
+        <div class="row display-flex">
 
             <div class="col-md-6">
                 <ul class="list-group">
@@ -31,7 +39,9 @@
                 </ul>
             </div>
             <div class="col-md-6">
-                <img class="img-responsive mx-auto" src="{% static '/img/LXH-1.jpg' %}">
+                <div class="align-middle">
+                    <img class="img-responsive mx-auto" src="{% static '/img/LXH-1.jpg' %}">
+                </div>
                 <hr>
             </div>
             <div class="col-md-12">

@@ -10,28 +10,41 @@ from .models import UserProfile
 from system.url_conf import *
 
 
-def register(request):
-    if request.method == 'POST':
+class RegisterView(FormView):
+    form_class = RegistrationForm
+    view_name = 'register'
 
-        form = RegistrationForm(request.POST)
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(request, 'system/common_form.html',
+                      {'form': form,
+                       'url_info': url_dict[self.view_name],
+                       })
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
         if form.is_valid():
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password2']
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
 
-            # 使用内置User自带create_user方法创建用户，不需要使用save()
-            user = User.objects.create_user(username=username, password=password, email=email)
+    def form_invalid(self, form, **kwargs):
+        return render(self.request, 'system/common_form.html',
+                      {'form': form,
+                       'url_info': url_dict[self.view_name],
+                       })
 
-            # 如果直接使用objects.create()方法后不需要使用save()
-            user_profile = UserProfile(user=user)
-            user_profile.save()
+    def form_valid(self, form, **kwargs):
+        username = form.cleaned_data['username']
+        email = form.cleaned_data['email']
+        password = form.cleaned_data['password2']
 
-            return HttpResponseRedirect("/accounts/login/")
+        user = User.objects.create_user(username=username, password=password, email=email)
 
-    else:
-        form = RegistrationForm()
+        user_profile = UserProfile(user=user)
+        user_profile.save()
 
-    return render(request, 'user/registration.html', {'form': form})
+        return HttpResponseRedirect("/accounts/login/")
 
 
 def login(request):
