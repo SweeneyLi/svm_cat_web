@@ -185,6 +185,16 @@ class TrainLogForm(forms.Form):
             empty_label="---------",
         )
 
+        self.fields['model_name'].widget.attrs.update(
+            select_attrs
+        )
+        self.fields['train_category_positive'].widget.attrs.update(
+            select_attrs
+        )
+        self.fields['train_category_negative'].widget.attrs.update(
+            select_attrs
+        )
+
     def is_valid(self):
         if not (0.0 <= float(self.data['validation_size']) < 1.0):
             self._errors = 'validation_size should between 0 and 1'
@@ -210,4 +220,8 @@ class CatIdentificationForm(forms.Form):
         self.fields['model_name'] = forms.ModelChoiceField(
             queryset=SVMModel.objects.filter(user_id=user_id).values('model_name').distinct().order_by('-update_time'),
             empty_label="---------",
+        )
+
+        self.fields['model_name'].widget.attrs.update(
+            select_attrs
         )

@@ -4,43 +4,35 @@
 {% block title %}{{ url_info.title }}{% endblock %}
 {% block css %}
     <style>
-        body, html {
-            height: 100%;
-        }
-
-        .bg {
-            background-image: url("/static/img/LXH/bg-1.jpg");
-            height: 100%;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
     </style>
 {% endblock css %}
 {% block content %}
+
     <div class="container">
-        <div class="mytitle">
-            <h2>{{ url_info.title }}</h2>
-        </div>
-        <div class="row ">
-            <div class="col-md-12 bg">
-                <div class="col-md-6" style="min-height: 600px">
-{#                    {% if result %}#}
-{#                        <div class="" >#}
-{#                            {% for key, values in result.items %}#}
-{#                                <ul class="list-group">#}
-{#                                    <li class="list-group-item active">{{ key }}</li>#}
-{#                                    <li class="list-group-item">{{ values }}</li>#}
-{#                                </ul>#}
-{#                            {% endfor %}#}
-{#                        </div>#}
-{#                    {% else %}#}
-{#                        <span class="align-middle d-flex justify-content-center">#}
-{#                            <img class="img-responsive mx-auto text-center" src="{{ url_info.pic_url }}">#}
-{#                        </span>#}
-{#                    {% endif %}#}
-{#                    <hr>#}
-                    123
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div class="mytitle">
+                        <h2>{{ url_info.title }}</h2>
+                    </div>
+                </div>
+                <div class="col-md-6" style="min-height: 600px; margin-top: 5%">
+                    {% if result %}
+                        <div class="">
+                            {% for key, values in result.items %}
+                                <ul class="list-group">
+                                    <li class="list-group-item active">{{ key }}</li>
+                                    <li class="list-group-item">{{ values }}</li>
+                                </ul>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center">
+                            <img class="img-fluid img-responsive mx-auto align-middle "
+                                 src="{{ url_info.pic_url }}">
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="col-md-6">
 
@@ -55,33 +47,45 @@
                     {% endif %}
                     <form method="post" enctype="multipart/form-data">{% csrf_token %}
                         {% for field in form %}
-                            {% if field|field_type == 'text' or field|field_type == 'password' or field|field_type == 'email' %}
+
+                            {% if field|field_type == 'text' %}
 
                                 <div class="md-form input-group input-group-lg">
-                                    <div class="input-group-prepend ">
-                                        <span class="input-group-text md-addon"
-                                              id="inputGroupMaterial-sizing-lg">
-                                            {{ field.label }}
-                                        </span>
+                                    {{ field.label_tag }}
+                                    {{ field|widget_with_classes:'form-control' }}
+                                </div>
+
+                            {% elif  field|field_type == 'checkbox' %}
+
+                                <div class="form-group custom-control custom-checkbox">
+                                    <div class="custom-control custom-checkbox">
+                                        {{ field|widget_with_classes:'custom-control-input' }}
+                                        {{ field|label_with_classes:"custom-control-label" }}
                                     </div>
+                                </div>
+                            {% elif  field|field_type == 'number' %}
+                                <div class="form-group md-form">
+                                    {{ field.label_tag }}
                                     {{ field|widget_with_classes:'form-control' }}
                                 </div>
                             {% elif field|field_type == 'file' %}
                                 <div class="input-default-wrapper mt-5" style="width: 300px; margin: 20px 0px 20px 0px">
 
-                                    <input type="file" id="file-with-multi-file" name="file" class="input-default-js"
-                                           data-multiple-target="{target} files selected"
-                                           multiple>
+                                    <div class="input-default-wrapper mt-3">
 
-                                    <label class="label-for-default-js rounded-right mb-3"
-                                           for="file-with-multi-file"><span
-                                            class="span-choose-file">Choose file</span>
+                                        <span class="input-group-text mb-3" id="input1">Upload</span>
 
-                                        <div class="float-right span-browse text-center" style="width: 100px">Browse
-                                        </div>
+                                        <input type="file" id="file-with-current" name="test_pic"
+                                               class="input-default-js">
 
-                                    </label>
+                                        <label class="label-for-default-js rounded-right mb-3"
+                                               for="file-with-current"><span class="span-choose-file">Choose file</span>
 
+                                            <div class="float-right span-browse">Browse</div>
+
+                                        </label>
+
+                                    </div>
                                 </div>
 
                             {% else %}
@@ -100,21 +104,24 @@
 
                 </div>
             </div>
-        </div>
-        <div class="col-md-12 footer">
-            <p>
-                <a class="btn btn-lg btn-light-blue btn-block"
-                   href="{{ url_info.next_url }}">{{ url_info.next_name }}</a>
-            </p>
-            {% if url_info.next_url_2 %}
+            <div class="col-md-12 footer">
                 <p>
                     <a class="btn btn-lg btn-light-blue btn-block"
-                       href="{{ url_info.next_url_2 }}">{{ url_info.next_name_2 }}</a>
+                       href="{{ url_info.next_url }}">{{ url_info.next_name }}</a>
                 </p>
-            {% endif %}
+                {% if url_info.next_url_2 %}
+                    <p>
+                        <a class="btn btn-lg btn-light-blue btn-block"
+                           href="{{ url_info.next_url_2 }}">{{ url_info.next_name_2 }}</a>
+                    </p>
+                {% endif %}
+            </div>
         </div>
     </div>
-    </div>
 {% endblock %}
+
+
+
+
 
 
