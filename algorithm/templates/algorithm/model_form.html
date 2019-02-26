@@ -164,49 +164,12 @@
     </div>
 
 
-    {#        <div id="result" class="col-md-10 col-md-offset-2">#}
-    {#            <nav aria-label="...">#}
-    {#                <ul class="pager">#}
-    {#                    <li class="previous {% if step == 1 %} disabled {% endif %}"><a#}
-    {#                            href="{% url 'alogrithm:step'  step|add:-1 %}"><span#}
-    {#                            aria-hidden="true">&larr;</span>Previous Step</a></li>#}
-    {#                    <li class="next {% if step == 6 %} disabled {% endif %}"><a#}
-    {#                            href="{% url 'alogrithm:step'  step|add:1 %}">Next Step#}
-    {#                        <span aria-hidden="true">&rarr;</span></a>#}
-    {#                    </li>#}
-    {#                </ul>#}
-    {#            </nav>#}
-    {#        </div>#}
-
-    {#        <nav class="text-center" aria-label="Page navigation">#}
-    {#            <ul class="pagination ">#}
-    {##}
-    {#                <li>#}
-    {#                    <a href="{% url 'alogrithm:step'  step|add:-1 %}" aria-label="Previous">#}
-    {#                        <span aria-hidden="true">&laquo;</span>#}
-    {#                    </a>#}
-    {#                </li>#}
-    {#                <li><a href="{% url 'alogrithm:step' 1 %}">prepare_data</a></li>#}
-    {#                <li><a href="{% url 'alogrithm:step' 2 %}">hog_pic</a></li>#}
-    {#                <li><a href="{% url 'alogrithm:step' 3 %}">eval_alg</a></li>#}
-    {#                <li><a href="{% url 'alogrithm:step' 4 %}">adjust_svm</a></li>#}
-    {#                <li><a href="{% url 'alogrithm:step' 5 %}">adjust_ensemble_learning</a></li>#}
-    {#                <li><a href="{% url 'alogrithm:step' 6 %}">create_svm_model</a></li>#}
-    {#                <li>#}
-    {#                    <a href="{% url 'alogrithm:step'  step|add:1 %}" aria-label="Next">#}
-    {#                        <span aria-hidden="true">&raquo;</span>#}
-    {#                    </a>#}
-    {#                </li>#}
-    {##}
-    {#            </ul>#}
-    {#        </nav>#}
-
 
 {% endblock %}
 {% block extra_js %}
     <script type="text/javascript">
 
-    document.getElementById("pag{{ step }}").className += " active";
+        document.getElementById("pag{{ step }}").className += " active";
 
     </script>
 

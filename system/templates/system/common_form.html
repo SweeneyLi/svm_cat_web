@@ -4,6 +4,18 @@
 {% block title %}{{ url_info.title }}{% endblock %}
 {% block css %}
     <style>
+        :root {
+            --info-color: #0099CC;
+        }
+
+        .btn-toggle-pass {
+            border: none;
+            position: absolute;
+            top: 11px;
+            background: transparent;
+            right: 0;
+        }
+
     </style>
 {% endblock css %}
 {% block content %}
@@ -75,7 +87,7 @@
 
                                         <span class="input-group-text mb-3" id="input1">Upload</span>
 
-                                        <input type="file" id="file-with-current" name="test_pic"
+                                        <input type="file" id="file-with-current" name="{{ field.name }}"
                                                class="input-default-js">
 
                                         <label class="label-for-default-js rounded-right mb-3"
@@ -87,8 +99,14 @@
 
                                     </div>
                                 </div>
+                            {% elif field|field_type == 'password' %}
+                                <div class="md-form" style="max-width:20rem;margin:2rem auto;">
+                                    <input type="password" name={{ field.name }} id="password-custom" class="form-control">
+                                    <label for="password-custom">{{ field.label }}</label>
+                                </div>
 
                             {% else %}
+{#                                {{ field|field_type }}#}
                                 <div class="form-group">
                                     {{ field.label_tag }}
                                     {{ field }}
@@ -120,7 +138,74 @@
     </div>
 {% endblock %}
 
+{% block extra_js %}
+    <script>
+        (($) => {
 
+            class Toggle {
+
+                constructor(element, options) {
+
+                    this.defaults = {
+                        icon: 'fa-eye'
+                    };
+
+                    this.options = this.assignOptions(options);
+
+                    this.$element = element;
+                    this.$button = $(`<button class="btn-toggle-pass"><i class="fa ${this.options.icon}"></i></button>`);
+
+                    this.init();
+                };
+
+                assignOptions(options) {
+
+                    return $.extend({}, this.defaults, options);
+                }
+
+                init() {
+
+                    this._appendButton();
+                    this.bindEvents();
+                }
+
+                _appendButton() {
+                    this.$element.after(this.$button);
+                }
+
+                bindEvents() {
+
+                    this.$button.on('click touchstart', this.handleClick.bind(this));
+                }
+
+                handleClick() {
+
+                    let type = this.$element.attr('type');
+
+                    type = type === 'password' ? 'text' : 'password';
+
+                    this.$element.attr('type', type);
+                    this.$button.toggleClass('active');
+                }
+            }
+
+            $.fn.togglePassword = function (options) {
+                return this.each(function () {
+                    new Toggle($(this), options);
+                });
+            }
+
+        })(jQuery);
+
+        $(document).ready(function () {
+            $('#password').togglePassword();
+            $('#password-custom').togglePassword({
+                'icon': 'fa-lock'
+            });
+        })
+
+    </script>
+{% endblock extra_js %}
 
 
 
