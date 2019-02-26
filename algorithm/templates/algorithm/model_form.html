@@ -12,8 +12,7 @@
     <div class="container">
         <div class="container-fluid">
             <div class="row">
-                <div class="text-center">
-
+                <div class="col-md-12 text-center">
                     {% load my_tags %}
                     <div class="mytitle">
                         The {{ step|num_to_English }} Step : {{ title }}
@@ -34,12 +33,12 @@
                             {% endfor %}
                             </p>
                         </div>
-                        {% else %}
+                    {% else %}
                         <img class="img-responsive" src="{% static 'img/LXH/7.jpg' %}">
                     {% endif %}
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-6 col-md-offset-6">
 
                     {% if message %}
                         <div class="alert alert-warning">{{ message }}</div>
@@ -54,20 +53,23 @@
                             {% if field|field_type == 'text' %}
 
                                 <div class="md-form input-group input-group-lg">
-                                    <div class="input-group-prepend ">
-                                        <span class="input-group-text md-addon"
-                                              id="inputGroupMaterial-sizing-lg">
-                                            {{ field.label }}
-                                        </span>
-                                    </div>
+                                    {#                                    <div class="input-group-prepend ">#}
+                                    {#                                        <span class="input-group-text md-addon"#}
+                                    {#                                              id="inputGroupMaterial-sizing-lg">#}
+                                    {#                                            {{ field.label }}#}
+                                    {#                                        </span>#}
+                                    {#                                    </div>#}
+                                    {{ field.label_tag }}
                                     {{ field|widget_with_classes:'form-control' }}
                                 </div>
 
                             {% elif  field|field_type == 'checkbox' %}
 
-                                <div class="custom-control custom-checkbox">
-                                    {{ field|widget_with_classes:'custom-control-input' }}
-                                    <label class="custom-control-label">{{ field.label }}</label>
+                                <div class="form-group custom-control custom-checkbox">
+                                    <div class="custom-control custom-checkbox">
+                                        {{ field|widget_with_classes:'custom-control-input' }}
+                                        {{ field|label_with_classes:"custom-control-label" }}
+                                    </div>
                                 </div>
 
 
@@ -92,28 +94,29 @@
                                 </div>
 
                             {% elif  field|field_type == 'number' %}
-
-                                {{ field.label_tag }}
-                                <div class="md-form">
+                                <div class="form-group md-form">
+                                    {{ field.label_tag }}
                                     {{ field|widget_with_classes:'form-control' }}
                                 </div>
                             {% elif field|field_type == 'file' %}
                                 <div class="input-default-wrapper mt-5" style="width: 300px; margin: 20px 0px 20px 0px">
 
-                                    <input type="file" id="file-with-multi-file" name="test_pic"
-                                           class="input-default-js"
-                                           data-multiple-target="{target} files selected"
-                                           multiple>
+                                    <div class="input-default-wrapper mt-3">
 
-                                    <label class="label-for-default-js rounded-right mb-3"
-                                           for="file-with-multi-file"><span
-                                            class="span-choose-file">Choose file</span>
+                                        <span class="input-group-text mb-3" id="input1">Upload</span>
 
-                                        <div class="float-right span-browse text-center" style="width: 100px">Browse
-                                        </div>
+                                        <input type="file" id="file-with-current" name="test_pic"
+                                               class="input-default-js">
 
-                                    </label>
+                                        <label class="label-for-default-js rounded-right mb-3"
+                                               for="file-with-current"><span class="span-choose-file">Choose
+      file</span>
 
+                                            <div class="float-right span-browse">Browse</div>
+
+                                        </label>
+
+                                    </div>
                                 </div>
 
                             {% else %}

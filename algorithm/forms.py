@@ -6,6 +6,7 @@ from django.conf import settings
 import json
 import re
 
+select_attrs = {"class": "browser-default custom-select custom-select-lg mb-3"}
 
 def is_float(str):
     try:
@@ -41,9 +42,13 @@ class PrepareDataForm(forms.Form):
             empty_label="---------",
         )
 
-        self.fields['test_category_positive'].widget.attrs.update({
-            'class': "browser-default custom-select"
-        })
+        self.fields['test_category_positive'].widget.attrs.update(
+            select_attrs
+        )
+        self.fields['test_category_negative'].widget.attrs.update(
+            select_attrs
+        )
+
 
     def is_valid(self):
 
@@ -90,8 +95,9 @@ class SVMParameterForm(forms.Form):
     kernel = forms.MultipleChoiceField(label='kernel',
                                        choices=kernel_list,
                                        widget=forms.CheckboxSelectMultiple(),
-                                       required=True
+                                       required=True,
                                        )
+
 
     def is_valid(self):
 
@@ -128,6 +134,13 @@ class EnsembleParamsForm(forms.Form):
             'C': algorithm_info[str(user_id)]['model_para']['best_params']['C'],
             'kernel': algorithm_info[str(user_id)]['model_para']['best_params']['kernel']
         }
+
+        self.fields['kernel'].widget.attrs.update(
+            select_attrs
+        )
+        self.fields['ensemble_learning'].widget.attrs.update(
+            select_attrs
+        )
 
     def is_valid(self):
 
