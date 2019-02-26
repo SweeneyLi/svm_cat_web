@@ -31,7 +31,7 @@ url_dict = {
         'title': 'Train SVM Model',
         'next_name': 'Model List',
         'next_url': reverse_lazy('alogrithm:model_list'),
-        'next_name_2': 'Model List',
+        'next_name_2': 'Cat Identification',
         'next_url_2': reverse_lazy('alogrithm:cat_identification'),
         'pic_url': '/static/img/LXH/1.jpg',
     },

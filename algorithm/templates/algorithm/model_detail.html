@@ -33,7 +33,19 @@
                     <tbody>
                     <tr>
                         <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">model_name:</th>
-                        <th colspan="2" style="font-size: 15px">{{ model.model_name }}</th>
+                        <th colspan="2" style="font-size: 15px">
+                            <p class="align-content-around h5 text-info ">
+                                {{ model.model_name }}&nbsp;&nbsp;&nbsp;
+                                <a class="text-right" name="{{ model.model_name }}DeleteButton"
+                                   data-href="{% url 'alogrithm:model_delete' model.id %}"
+                                   data-toggle="modal"
+                                   data-target="#modalConfirmDelete">
+                                    <i class="fas fa-backspace "></i>
+                                </a>
+                            </p>
+
+
+                        </th>
                     </tr>
                     <tr>
                         <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">comment:</th>
@@ -91,17 +103,9 @@
                     </tbody>
 
                 </table>
-                <div class="footer">
-                    <a type="button" class="btn btn-lg btn-danger btn-block "
-                       name="{{ model.model_name }}DeleteButton"
-                       data-href="{% url 'alogrithm:model_delete' model.id %}"
-                       data-toggle="modal"
-                       data-target="#modalConfirmDelete">
-                        delete the model
-                    </a>
-                </div>
-
             </div>
+
+
             {% if train_log %}
                 <div id="bottomTable">
                 <table id="modelDataTable"
@@ -144,16 +148,15 @@
                 </div>
             {% endif %}
             </div>
-            <div>
-                <p><a class="btn btn-lg btn-light-blue btn-block"
-                      href="{% url 'alogrithm:train_svm_model' %}">train model</a>
-                </p>
-
-                <a class="btn btn-lg btn-light-blue btn-block"
-                   href="{% url 'alogrithm:create_svm_model' %}">create model</a>
-            </div>
         </div>
+        <div class="col-md-12">
+            <p><a class="btn btn-block btn-lg btn-light-blue "
+                  href="{% url 'alogrithm:train_svm_model' %}">train model</a>
+            </p>
 
+            <a class="btn btn-block btn-lg btn-light-blue "
+               href="{% url 'alogrithm:create_svm_model' %}">create model</a>
+        </div>
 
     </div>
 
@@ -176,7 +179,7 @@
                 <!--Footer-->
                 <div class="modal-footer flex-center">
                     <a href="" class="btn  btn-outline-danger btn-ok">Yes</a>
-                    <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+                    <a type="button" class="btn btn-outline-blue-grey waves-effect" data-dismiss="modal">No</a>
                 </div>
             </div>
         </div>

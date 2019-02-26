@@ -10,173 +10,204 @@
 {% block content %}
 
     <div class="container">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    {% load my_tags %}
-                    <div class="mytitle">
-                        The {{ step|num_to_English }} Step : {{ title }}
-                    </div>
-
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                {% load my_tags %}
+                <div class="mytitle">
+                    The {{ step|num_to_English }} Step : {{ title }}
                 </div>
-                <div class="col-md-6 ">
-                    {% if picture %}
-                        <div id="picture">
-                             <p><img class="img-responsive center-block" src="{{ picture }}"/></p>
-                        </div>
-                    {% elif results %}
-                        <div id="result" class="col-md-8 col-md-offset-2">
-                            <p>best_score: {{ results.best_score }}</p>
-                            <p>best_params: {{ results.best_params }}</p>
-                            {% for mean, std, param in results.cv_results %}
-                                <p>mean: {{ mean }}; std: {{ std }}; param: {{ param }}</p>
-                            {% endfor %}
-                            </p>
-                        </div>
-                    {% else %}
-                        <img class="img-responsive" src="{% static 'img/LXH/7.jpg' %}">
-                    {% endif %}
-                </div>
-
-                <div class="col-md-6 col-md-offset-6">
-
-                    {% if message %}
-                        <div class="alert alert-warning">{{ message }}</div>
-                    {% endif %}
-
-
-                    <form method="post" enctype="multipart/form-data">{% csrf_token %}
-                        {% for field in form %}
-
-                            {#                            -{{ field|field_type }}-#}
-
-                            {% if field|field_type == 'text' %}
-
-                                <div class="md-form input-group input-group-lg">
-                                    {#                                    <div class="input-group-prepend ">#}
-                                    {#                                        <span class="input-group-text md-addon"#}
-                                    {#                                              id="inputGroupMaterial-sizing-lg">#}
-                                    {#                                            {{ field.label }}#}
-                                    {#                                        </span>#}
-                                    {#                                    </div>#}
-                                    {{ field.label_tag }}
-                                    {{ field|widget_with_classes:'form-control' }}
-                                </div>
-
-                            {% elif  field|field_type == 'checkbox' %}
-
-                                <div class="form-group custom-control custom-checkbox">
-                                    <div class="custom-control custom-checkbox">
-                                        {{ field|widget_with_classes:'custom-control-input' }}
-                                        {{ field|label_with_classes:"custom-control-label" }}
-                                    </div>
-                                </div>
-
-
-                            {% elif  field|field_type == 'comment' %}
-
-                                <div class="md-form amber-textarea active-amber-textarea-2">
-                                    <i class="fas fa-pencil-alt prefix"></i>
-                                    <textarea type="text" name="{{ field|field_type }}" id="id_comment"
-                                              class="md-textarea form-control"
-                                              rows="2" cols="10"></textarea>
-                                    {#                                    {{ field.label_tag }}#}
-                                    <label style="font-size: 12px" for="id_comment">Comment</label>
-                                </div>
-
-                            {% elif  field|field_type == 'C' %}
-
-                                <div class="md-form amber-textarea active-amber-textarea-2">
-                                    <i class="fas fa-pencil-alt prefix"></i>
-                                    {{ field|widget_with_classes:'md-textarea form-control' }}
-                                    {#                                   {{ field.label_tag }}#}
-                                    <label style="font-size: 18px" for="id_C">C</label>
-                                </div>
-
-                            {% elif  field|field_type == 'number' %}
-                                <div class="form-group md-form">
-                                    {{ field.label_tag }}
-                                    {{ field|widget_with_classes:'form-control' }}
-                                </div>
-                            {% elif field|field_type == 'file' %}
-                                <div class="input-default-wrapper mt-5" style="width: 300px; margin: 20px 0px 20px 0px">
-
-                                    <div class="input-default-wrapper mt-3">
-
-                                        <span class="input-group-text mb-3" id="input1">Upload</span>
-
-                                        <input type="file" id="file-with-current" name="test_pic"
-                                               class="input-default-js">
-
-                                        <label class="label-for-default-js rounded-right mb-3"
-                                               for="file-with-current"><span class="span-choose-file">Choose file</span>
-
-                                            <div class="float-right span-browse">Browse</div>
-
-                                        </label>
-
-                                    </div>
-                                </div>
-
-                            {% else %}
-                                <div class="form-group">
-                                    {{ field.label_tag }}
-                                    {{ field }}
-                                </div>
-                            {% endif %}
-
-
-
-                        {% endfor %}
-                        <button type="reset" class="btn btn-outline-secondary waves-effect">Reset</button>
-                        <button type="submit" class="btn btn-outline-success waves-effect">Submit</button>
-                    </form>
-                </div>
-
 
             </div>
+            <div class="col-md-6 ">
+                {% if picture %}
+                    <div id="picture">
+                         <p><img class="img-responsive center-block" src="{{ picture }}"/></p>
+                    </div>
+                {% elif results %}
+                    <div id="result" class="col-md-8 col-md-offset-2">
+                        <p>best_score: {{ results.best_score }}</p>
+                        <p>best_params: {{ results.best_params }}</p>
+                        {% for mean, std, param in results.cv_results %}
+                            <p>mean: {{ mean }}; std: {{ std }}; param: {{ param }}</p>
+                        {% endfor %}
+                        </p>
+                    </div>
+                {% else %}
+                    <img class="img-responsive" src="{% static 'img/LXH/7.jpg' %}">
+                {% endif %}
+            </div>
+
+            <div class="col-md-6 col-md-offset-6">
+
+                {% if message %}
+                    <div class="alert alert-warning">{{ message }}</div>
+                {% endif %}
+
+
+                <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                    {% for field in form %}
+
+                        {#                            -{{ field|field_type }}-#}
+
+                        {% if field|field_type == 'text' %}
+
+                            <div class="md-form input-group input-group-lg">
+                                {#                                    <div class="input-group-prepend ">#}
+                                {#                                        <span class="input-group-text md-addon"#}
+                                {#                                              id="inputGroupMaterial-sizing-lg">#}
+                                {#                                            {{ field.label }}#}
+                                {#                                        </span>#}
+                                {#                                    </div>#}
+                                {{ field.label_tag }}
+                                {{ field|widget_with_classes:'form-control' }}
+                            </div>
+
+                        {% elif  field|field_type == 'checkbox' %}
+
+                            <div class="form-group custom-control custom-checkbox">
+                                <div class="custom-control custom-checkbox">
+                                    {{ field|widget_with_classes:'custom-control-input' }}
+                                    {{ field|label_with_classes:"custom-control-label" }}
+                                </div>
+                            </div>
+
+
+                        {% elif  field|field_type == 'comment' %}
+
+                            <div class="md-form amber-textarea active-amber-textarea-2">
+                                <i class="fas fa-pencil-alt prefix"></i>
+                                <textarea type="text" name="{{ field|field_type }}" id="id_comment"
+                                          class="md-textarea form-control"
+                                          rows="2" cols="10"></textarea>
+                                {#                                    {{ field.label_tag }}#}
+                                <label style="font-size: 12px" for="id_comment">Comment</label>
+                            </div>
+
+                        {% elif  field|field_type == 'C' %}
+
+                            <div class="md-form amber-textarea active-amber-textarea-2">
+                                <i class="fas fa-pencil-alt prefix"></i>
+                                {{ field|widget_with_classes:'md-textarea form-control' }}
+                                {#                                   {{ field.label_tag }}#}
+                                <label style="font-size: 18px" for="id_C">C</label>
+                            </div>
+
+                        {% elif  field|field_type == 'number' %}
+                            <div class="form-group md-form">
+                                {{ field.label_tag }}
+                                {{ field|widget_with_classes:'form-control' }}
+                            </div>
+                        {% elif field|field_type == 'file' %}
+                            <div class="input-default-wrapper mt-5" style="width: 300px; margin: 20px 0px 20px 0px">
+
+                                <div class="input-default-wrapper mt-3">
+
+                                    <span class="input-group-text mb-3" id="input1">Upload</span>
+
+                                    <input type="file" id="file-with-current" name="test_pic"
+                                           class="input-default-js">
+
+                                    <label class="label-for-default-js rounded-right mb-3"
+                                           for="file-with-current"><span class="span-choose-file">Choose file</span>
+
+                                        <div class="float-right span-browse">Browse</div>
+
+                                    </label>
+
+                                </div>
+                            </div>
+
+                        {% else %}
+                            <div class="form-group">
+                                {{ field.label_tag }}
+                                {{ field }}
+                            </div>
+                        {% endif %}
+
+
+
+                    {% endfor %}
+                    <button type="reset" class="btn btn-outline-secondary waves-effect">Reset</button>
+                    <button type="submit" class="btn btn-outline-success waves-effect">Submit</button>
+                </form>
+            </div>
+
 
         </div>
 
-        <div id="result" class="col-md-10 col-md-offset-2">
-            <nav aria-label="...">
-                <ul class="pager">
-                    <li class="previous {% if step == 1 %} disabled {% endif %}"><a
-                            href="{% url 'alogrithm:step'  step|add:-1 %}"><span
-                            aria-hidden="true">&larr;</span>Previous Step</a></li>
-                    <li class="next {% if step == 6 %} disabled {% endif %}"><a
-                            href="{% url 'alogrithm:step'  step|add:1 %}">Next Step
-                        <span aria-hidden="true">&rarr;</span></a>
+        <div class="row justify-content-center" style="margin-top: 5%">
+            <nav>
+                <ul class="pagination pg-teal">
+                    <li class="page-item">
+                        <a class="page-link" aria-label="Previous" href="{% url 'alogrithm:step'  step|add:-1 %}">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li id="pag1" class="page-item"><a class="page-link" href="{% url 'alogrithm:step' 1 %}">1</a></li>
+                    <li id="pag2" class="page-item"><a class="page-link" href="{% url 'alogrithm:step' 2 %}">2</a></li>
+                    <li id="pag3" class="page-item"><a class="page-link" href="{% url 'alogrithm:step' 3 %}">3</a></li>
+                    <li id="pag4" class="page-item"><a class="page-link" href="{% url 'alogrithm:step' 4 %}">4</a></li>
+                    <li id="pag5" class="page-item"><a class="page-link" href="{% url 'alogrithm:step' 5 %}">5</a></li>
+                    <li id="pag6" class="page-item"><a class="page-link" href="{% url 'alogrithm:step' 6 %}">6</a></li>
+                    <li id="pagN" class="page-item">
+                        <a class="page-link" aria-label="Next" href="{% url 'alogrithm:step'  step|add:1 %}">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
                     </li>
                 </ul>
             </nav>
         </div>
 
-
-        {#        <nav class="text-center" aria-label="Page navigation">#}
-        {#            <ul class="pagination ">#}
-        {##}
-        {#                <li>#}
-        {#                    <a href="{% url 'alogrithm:step'  step|add:-1 %}" aria-label="Previous">#}
-        {#                        <span aria-hidden="true">&laquo;</span>#}
-        {#                    </a>#}
-        {#                </li>#}
-        {#                <li><a href="{% url 'alogrithm:step' 1 %}">prepare_data</a></li>#}
-        {#                <li><a href="{% url 'alogrithm:step' 2 %}">hog_pic</a></li>#}
-        {#                <li><a href="{% url 'alogrithm:step' 3 %}">eval_alg</a></li>#}
-        {#                <li><a href="{% url 'alogrithm:step' 4 %}">adjust_svm</a></li>#}
-        {#                <li><a href="{% url 'alogrithm:step' 5 %}">adjust_ensemble_learning</a></li>#}
-        {#                <li><a href="{% url 'alogrithm:step' 6 %}">create_svm_model</a></li>#}
-        {#                <li>#}
-        {#                    <a href="{% url 'alogrithm:step'  step|add:1 %}" aria-label="Next">#}
-        {#                        <span aria-hidden="true">&raquo;</span>#}
-        {#                    </a>#}
-        {#                </li>#}
-        {##}
-        {#            </ul>#}
-        {#        </nav>#}
     </div>
 
 
-{% endblock %}
+    {#        <div id="result" class="col-md-10 col-md-offset-2">#}
+    {#            <nav aria-label="...">#}
+    {#                <ul class="pager">#}
+    {#                    <li class="previous {% if step == 1 %} disabled {% endif %}"><a#}
+    {#                            href="{% url 'alogrithm:step'  step|add:-1 %}"><span#}
+    {#                            aria-hidden="true">&larr;</span>Previous Step</a></li>#}
+    {#                    <li class="next {% if step == 6 %} disabled {% endif %}"><a#}
+    {#                            href="{% url 'alogrithm:step'  step|add:1 %}">Next Step#}
+    {#                        <span aria-hidden="true">&rarr;</span></a>#}
+    {#                    </li>#}
+    {#                </ul>#}
+    {#            </nav>#}
+    {#        </div>#}
 
+    {#        <nav class="text-center" aria-label="Page navigation">#}
+    {#            <ul class="pagination ">#}
+    {##}
+    {#                <li>#}
+    {#                    <a href="{% url 'alogrithm:step'  step|add:-1 %}" aria-label="Previous">#}
+    {#                        <span aria-hidden="true">&laquo;</span>#}
+    {#                    </a>#}
+    {#                </li>#}
+    {#                <li><a href="{% url 'alogrithm:step' 1 %}">prepare_data</a></li>#}
+    {#                <li><a href="{% url 'alogrithm:step' 2 %}">hog_pic</a></li>#}
+    {#                <li><a href="{% url 'alogrithm:step' 3 %}">eval_alg</a></li>#}
+    {#                <li><a href="{% url 'alogrithm:step' 4 %}">adjust_svm</a></li>#}
+    {#                <li><a href="{% url 'alogrithm:step' 5 %}">adjust_ensemble_learning</a></li>#}
+    {#                <li><a href="{% url 'alogrithm:step' 6 %}">create_svm_model</a></li>#}
+    {#                <li>#}
+    {#                    <a href="{% url 'alogrithm:step'  step|add:1 %}" aria-label="Next">#}
+    {#                        <span aria-hidden="true">&raquo;</span>#}
+    {#                    </a>#}
+    {#                </li>#}
+    {##}
+    {#            </ul>#}
+    {#        </nav>#}
+
+
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
+
+    document.getElementById("pag{{ step }}").className += " active";
+
+    </script>
+
+{% endblock extra_js %}

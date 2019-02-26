@@ -14,17 +14,17 @@
         {% if picture_list %}
 
 
-            <div class="panel-group" id="accordion">
+            <div class="panel-group white" id="accordion">
 
                 {% regroup picture_list by category as pictures %}
                 {% for category, pic_info in pictures %}
 
                     <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">
-                                <a class="h2" data-toggle="collapse" data-parent="#accordion"
+                        <div class="panel-heading aqua-gradient">
+                            <p class="panel-title">
+                                <a class="text-white h2" data-toggle="collapse" data-parent="#accordion"
                                    href="#collapse{{ category }}">
-                                    {{ category }}
+                                    &nbsp;{{ category }}
                                 </a>
                                 &nbsp;/&nbsp;
                                 {{ pic_info|length }} picture{{ pic_info|length| pluralize }}
@@ -35,7 +35,7 @@
                                         data-target="#modalConfirmDelete">
                                 </button>
 
-                            </h3>
+                            </p>
                         </div>
                         <div id="collapse{{ category }}" class="panel-collapse collapse">
                             <div class="panel-body">
@@ -122,8 +122,8 @@
                 <div class="debug-url"></div>
                 <!--Footer-->
                 <div class="modal-footer flex-center">
-                    <a href="" class="btn  btn-outline-danger btn-ok">Yes</a>
-                    <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+                    <a href="" class="btn  btn-outline-danger btn-ok waves-effect">Yes</a>
+                    <a type="button" class="btn btn-outline-blue-grey waves-effect" data-dismiss="modal">No</a>
                 </div>
             </div>
         </div>
