@@ -124,7 +124,7 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
                                 cells_per_block=cells_per_block, multichannel=is_color,
                                 block_norm='L2-Hys', visualize=True)
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4), sharex=True, sharey=True)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(4, 7), sharex=True, sharey=True)
 
     # show the origin picture
     ax1.axis('off')

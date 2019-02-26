@@ -5,7 +5,6 @@ url_dict = {
         'title': 'Profile Update',
         'next_name': 'My Profile',
         'next_url': reverse_lazy('user:profile'),
-
         'pic_url': '/static/img/LXH/1.jpg',
     },
     'pwdChange': {
@@ -26,7 +25,7 @@ url_dict = {
         'title': 'Picture Upload',
         'next_name': 'Picture List',
         'next_url': reverse_lazy('picture:pic_list'),
-        'pic_url': '/static/img/LXH/1.jpg',
+        'pic_url': '/static/img/LXH/1.gif',
     },
     'trainSVMModel': {
         'title': 'Train SVM Model',

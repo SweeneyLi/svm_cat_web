@@ -5,8 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>{% block title %}base{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css">
 
 
     <!-- Bootstrap -->
@@ -28,7 +29,7 @@
 <body>
 
 
-<nav class="navbar navbar-default navbar-static-top">
+<nav class="navbar navbar-expand-lg navbar-default navbar-static-top">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -46,8 +47,24 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
 
-                <li><a href="{% url 'alogrithm:create_svm_model' %}"
-                       style="font-weight: bold; text-decoration: underline;">Making model</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                       aria-haspopup="true"
+                       aria-expanded="false">Six Steps</a>
+                    <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="list-group " style="width: 200px">
+                            <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 1%}">prepare_data</a><span class="badge badge-primary badge-pill">1</span></li>
+                           <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 2%}">hog_pic</a><span class="badge badge-primary badge-pill">2</span></li>
+                           <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 3%}">eval_alg</a><span class="badge badge-primary badge-pill">3</span></li>
+                           <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 4%}">svm</a><span class="badge badge-primary badge-pill">4</span></li>
+                           <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 5%}">ensemble_learning</a><span class="badge badge-primary badge-pill">5</span></li>
+                           <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 6%}">create_svm_model</a><span class="badge badge-primary badge-pill">6</span></li>
+
+                        </ul>
+
+                    </div>
+                </li>
+
                 <li><a href="{% url 'alogrithm:train_svm_model' %}">train_svm_model</a></li>
                 <li><a href="{% url 'alogrithm:cat_identification' %}">Cat identification</a></li>
                 <li><a href="{% url 'picture:pic_upload' %}">Upload_Picture</a></li>
@@ -91,16 +108,16 @@
 
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+{#<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>#}
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 
-{#<script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/jquery-3.3.1.min.js' %}"></script>#}
+<script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/jquery-3.3.1.min.js' %}"></script>
 <!-- Bootstrap tooltips -->
 <script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/popper.min.js' %}"></script>
 <!-- Bootstrap core JavaScript -->
-<script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+{#<script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>#}
 
-{#<script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/bootstrap.min.js' %}"></script>#}
+<script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/bootstrap.min.js' %}"></script>
 <!-- MDB core JavaScript -->
 <script type="text/javascript" src="{% static 'MDB-Free_4.7.3/js/mdb.min.js' %}"></script>
 
