@@ -8,6 +8,7 @@ import re
 
 select_attrs = {"class": "browser-default custom-select custom-select-lg mb-3"}
 
+
 def is_float(str):
     try:
         a = float(str)
@@ -17,6 +18,20 @@ def is_float(str):
         return False
     else:
         return True
+
+
+def is_tuple_positive(str):
+    try:
+        temp = str.split(',')
+        if len(temp) == 2:
+            for i in temp:
+                if int(i) <= 0:
+                    return False
+        else:
+            return False
+    except Exception:
+        return False
+    return True
 
 
 class PrepareDataForm(forms.Form):
@@ -49,7 +64,6 @@ class PrepareDataForm(forms.Form):
             select_attrs
         )
 
-
     def is_valid(self):
 
         if self.data['test_category_negative'] == self.data['test_category_positive']:
@@ -60,16 +74,17 @@ class PrepareDataForm(forms.Form):
 
 
 class HOGPicForm(forms.Form):
-    pic_size = forms.CharField(initial='(194,259)')
+    pic_size = forms.CharField(initial='194,259')
     orientations = forms.IntegerField(initial=9)
-    pixels_per_cell = forms.CharField(initial='(16,16)')
-    cells_per_block = forms.CharField(initial='(2,2)')
+    pixels_per_cell = forms.CharField(initial='16,16')
+    cells_per_block = forms.CharField(initial='2,2')
     is_color = forms.BooleanField(initial=True, required=False)
 
     def is_valid(self):
-
+        # TODO:judege
         for field in ['pic_size', 'pixels_per_cell', 'cells_per_block']:
-            if not re.match(r'^\(\d+,\d+\)$', self.data[field]):
+            # if not re.match(r'^\(\d+,\d+\)$', self.data[field]):
+            if not is_tuple_positive(self.data[field]):
                 self._errors = 'The ' + field + ' is a wrong format ! '
                 return False
         if int(self.data['orientations']) >= 0:
@@ -97,7 +112,6 @@ class SVMParameterForm(forms.Form):
                                        widget=forms.CheckboxSelectMultiple(),
                                        required=True,
                                        )
-
 
     def is_valid(self):
 

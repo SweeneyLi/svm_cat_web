@@ -47,40 +47,99 @@ class RegisterView(FormView):
         return HttpResponseRedirect("/accounts/login/")
 
 
-def login(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
+# def login(request):
+#     if request.method == 'POST':
+#         form = LoginForm(request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data['username']
+#             password = form.cleaned_data['password']
+#
+#             filter_result = User.objects.filter(username__exact=username)
+#             if not filter_result:
+#                 return render(request, 'user/login.html',
+#                               {'form': form, 'message': "This username does not exist. Please register first."})
+#
+#             user = auth.authenticate(username=username, password=password)
+#
+#             if not user:
+#                 return render(request, 'user/login.html', {'form': form,
+#                                                            'message': 'Wrong password. Please try again.'})
+#
+#             if user.is_superuser:
+#                 auth.login(request, user)
+#                 return HttpResponseRedirect("/admin")
+#
+#             if user.is_active:
+#                 auth.login(request, user)
+#                 return HttpResponseRedirect(reverse('system:index'))
+#
+#             else:
+#                 # 登陆失败
+#                 return render(request, 'user/login.html', {'form': form,
+#                                                            'message': 'Please try again.'})
+#     else:
+#         form = LoginForm()
+#
+#     return render(request, 'user/login.html', {'form': form})
+class LoginView(FormView):
+    form_class = LoginForm
+    view_name = 'login'
+
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(request, 'system/common_form.html',
+                      {'form': form,
+                       'url_info': url_dict[self.view_name],
+                       })
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
 
-            filter_result = User.objects.filter(username__exact=username)
-            if not filter_result:
-                return render(request, 'user/login.html',
-                              {'form': form, 'message': "This username does not exist. Please register first."})
+    def form_invalid(self, form, **kwargs):
+        return render(self.request, 'system/common_form.html',
+                      {'form': form,
+                       'url_info': url_dict[self.view_name],
+                       })
 
-            user = auth.authenticate(username=username, password=password)
+    def form_valid(self, form, **kwargs):
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
 
-            if not user:
-                return render(request, 'user/login.html', {'form': form,
-                                                           'message': 'Wrong password. Please try again.'})
+        filter_result = User.objects.filter(username__exact=username)
+        if not filter_result:
+            return render(self.request, 'system/common_form.html',
+                          {'form': form,
+                           'url_info': url_dict[self.view_name],
+                           'message': "This username does not exist. Please register first."
+                           })
 
-            if user.is_superuser:
-                auth.login(request, user)
-                return HttpResponseRedirect("/admin")
+        user = auth.authenticate(username=username, password=password)
 
-            if user.is_active:
-                auth.login(request, user)
-                return HttpResponseRedirect(reverse('system:index'))
+        if not user:
+            return render(self.request, 'system/common_form.html',
+                          {'form': form,
+                           'url_info': url_dict[self.view_name],
+                           'message': 'Wrong password. Please try again.'
+                           })
 
-            else:
-                # 登陆失败
-                return render(request, 'user/login.html', {'form': form,
-                                                           'message': 'Please try again.'})
-    else:
-        form = LoginForm()
+        if user.is_superuser:
+            auth.login(self.request, user)
+            return HttpResponseRedirect("/admin")
 
-    return render(request, 'user/login.html', {'form': form})
+        if user.is_active:
+            auth.login(self.request, user)
+            return HttpResponseRedirect(reverse('system:index'))
+
+        else:
+            return render(self.request, 'system/common_form.html',
+                          {'form': form,
+                           'url_info': url_dict[self.view_name],
+                           'message': 'Please try again.'
+                           })
 
 
 def profile(request):

@@ -1,6 +1,12 @@
 from django.urls import reverse, reverse_lazy
 
 url_dict = {
+    'login': {
+        'title': 'Welcome to login ',
+        'next_name': 'Register',
+        'next_url': reverse_lazy('user:register'),
+        'pic_url': None,
+    },
     'profileUpdate': {
         'title': 'Profile Update',
         'next_name': 'My Profile',
@@ -16,15 +22,16 @@ url_dict = {
     },
     'register': {
         'title': 'Register',
-        'next_name': 'Index',
-        'next_url': reverse_lazy('system:index'),
-
+        'next_name': 'Login',
+        'next_url': reverse_lazy('user:login'),
         'pic_url': None,
     },
     'picUpload': {
         'title': 'Picture Upload',
         'next_name': 'Picture List',
         'next_url': reverse_lazy('picture:pic_list'),
+        'next_name_2': 'Start Make Model',
+        'next_url_2': reverse_lazy('alogrithm:prepare_data'),
         'pic_url': None,
     },
     'trainSVMModel': {

@@ -19,49 +19,52 @@ import shutil
 def Step(request, pk):
     pk = int(pk)
     if 0 < pk < 7:
-        return redirect(step_dict[pk]['url'])
+        for _, value in step_info.items():
+            if value['step'] == pk:
+                return redirect(value['url'])
     elif pk <= 0:
-        return redirect(step_dict[1]['url'])
+        return redirect(reverse_lazy('picture:pic_upload'))
     else:
-        return redirect(step_dict[len(step_dict)]['url'])
+        return redirect(reverse_lazy('alogrithm:train_svm_model'))
 
 
 # template
-class template(FormView):
-    form_class = PrepareDataForm
-
-    def get_form(self, form_class=None):
-        pass
-
-    def get(self, request, *args, **kwargs):
-        form = None
-
-        return render(request, 'algorithm/model_form.html',
-                      {'form': form,
-                       'step': 2,
-                       'title': step_dict[2]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       'picture': None
-                       })
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form, **kwargs)
-        else:
-            return self.form_invalid(form, **kwargs)
-
-    def form_invalid(self, form, **kwargs):
-        return render(self.request, 'algorithm/choose_pic_category.html',
-                      {'form': form, 'message': form.errors
-                       })
-
-    def form_valid(self, form, **kwargs):
-        pass
-
+# class template(FormView):
+#     form_class = PrepareDataForm
+#
+#     def get_form(self, form_class=None):
+#         pass
+#
+#     def get(self, request, *args, **kwargs):
+#         form = None
+#
+#         return render(request, 'algorithm/model_form.html',
+#                       {'form': form,
+#                        'step': 2,
+#                        'title': step_dict[2]['name'],
+#                        'remark': mark_safe('<button>1233</button>'),
+#                        'picture': None
+#                        })
+#
+#     def post(self, request, *args, **kwargs):
+#         form = self.get_form()
+#         if form.is_valid():
+#             return self.form_valid(form, **kwargs)
+#         else:
+#             return self.form_invalid(form, **kwargs)
+#
+#     def form_invalid(self, form, **kwargs):
+#         return render(self.request, 'algorithm/choose_pic_category.html',
+#                       {'form': form, 'message': form.errors
+#                        })
+#
+#     def form_valid(self, form, **kwargs):
+#         pass
+#
 
 class PrepareDataView(FormView):
     form_class = PrepareDataForm
+    view_name = 'prepareData'
 
     def get_form(self, form_class=None):
         form_class = self.get_form_class()
@@ -69,13 +72,12 @@ class PrepareDataView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
+
         return render(request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 1,
-                       'title': step_dict[1]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       'picture': None
-                       })
+                       'url_info': step_info[self.view_name],
+                       }
+                      )
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -87,12 +89,9 @@ class PrepareDataView(FormView):
     def form_invalid(self, form, **kwargs):
         return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 1,
-                       'title': step_dict[1]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       'picture': None,
-                       'message': form.errors
-                       })
+                       'url_info': step_info[self.view_name],
+                       }
+                      )
 
     def form_valid(self, form, **kwargs):
 
@@ -140,16 +139,15 @@ class PrepareDataView(FormView):
 
 class HOGPicView(FormView):
     form_class = HOGPicForm
+    view_name = 'hogPic'
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
         return render(request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 2,
-                       'title': step_dict[2]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       'picture': None
-                       })
+                       'url_info': step_info[self.view_name],
+                       }
+                      )
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -162,18 +160,17 @@ class HOGPicView(FormView):
 
         return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 2,
-                       'title': step_dict[2]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       'picture': None,
-                       'message': form.errors
-                       })
+                       'url_info': step_info[self.view_name],
+                       }
+                      )
 
     def form_valid(self, form, **kwargs):
-        pic_size = eval(form.data['pic_size'])
+        to_tuple = lambda str: tuple((int(str.split(',')[0]), int(str.split(',')[1])))
+
+        pic_size = to_tuple(form.data['pic_size'])
         orientations = int(form.data['orientations'])
-        pixels_per_cell = eval(form.data['pixels_per_cell'])
-        cells_per_block = eval(form.data['cells_per_block'])
+        pixels_per_cell = to_tuple(form.data['pixels_per_cell'])
+        cells_per_block = to_tuple(form.data['cells_per_block'])
         is_color = True if 'is_color' in form.data else False
         user_id = str(self.request.user.id)
 
@@ -186,21 +183,17 @@ class HOGPicView(FormView):
         # get the saved png to show in page
         hog_pic = hog_pic_path(user_id)
 
-        # return render(self.request, 'algorithm/hog_pic.html',
-        #               {'form': form,
-        #                'hog_pic': hog_pic,
-        #                })
         return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 2,
-                       'title': step_dict[2]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       'picture': hog_pic
-                       })
+                       'url_info': step_info[self.view_name],
+                       'picture': hog_pic,
+                       }
+                      )
 
 
 class EvaluateAlgorithmView(FormView):
     form_class = EvaluateAlgoritmForm
+    view_name = 'evalAlg'
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
@@ -212,11 +205,9 @@ class EvaluateAlgorithmView(FormView):
 
         return render(request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 3,
-                       'title': step_dict[3]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       'picture': None
-                       })
+                       'url_info': step_info[self.view_name],
+                       }
+                      )
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -233,24 +224,23 @@ class EvaluateAlgorithmView(FormView):
 
         return render(request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 3,
-                       'title': step_dict[3]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       'picture': eval_pic
-                       })
+                       'url_info': step_info[self.view_name],
+                       'picture': eval_pic,
+                       }
+                      )
 
 
 class AdjustSVMView(FormView):
     form_class = SVMParameterForm
+    view_name = 'adjustSVM'
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
         return render(request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 4,
-                       'title': step_dict[4]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       })
+                       'url_info': step_info[self.view_name],
+                       }
+                      )
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -262,11 +252,9 @@ class AdjustSVMView(FormView):
     def form_invalid(self, form, **kwargs):
         return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 4,
-                       'title': step_dict[4]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       'message': form.errors
-                       })
+                       'url_info': step_info[self.view_name],
+                       }
+                      )
 
     def form_valid(self, form, **kwargs):
         form = self.get_form()
@@ -284,14 +272,15 @@ class AdjustSVMView(FormView):
 
         return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 4,
-                       'title': step_dict[4]['name'],
-                       'results': return_dict
-                       })
+                       'url_info': step_info[self.view_name],
+                       'results': return_dict,
+                       }
+                      )
 
 
 class AdjustEnsembleLearningView(FormView):
     form_class = EnsembleParamsForm
+    view_name = 'adjustEnsembleLearning'
 
     def get_form(self, form_class=None):
         form_class = self.get_form_class()
@@ -299,12 +288,11 @@ class AdjustEnsembleLearningView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(self.request, 'algorithm/model_form.html',
+        return render(request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 5,
-                       'title': step_dict[5]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       })
+                       'url_info': step_info[self.view_name],
+                       }
+                      )
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -316,11 +304,9 @@ class AdjustEnsembleLearningView(FormView):
     def form_invalid(self, form, **kwargs):
         return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 5,
-                       'title': step_dict[5]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       'message': form.errors
-                       })
+                       'url_info': step_info[self.view_name],
+                       }
+                      )
 
     def form_valid(self, form, **kwargs):
         user_id = self.request.user.id
@@ -339,11 +325,10 @@ class AdjustEnsembleLearningView(FormView):
 
         return render(self.request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 5,
-                       'title': step_dict[5]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       'results': return_dict
-                       })
+                       'url_info': step_info[self.view_name],
+                       'results': return_dict,
+                       }
+                      )
 
 
 class ModelCreateView(CreateView):
@@ -353,15 +338,15 @@ class ModelCreateView(CreateView):
               'pixels_per_cell', 'cells_per_block', 'is_color',
               'is_standard', 'C', 'kernel', 'ensemble_learning',
               'n_estimators']
+    view_name = 'createSVMModel'
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        return render(self.request, 'algorithm/model_form.html',
+        return render(request, 'algorithm/model_form.html',
                       {'form': form,
-                       'step': 6,
-                       'title': step_dict[6]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
-                       })
+                       'url_info': step_info[self.view_name],
+                       }
+                      )
 
     def get_success_url(self):
         return reverse_lazy('alogrithm:model_list')
@@ -399,11 +384,11 @@ class ModelCreateView(CreateView):
         if SVMModel.objects.filter(user_id=user_id, model_name=form.data['model_name']).exists():
             return render(self.request, 'algorithm/model_form.html',
                           {'form': form,
-                           'step': 6,
-                           'title': step_dict[6]['name'],
-                           'remark': mark_safe('<button>1233</button>'),
+                           'url_info': step_info[self.view_name],
                            'message': "The model_name is created!"
-                           })
+                           }
+                          )
+
 
         form.instance.user_id = user_id
 

@@ -502,7 +502,8 @@ def execute_cat_identification(user_id, model_name, show_probility, return_dict)
         pic_vector = scaler.transform(pic_vector)
 
     if show_probility:
-        predictions = (model.predict_proba(pic_vector))[:, 1]
+        # TODO:0 or 1
+        predictions = (model.predict_proba(pic_vector))[:, 0]
     else:
         predictions = model.predict(pic_vector)
 

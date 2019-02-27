@@ -52,17 +52,17 @@
             <div id="content-in-header" class="text-center">
                 <h2 class="cyan-text">SVM-Based</br> Cat Identification</h2>
                 <p class="text-default">Create your own model to locate cat</p>
-                <a class="btn btn-cyan" href="{% url 'alogrithm:step' 1 %}">Start</a>
+                <a class="btn btn-cyan" href="{% url 'picture:pic_upload' %}">Start</a>
                 <a class="btn btn-cyan" href="{% url 'alogrithm:train_svm_model' %}">Train model</a>
                 <a class="btn btn-cyan" href="{% url 'alogrithm:cat_identification' %}">Use model</a>
             </div>
         </div>
 
         <div id="how-it-works" class="container-fluid content">
-            <div class="container" style="padding-left: 0px;padding-right: 0px">
-                <div class=" light-blue lighten-4 white-text " style="margin: 0px">
-                    <h2 style="margin: 0px ;b">Make your own model to identificate your cute cat!</h2>
-                    <h3 style="margin: 0px">You can follow my steps to make you own model with svm to idenetify your
+            <div class="container" style="padding-left: 0px;padding-right: 0px;">
+                <div class=" light-blue lighten-2 white-text " style=" margin: 0px 0px 5px 0px">
+                    <h3 style="margin: 0px ;">Make your own model to identificate your cute cat!</h3>
+                    <h4 style="margin: 0px">You can follow six steps to make you own model with svm to idenetify your
                         cat.
                 </div>
             </div>
@@ -71,25 +71,22 @@
 
                 <ol class="list-unstyled row stylized">
                     <li class="col-md-4 col-sm-6">
-                        <a class="btn btn-default btn-block" href="{% url 'picture:pic_upload' %}"><h5>Upload photo</h5></a>
-                        <p>Upload two categories, one is your want to identify,
-                            the other is you want to discriminate
-                            and a test img to find appropriate parameter in dealing img</p>
+                        <a class="btn btn-default" href="{% url 'picture:pic_upload' %}"><h5>Upload photo</h5></a>
+                        <p>At leaset need to upload two categories, your want to identify and you want to discriminate</p>
                             <img class="img-responsive" src="{% static 'img/index/index-upload.jpg' %}" alt="Upload"/>
                     </li>
                     <li class="col-md-4 col-sm-6">
-                        <a class="btn btn-default btn-block" href="{% url 'alogrithm:step' 1 %}"> <h5>Choose parameter</h5></a>
-                        <p>Follow my steps to locate the parameter fit your model</p><br><br>
+                        <a class="btn btn-default " href="{% url 'alogrithm:step' 1 %}"> <h5>Choose parameter</h5></a>
+                        <p>Follow my steps to locate the parameter fit your model</p>
                         <img class="img-responsive" src="{% static 'img/index/index-svm.png' %}" alt="svm"/>
                     </li>
                     <li class="col-md-4 col-sm-6">
-                        <a class="btn btn-default btn-block" href="{% url 'alogrithm:create_svm_model' %}"> <h5>Train & Identificate</h5></a>
+                        <a class="btn btn-default " href="{% url 'alogrithm:create_svm_model' %}"> <h5>Train & Identificate</h5></a>
                         <p>Make the model by the parameter you created, and train it again and again.
                             Finally you can use it to idenetificate your cat.</p>
                         <img class="img-responsive" src="{% static 'img/index/index-T_F.jpg' %}" alt="T_F"/>
                     </li>
                 </ol>
-                <a class="btn blue-gradient" role="button" href="{% url 'alogrithm:prepare_data' %}">Try it now</a>
             </div>
         </div>
 

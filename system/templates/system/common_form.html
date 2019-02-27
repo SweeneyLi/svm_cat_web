@@ -50,9 +50,10 @@
                     {% endif %}
 
                     {% if message %}
-                        <div class="bg-info text-white text-center alert">
+                        <div class="alert alert-primary" role="alert">
                             {{ message }}
                         </div>
+                        <hr>
                     {% endif %}
                     <form method="post" enctype="multipart/form-data">{% csrf_token %}
                         {% for field in form %}
@@ -96,7 +97,7 @@
 
                                 </div>
                             {% elif field|field_type == 'password' %}
-                                <div class="md-form" style="max-width:20rem;margin:2rem auto;">
+                                <div class="md-form" style="max-width:20rem;">
                                     <input type="password" name={{ field.name }} id="password-custom"
                                            class="form-control">
                                     <label for="password-custom">{{ field.label }}</label>

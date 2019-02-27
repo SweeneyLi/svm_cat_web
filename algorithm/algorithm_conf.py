@@ -8,31 +8,72 @@ num_folds = 10
 seed = None
 scoring = 'accuracy'
 
-
-step_dict = {
-    1: {
-        'name': 'Prepare Data',
-        'url': reverse_lazy('alogrithm:prepare_data')
+step_info = {
+    'prepareData': {
+        'step': 1,
+        'title': 'Prepare Data',
+        'url': reverse_lazy('alogrithm:prepare_data'),
+        'help_text': {
+            'Pic': '',
+            '2': '',
+            '3': '',
+            '4': '',
+        },
     },
-    2: {
-        'name': 'Hog Picture',
-        'url': reverse_lazy('alogrithm:hog_pic')
+    'hogPic': {
+        'step': 2,
+        'title': 'Hog Picture',
+        'url': reverse_lazy('alogrithm:hog_pic'),
+        'help_text': {
+            '1': '',
+            '2': '',
+            '3': '',
+            '4': '',
+        },
     },
-    3: {
-        'name': 'Evaluate algorithm',
-        'url': reverse_lazy('alogrithm:eval_alg')
+    'evalAlg': {
+        'step': 3,
+        'title': 'Evaluate algorithm',
+        'url': reverse_lazy('alogrithm:eval_alg'),
+        'help_text': {
+            '1': '',
+            '2': '',
+            '3': '',
+            '4': '',
+        },
     },
-    4: {
-        'name': 'Adjust SVM',
-        'url': reverse_lazy('alogrithm:adjust_svm')
+    'adjustSVM': {
+        'step': 4,
+        'title': 'Adjust SVM',
+        'url': reverse_lazy('alogrithm:adjust_svm'),
+        'help_text': {
+            '1': '',
+            '2': '',
+            '3': '',
+            '4': '',
+        },
     },
-    5: {
-        'name': 'Adjust Ensemble Learning',
-        'url': reverse_lazy('alogrithm:adjust_ensemble_learning')
+    'adjustEnsembleLearning': {
+        'step': 5,
+        'title': 'Adjust Ensemble Learning',
+        'url': reverse_lazy('alogrithm:adjust_ensemble_learning'),
+        'help_text': {
+            '1': '',
+            '2': '',
+            '3': '',
+            '4': '',
+        },
     },
-    6: {
-        'name': 'Create SVM Model',
-        'url': reverse_lazy('alogrithm:create_svm_model')
+    'createSVMModel': {
+        'step': 6,
+        'title': 'Create SVM Model',
+        'url': reverse_lazy('alogrithm:create_svm_model'),
+        'help_text': {
+            '1': '',
+            '2': '',
+            '3': '',
+            '4': '',
+        },
     },
 
 }
@@ -69,5 +110,3 @@ def pre_pic_root_path(user_id):
 
 def saved_model_path(user_id, model_name):
     return path.join(settings.MEDIA_ROOT, 'upload_models', str(user_id), model_name + '.model')
-
-
