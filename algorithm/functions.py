@@ -29,6 +29,21 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
+def report_str_format(report):
+    str_list = [report.replace(' avg', '-avg').split()][0]
+    result = ['<table class="table table-bordered table-striped"><tr><th></th>']
+    for i in range(4):
+        result.append('<th>' + str_list[i] + '</th>')
+    result.append('</tr>')
+    for i in range(4, len(str_list)):
+        if (i - 4) % 5 == 0:
+            result.append('<tr>')
+        result.append('<th>' + str_list[i] + '</th>')
+        if (i - 4) % 5 == 4:
+            result.append('</tr>')
+    result.append('</table>')
+    return ''.join(result)
+
 def hog(img_list, orientations, pixels_per_cell, cells_per_block):
     """
     change the img to feature_vector
@@ -374,6 +389,16 @@ def execute_train_model(user_id, model_name, train_category_positive, train_cate
 
     x_train, x_test, y_train, y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
 
+    # fit the model must have two class!
+    if sum(y_train) == 0 or sum(y_test) == 0:
+        return_dict[
+            'Errors'] = '<p class="text-danger">The pictures of positive category is not enough! <br>Please add the pictures or adjust the validation size!</p>'
+        return None
+    elif sum(y_train) == len(y_train) or sum(y_test) == len(y_test):
+        return_dict[
+            'Errors'] = '<p class="text-danger">The pictures of negative category is not enough! <br>Please add the pictures or adjust the validation size!</p>'
+        return None
+
     if model.is_standard:
         scaler = StandardScaler().fit(x_train)
 
@@ -389,14 +414,14 @@ def execute_train_model(user_id, model_name, train_category_positive, train_cate
     else:
         svm_model.fit(X=x_train, y=y_train)
         if validation_size != 0:
-            predictions = model.predict(x_test)
+            predictions = svm_model.predict(x_test)
             svm_model.fit(x_test, y_test)
 
     model.train_num += 1
     if validation_size != 0:
         return_dict['accuracy_score'] = accuracy_score(y_test, predictions)
         return_dict['confusion_matrix'] = confusion_matrix(y_test, predictions)
-        return_dict['classification_report'] = classification_report(y_test, predictions)
+        return_dict['classification_report'] = report_str_format(classification_report(y_test, predictions))
 
         model.recently_accuracy_score = accuracy_score(y_test, predictions)
     else:

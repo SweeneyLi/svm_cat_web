@@ -4,33 +4,34 @@ from django.urls import reverse_lazy
 
 # params in svm
 num_folds = 10
-seed = 7
+# seed = 7
+seed = None
 scoring = 'accuracy'
 
 
 step_dict = {
     1: {
-        'name': 'prepare_data',
+        'name': 'Prepare Data',
         'url': reverse_lazy('alogrithm:prepare_data')
     },
     2: {
-        'name': 'hog_pic',
+        'name': 'Hog Picture',
         'url': reverse_lazy('alogrithm:hog_pic')
     },
     3: {
-        'name': 'eval_alg',
+        'name': 'Evaluate algorithm',
         'url': reverse_lazy('alogrithm:eval_alg')
     },
     4: {
-        'name': 'adjust_svm',
+        'name': 'Adjust SVM',
         'url': reverse_lazy('alogrithm:adjust_svm')
     },
     5: {
-        'name': 'adjust_ensemble_learning',
+        'name': 'Adjust Ensemble Learning',
         'url': reverse_lazy('alogrithm:adjust_ensemble_learning')
     },
     6: {
-        'name': 'create_svm_model',
+        'name': 'Create SVM Model',
         'url': reverse_lazy('alogrithm:create_svm_model')
     },
 

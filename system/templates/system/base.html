@@ -42,24 +42,24 @@
                 </a>
                 <div class="dropdown-menu dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
                     <a class="dropdown-item" style="font-size: 12px"
-                       href="{% url 'alogrithm:step' 1 %}">prepare_data</a>
-                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 2 %}">hog_pic</a>
-                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 3 %}">eval_alg</a>
-                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 4 %}">svm</a>
-                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 5 %}">ensemble_learning</a>
-                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 6 %}">create_svm_model</a>
+                       href="{% url 'alogrithm:step' 1 %}">Prepare Data</a>
+                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 2 %}">Hog Pic</a>
+                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 3 %}">Evaluate Algorithm</a>
+                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 4 %}">Adjust SVM</a>
+                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 5 %}">Adjust Ensemble Learning</a>
+                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 6 %}">Create SVM Model</a>
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'alogrithm:create_svm_model' %}">Create
+                <a class="nav-link" href="{% url 'alogrithm:create_svm_model' %}">Create Model
                     <span class="sr-only">(current)</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'alogrithm:train_svm_model' %}">Train</a>
+                <a class="nav-link" href="{% url 'alogrithm:train_svm_model' %}">Train Model</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'alogrithm:cat_identification' %}">Identificate</a>
+                <a class="nav-link" href="{% url 'alogrithm:cat_identification' %}"> Cat Identificate</a>
             </li>
         </ul>
 
@@ -96,70 +96,6 @@
         </ul>
     </div>
 </nav>
-<!--/.Navbar -->
-
-
-{##}
-{#<nav class="navbar navbar-expand-lg navbar-default navbar-static-top">#}
-{#    <div class="container">#}
-{#        <div class="navbar-header">#}
-{#            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"#}
-{#                    aria-expanded="false" aria-controls="navbar">#}
-{#                <span class="sr-only">Toggle navigation</span>#}
-{#                <span class="icon-bar"></span>#}
-{#                <span class="icon-bar"></span>#}
-{#                <span class="icon-bar"></span>#}
-{#            </button>#}
-{##}
-{#            <a class="navbar-brand" href="/#">#}
-{#                <i class="fas fa-cat fa-2x"></i>#}
-{#            </a>#}
-{#        </div>#}
-{#        <div id="navbar" class="navbar-collapse collapse">#}
-{#            <ul class="nav navbar-nav">#}
-{##}
-{#                <li class="nav-item dropdown">#}
-{#                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"#}
-{#                       aria-haspopup="true"#}
-{#                       aria-expanded="false">Six Steps</a>#}
-{#                    <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">#}
-{#                        <ul class="list-group " style="width: 200px">#}
-{#                            <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 1%}">prepare_data</a><span class="badge badge-primary badge-pill">1</span></li>#}
-{#                           <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 2%}">hog_pic</a><span class="badge badge-primary badge-pill">2</span></li>#}
-{#                           <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 3%}">eval_alg</a><span class="badge badge-primary badge-pill">3</span></li>#}
-{#                           <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 4%}">svm</a><span class="badge badge-primary badge-pill">4</span></li>#}
-{#                           <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 5%}">ensemble_learning</a><span class="badge badge-primary badge-pill">5</span></li>#}
-{#                           <li class="list-group-item d-flex justify-content-between align-items-center"><a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 6%}">create_svm_model</a><span class="badge badge-primary badge-pill">6</span></li>#}
-{##}
-{#                        </ul>#}
-{##}
-{#                    </div>#}
-{#                </li>#}
-{##}
-{#                <li><a href="{% url 'alogrithm:train_svm_model' %}">train_svm_model</a></li>#}
-{#                <li><a href="{% url 'alogrithm:cat_identification' %}">Cat identification</a></li>#}
-{#                <li><a href="{% url 'picture:pic_upload' %}">Upload_Picture</a></li>#}
-{#            </ul>#}
-{#            <ul class="nav navbar-nav pull-right">#}
-{##}
-{#                {% if user.id %}#}
-{#                    <li><a class="nav-glyphicon" href="{% url 'picture:pic_list' %}">My images</a></li>#}
-{#                    <li><a class="nav-glyphicon" href="{% url 'alogrithm:model_list' %}">My Models</a></li>#}
-{#                    <li><a class="nav-glyphicon" href="{% url 'user:profile' %}" title="Settings"><span#}
-{#                            class="glyphicon glyphicon-cog"></span></a></li>#}
-{#                    <li><a class="nav-glyphicon" href="{% url 'user:logout' %}" title="Logout"><span#}
-{#                            class="glyphicon glyphicon-log-out"></span></a></li>#}
-{##}
-{#                {% else %}#}
-{#                    <li><a href="{% url 'user:login' %}">login</a></li>#}
-{#                    <li><a href="{% url 'user:register' %}">register</a></li>#}
-{#                {% endif %}#}
-{##}
-{##}
-{#            </ul>#}
-{#        </div>#}
-{#    </div>#}
-{#</nav>#}
 
 
 {% block content %}{% endblock %}

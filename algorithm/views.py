@@ -286,7 +286,6 @@ class AdjustSVMView(FormView):
                       {'form': form,
                        'step': 4,
                        'title': step_dict[4]['name'],
-                       'remark': mark_safe('<button>1233</button>'),
                        'results': return_dict
                        })
 
@@ -481,14 +480,16 @@ class TrainSVMModelView(FormView):
         proc.start()
         proc.join()
 
-        train_log = ModelTrainLog(user_id=user_id, model_id=return_dict['model_id'],
-                                  train_category_positive=train_category_positive,
-                                  positive_num=positive_num,
-                                  train_category_negative=train_category_negative,
-                                  negative_num=negative_num,
-                                  validation_size=validation_size,
-                                  accuracy_score=return_dict['accuracy_score'] if validation_size != 0 else 0)
-        train_log.save()
+        if not return_dict.get('Errors'):
+            train_log = ModelTrainLog(user_id=user_id, model_id=return_dict['model_id'],
+                                      train_category_positive=train_category_positive,
+                                      positive_num=positive_num,
+                                      train_category_negative=train_category_negative,
+                                      negative_num=negative_num,
+                                      validation_size=validation_size,
+                                      accuracy_score=return_dict['accuracy_score'] if validation_size != 0 else 0)
+            train_log.save()
+            del return_dict['model_id']
         # TODO:error problem
         form = self.get_form(reset=True)
         # TODO：format the result in page

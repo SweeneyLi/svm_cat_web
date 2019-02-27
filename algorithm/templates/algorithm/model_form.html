@@ -22,19 +22,39 @@
             <div class="col-md-6 ">
                 {% if picture %}
                     <div id="picture">
-                         <p><img class="img-responsive center-block" src="{{ picture }}"/></p>
+                         <p><img class="img-fluid img-responsive center-block" src="{{ picture }}"/></p>
                     </div>
                 {% elif results %}
-                    <div id="result" class="col-md-8 col-md-offset-2">
-                        <p>best_score: {{ results.best_score }}</p>
-                        <p>best_params: {{ results.best_params }}</p>
-                        {% for mean, std, param in results.cv_results %}
-                            <p>mean: {{ mean }}; std: {{ std }}; param: {{ param }}</p>
-                        {% endfor %}
-                        </p>
+
+                    <div class="list-group">
+                        <p class="list-group-item list-group-item-action list-group-item-primary text-center ">Main
+                            Info</p>
+                        <p class="list-group-item list-group-item-action">best_score: {{ results.best_score }}</p>
+                        <p class="list-group-item list-group-item-action">best_params: {{ results.best_params }}</p>
                     </div>
+
+                    <div class="list-group">
+                        <a class="btn btn-info" data-toggle="collapse" href="#otherInfo" aria-expanded="false"
+                           aria-controls="otherInfo">
+                            Detail
+                        </a>
+                        <div class="collapse" id="otherInfo">
+                            <div class="mt-3">
+                                {% for mean, std, param in results.cv_results %}
+                                    <p class="list-group-item list-group-item-action">
+                                        mean: {{ mean }}; <br>std: {{ std }}; <br>param: {{ param }}
+                                    </p>
+
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+
                 {% else %}
-                    <img class="img-responsive" src="{% static 'img/LXH/7.jpg' %}">
+                    <div class="align-content-center">
+                        <img class="img-responsive " src="{% static 'img/LXH/jpg/7.jpg' %}">
+                    </div>
                 {% endif %}
             </div>
 
@@ -53,12 +73,6 @@
                         {% if field|field_type == 'text' %}
 
                             <div class="md-form input-group input-group-lg">
-                                {#                                    <div class="input-group-prepend ">#}
-                                {#                                        <span class="input-group-text md-addon"#}
-                                {#                                              id="inputGroupMaterial-sizing-lg">#}
-                                {#                                            {{ field.label }}#}
-                                {#                                        </span>#}
-                                {#                                    </div>#}
                                 {{ field.label_tag }}
                                 {{ field|widget_with_classes:'form-control' }}
                             </div>
@@ -79,7 +93,7 @@
                                 <i class="fas fa-pencil-alt prefix"></i>
                                 <textarea type="text" name="{{ field|field_type }}" id="id_comment"
                                           class="md-textarea form-control"
-                                          rows="2" cols="10"></textarea>
+                                          rows="1" cols="10"></textarea>
                                 {#                                    {{ field.label_tag }}#}
                                 <label style="font-size: 12px" for="id_comment">Comment</label>
                             </div>
@@ -89,8 +103,7 @@
                             <div class="md-form amber-textarea active-amber-textarea-2">
                                 <i class="fas fa-pencil-alt prefix"></i>
                                 {{ field|widget_with_classes:'md-textarea form-control' }}
-                                {#                                   {{ field.label_tag }}#}
-                                <label style="font-size: 18px" for="id_C">C</label>
+                                {{ field.label_tag }}
                             </div>
 
                         {% elif  field|field_type == 'number' %}
@@ -103,7 +116,7 @@
 
                                 <div class="input-default-wrapper mt-3">
 
-                                    <span class="input-group-text mb-3" id="input1">Upload</span>
+                                    <span class="input-group-text mb-3" id="input1">Upload {{ field.label }}</span>
 
                                     <input type="file" id="file-with-current" name="test_pic"
                                            class="input-default-js">
