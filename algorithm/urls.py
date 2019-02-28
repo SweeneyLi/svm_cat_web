@@ -8,7 +8,7 @@ urlpatterns = [
 
     re_path(r'^step/(?P<pk>\d+)/$', views.Step, name='step'),
 
-    path('prepare_data', views.PrepareDataView.as_view(), name='prepare_data'),
+    path('prepare_data/', views.PrepareDataView.as_view(), name='prepare_data'),
     path('hog_pic/', views.HOGPicView.as_view(), name='hog_pic'),
     path('eval_alg/', views.EvaluateAlgorithmView.as_view(), name='eval_alg'),
     path('adjust_svm/', views.AdjustSVMView.as_view(), name='adjust_svm'),
@@ -21,4 +21,6 @@ urlpatterns = [
     re_path(r'^model_delete/(?P<pk>\w+)/$', views.ModelDeleteView.as_view(), name='model_delete'),
 
     path('cat_identification/', views.CatIdentificationView.as_view(), name='cat_identification'),
+
+    path('download_predict/', views.download_predict, name='download_predict'),
 ]

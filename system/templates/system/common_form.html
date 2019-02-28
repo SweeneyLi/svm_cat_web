@@ -34,6 +34,25 @@
                                 </ul>
                             {% endfor %}
                         </div>
+                    {% elif predictions %}
+                        <div class="">
+                            <ul class="list-group">
+                                <li class="list-group-item  blue lighten-3">
+                                    Predictions
+                                    <a href="{% url 'alogrithm:download_predict' %}">
+                                        <i class="fas fa-file-download"></i>
+                                    </a>
+
+                                </li>
+                                {% for key, values in predictions.items %}
+                                    <li class="list-group-item">
+                                        {{ key }}:
+                                        {{ values }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
                     {% else %}
 
                         <div class="text-center">
