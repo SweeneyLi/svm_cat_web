@@ -66,11 +66,19 @@ class PrepareDataForm(forms.Form):
 
     def is_valid(self):
 
+        file = self.files.get('test_pic')
+        ext = file.name.split('.')[-1].lower()
+        if ext not in ["jpg", "ipeg", "png"]:
+            self._errors = "Only jpg, ipeg and png files are allowed."
+            return False
+
         if self.data['test_category_negative'] == self.data['test_category_positive']:
             self._errors = 'test_category_negative should diff from test_category_positive'
             return False
         else:
             return True
+
+
 
 
 class HOGPicForm(forms.Form):

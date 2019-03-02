@@ -45,44 +45,60 @@
 
                                 <table id="{{ category }}DataTable"
                                        class="table  table-striped table-hover table-responsive-lg text-nowrap"
-                                       cellspacing="0" width="100%"">
-                                    <caption>List of pictures</caption>
-                                    <thead>
+                                       cellspacing="0" width="100%"
+                                ">
+                                <caption>List of pictures</caption>
+                                <thead>
+                                <tr>
+                                    <th class="th-sm" scope="col" style="font-size: 15px">#</th>
+                                    <th class="th-sm" scope="col" style="font-size: 15px">Picture Name</th>
+                                    <th class="th-sm" scope="col" style="font-size: 15px">Picture Size</th>
+                                    <th class="th-sm" scope="col" style="font-size: 15px">Upload Date</th>
+                                    <th class="th-sm" scope="col" style="font-size: 15px">Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for pic in pic_info|dictsort:"pic_size"|dictsortreversed:"upload_date" %}
                                     <tr>
-                                        <th class="th-sm" scope="col" style="font-size: 15px">#</th>
-                                        <th class="th-sm" scope="col" style="font-size: 15px">Picture Name</th>
-                                        <th class="th-sm" scope="col" style="font-size: 15px">Picture Size</th>
-                                        <th class="th-sm" scope="col" style="font-size: 15px">Upload Date</th>
-                                        <th class="th-sm" scope="col" style="font-size: 15px">Delete</th>
+                                        <th style="font-size: 15px" scope="row">{{ forloop.counter }}</th>
+                                        <td style="font-size: 15px">
+
+                                            <a name="{{ pic.pic_name }}ShowButton"
+                                               data-href="{{ pic.path.url }}"
+                                               data-toggle="modal"
+                                               data-target="#imgModal">
+                                                {{ pic.pic_name }}
+                                            </a>
+
+{#                                            <button type="button" class="btn btn-primary" data-toggle="modal"#}
+{#                                                    data-target="#imgModal">#}
+{#                                                Launch demo modal#}
+{#                                            </button>#}
+
+
+                                            {#                                                <div class="cart">#}
+                                            {#                                                    <a data-toggle="tooltip"#}
+                                            {#                                                       title="<img src='{{ pic.path.url }}' />"#}
+                                            {#                                                       onclick="ShowImg('{{ pic.path.url }}')">#}
+                                            {#                                                        {{ pic.pic_name }}#}
+                                            {#                                                    </a>#}
+                                            {#                                                </div>#}
+
+                                        </td>
+                                        <td style="font-size: 15px">{{ pic.pic_size }}</td>
+                                        {#                                            <td style="font-size: 15px">{{ pic.upload_date| date:"Y-m-j" }}</td>#}
+                                        <td style="font-size: 15px">{{ pic.upload_date }}</td>
+                                        <td style="font-size: 15px">
+                                            <button type="button" class="fas fa-minus red-text"
+                                                    name="{{ pic.pic_name }}DeleteButton"
+                                                    data-href="{% url 'picture:pic_delete' pic.id %}"
+                                                    data-toggle="modal"
+                                                    data-target="#modalConfirmDelete">
+                                            </button>
+                                        </td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for pic in pic_info|dictsort:"pic_size"|dictsortreversed:"upload_date" %}
-                                        <tr>
-                                            <th style="font-size: 15px" scope="row">{{ forloop.counter }}</th>
-                                            <td style="font-size: 15px">
-                                                <div class="cart">
-                                                    <a data-toggle="tooltip"
-                                                       title="<img src='{{ pic.path.url }}' />"
-                                                       onclick="ShowImg('{{ pic.path.url }}')">
-                                                        {{ pic.pic_name }}
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td style="font-size: 15px">{{ pic.pic_size }}</td>
-                                            {#                                            <td style="font-size: 15px">{{ pic.upload_date| date:"Y-m-j" }}</td>#}
-                                            <td style="font-size: 15px">{{ pic.upload_date }}</td>
-                                            <td style="font-size: 15px">
-                                                <button type="button" class="fas fa-minus red-text"
-                                                        name="{{ pic.pic_name }}DeleteButton"
-                                                        data-href="{% url 'picture:pic_delete' pic.id %}"
-                                                        data-toggle="modal"
-                                                        data-target="#modalConfirmDelete">
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
+                                {% endfor %}
+                                </tbody>
                                 </table>
                                 </ul>
                             </div>
@@ -129,33 +145,41 @@
         </div>
     </div>
 
-    {#    change the location of img#}
-    {#    <!-- Full Height Modal Right -->#}
-    {#    <div class="modal fade right" id="fullHeightModalRight" tabindex="-1" role="dialog"#}
-    {#         aria-labelledby="myModalLabel"#}
-    {#         aria-hidden="true">#}
-    {##}
-    {#        <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->#}
-    {#        <div class="modal-dialog modal-full-height modal-right" role="document">#}
-    {##}
-    {##}
-    {#            <div class="modal-content">#}
-    {#                <div class="modal-header">#}
-    {#                    <h4 class="modal-title w-100" id="myModalLabel">Modal title</h4>#}
-    {#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
-    {#                        <span aria-hidden="true">&times;</span>#}
-    {#                    </button>#}
-    {#                </div>#}
-    {#                <div class="modal-body">#}
-    {#                    ...#}
-    {#                </div>#}
-    {#                <div class="modal-footer justify-content-center">#}
-    {#                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>#}
-    {#                    <button type="button" class="btn btn-primary">Save changes</button>#}
-    {#                </div>#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </div>#}
+    {#        change the location of img#}
+    <!-- Central Modal Small -->
+    <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+
+        <!-- Change class .modal-sm to change the size of the modal -->
+        <div class="modal-dialog modal-lg " role="document">
+
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title w-100" id="myModalLabel">
+                        <div id="imgName">
+                        </div>
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div  class="d-flex justify-content-center">
+
+                        <img id="showImg" class=""
+                        style="max-width: 700px; height: auto">
+
+                    </div>
+                </div>
+                <div class="modal-footer flex-center">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Central Modal Small -->
+
 
 {% endblock %}
 
@@ -163,9 +187,9 @@
     <script type="text/javascript">
 
         // show the firstt collapse category
-        {% with fir_pic=picture_list|first %}
-            $('#collapse{{ fir_pic.category }}').collapse('show')
-        {% endwith %}
+        {#        {% with fir_pic=picture_list|first %}#}
+        {#            $('#collapse{{ fir_pic.category }}').collapse('show')#}
+        {#        {% endwith %}#}
 
         // table order component
         {% regroup picture_list by category as pictures %}
@@ -190,6 +214,14 @@
             file_name = $(e.relatedTarget)[0].getAttribute('name').replace("DeleteButton", '');
             $(this).find('.btn-ok').attr('href', href);
             $('.debug-url').html('Delete Files: <strong>' + file_name + '</strong>');
+        });
+
+        // show the img modal
+        $('#imgModal').on('show.bs.modal', function (e) {
+            var href = $(e.relatedTarget).data('href');
+            file_name = $(e.relatedTarget)[0].getAttribute('name').replace("ShowButton", '');
+            $('#imgName').html(file_name);
+            $('#showImg').attr('src', href);
         });
 
         // show the img

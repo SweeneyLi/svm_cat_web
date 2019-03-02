@@ -58,7 +58,6 @@ class PicUploadView(FormView):
                        })
 
     def form_valid(self, form, **kwargs):
-        form = self.get_form()
         files = self.request.FILES.getlist('file')
         user_id = self.request.user.id
 
@@ -78,7 +77,7 @@ class PicUploadView(FormView):
             pic.save()
 
         s = '' if len(files) == 1 else 's'
-        message = "You have uploaded " + str(len(files)) + " image" + s + " to the " + category + "successfully."
+        message = "You have uploaded " + str(len(files)) + " image" + s + " to the " + category + " successfully."
         return render(self.request, 'system/common_form.html',
                       {'form': form,
                        'url_info': url_dict[self.view_name],
