@@ -79,8 +79,6 @@ class PrepareDataForm(forms.Form):
             return True
 
 
-
-
 class HOGPicForm(forms.Form):
     pic_size = forms.CharField(initial='194,259')
     orientations = forms.IntegerField(initial=9)
@@ -152,10 +150,13 @@ class EnsembleParamsForm(forms.Form):
         with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
             algorithm_info = json.load(load_f)
 
-        self.initial = {
-            'C': algorithm_info[str(user_id)]['model_para']['best_params']['C'],
-            'kernel': algorithm_info[str(user_id)]['model_para']['best_params']['kernel']
-        }
+        if algorithm_info[str(user_id)]['model_para'].get('best_params', None):
+            self.initial = {
+                'C': algorithm_info[str(user_id)]['model_para']['best_params']['C'],
+                'kernel': algorithm_info[str(user_id)]['model_para']['best_params']['kernel']
+            }
+        else:
+            self.initial = {'C': 2.0, 'kernel': 'rbf'}
 
         self.fields['kernel'].widget.attrs.update(
             select_attrs

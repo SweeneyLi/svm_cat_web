@@ -19,6 +19,9 @@ import shutil
 def Step(request, pk):
     pk = int(pk)
     if 0 < pk < 7:
+
+        # TODO: 3,4,5 need judge
+
         for _, value in step_info.items():
             if value['step'] == pk:
                 return redirect(value['url'])
@@ -113,14 +116,6 @@ class PrepareDataView(FormView):
         with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
             algorithm_info = json.load(load_f)
 
-        # algorithm_info_json initial
-        if user_id not in algorithm_info.keys():
-            algorithm_info[user_id] = {}
-
-        algorithm_info_keys = algorithm_info[user_id].keys()
-        for key in ['pic_para', 'data_para', 'model_para', 'ensemble_para']:
-            if key not in algorithm_info_keys:
-                algorithm_info[user_id][key] = {}
 
         algorithm_info[user_id]['pic_para'].update({'test_pic': pic_name})
         algorithm_info[user_id]['data_para'].update({
@@ -367,7 +362,8 @@ class ModelCreateView(CreateView):
         kwargs['initial']['is_color'] = algorithm_info[user_id]['pic_para'].get('is_color', True)
         kwargs['initial']['is_standard'] = algorithm_info[user_id]['data_para'].get('is_standard', True)
 
-        model_best_params = algorithm_info[user_id]['model_para'].get('best_params', {'C': 2.0, 'kernel': 'sigmoid'})
+        model_best_params = algorithm_info[user_id]['model_para'].get('best_params',
+                                                                      {'C': 2.0, 'kernel': 'sigmoid'})
         kwargs['initial']['C'] = model_best_params['C']
         kwargs['initial']['kernel'] = model_best_params['kernel']
 
@@ -388,7 +384,6 @@ class ModelCreateView(CreateView):
                            'message': "The model_name is created!"
                            }
                           )
-
 
         form.instance.user_id = user_id
 

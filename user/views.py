@@ -4,10 +4,13 @@ from django.contrib import auth
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView
+from django.conf import settings
 
 from .forms import RegistrationForm, LoginForm, ProfileForm, PwdChangeForm
 from .models import UserProfile
 from system.url_conf import *
+
+import json
 
 
 class RegisterView(FormView):
@@ -35,6 +38,7 @@ class RegisterView(FormView):
                        })
 
     def form_valid(self, form, **kwargs):
+
         username = form.cleaned_data['username']
         email = form.cleaned_data['email']
         password = form.cleaned_data['password2']
@@ -43,6 +47,20 @@ class RegisterView(FormView):
 
         user_profile = UserProfile(user=user)
         user_profile.save()
+
+        # algorithm_info_json initial
+        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+            algorithm_info = json.load(load_f)
+        user_id = user.id
+        algorithm_info[user_id] = {}
+
+        algorithm_info_keys = algorithm_info[user_id].keys()
+        for key in ['pic_para', 'data_para', 'model_para', 'ensemble_para']:
+            if key not in algorithm_info_keys:
+                algorithm_info[user_id][key] = {}
+
+        with open(settings.ALGORITHM_JSON_PATH, 'w') as f:
+            json.dump(algorithm_info, f)
 
         return HttpResponseRedirect("/accounts/login/")
 
@@ -132,6 +150,7 @@ class LoginView(FormView):
 
         if user.is_active:
             auth.login(self.request, user)
+
             return HttpResponseRedirect(reverse('system:index'))
 
         else:
