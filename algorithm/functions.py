@@ -29,6 +29,20 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
+def get_feature_vector(user_id):
+    if not os.path.exists(settings.FEATURE_VECTOR_PATH):
+        with open(settings.FEATURE_VECTOR_PATH, "wb") as f:
+            pickle.dump({}, f)
+
+    with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
+        feature_vector = pickle.load(load_f)
+    if feature_vector.get(user_id, None):
+        feature_vector = feature_vector[user_id]
+    else:
+        feature_vector = get_pic_vector(user_id)
+    return feature_vector
+
+
 def report_str_format(report):
     str_list = [report.replace(' avg', '-avg').split()][0]
     result = ['<table class="table table-bordered table-striped"><tr><th></th>']
@@ -43,6 +57,7 @@ def report_str_format(report):
             result.append('</tr>')
     result.append('</table>')
     return ''.join(result)
+
 
 def hog(img_list, orientations, pixels_per_cell, cells_per_block):
     """
@@ -188,8 +203,7 @@ def get_pic_vector(user_id):
     :return: None
     """
 
-    # TODO: judege whether to recalculate
-
+    user_id = str(user_id)
     # load the algorithm_info.json
     with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
         algorithm_info = json.load(load_f)
@@ -198,11 +212,11 @@ def get_pic_vector(user_id):
 
     positive_category = algorithm_info[user_id]['data_para']['category_positive']
     negative_category = algorithm_info[user_id]['data_para']['category_negative']
-    pic_size = algorithm_info[user_id]['pic_para']['pic_size']
-    orientations = int(algorithm_info[user_id]['pic_para']['orientations'])
-    pixels_per_cell = algorithm_info[user_id]['pic_para']['pixels_per_cell']
-    cells_per_block = algorithm_info[user_id]['pic_para']['cells_per_block']
-    is_color = algorithm_info[user_id]['pic_para']['is_color']
+    pic_size = algorithm_info[user_id]['pic_para'].get('pic_size', '(194, 259)')
+    orientations = int(algorithm_info[user_id]['pic_para'].get('orientation', 9))
+    pixels_per_cell = algorithm_info[user_id]['pic_para'].get('pixels_per_cell', '(16, 16)')
+    cells_per_block = algorithm_info[user_id]['pic_para'].get('cells_per_block', '(4, 4)')
+    is_color = algorithm_info[user_id]['pic_para'].get('is_color', True)
     validation_size = algorithm_info[user_id]['data_para']['validation_size']
 
     pic_size = eval(pic_size)
@@ -231,7 +245,10 @@ def get_pic_vector(user_id):
     x_train, x_test, y_train, y_test = train_test_split(pic_vector, label, test_size=validation_size, random_state=seed)
 
     # initial feature_vector.pki
-    feature_vector = {
+    with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
+        feature_vector = pickle.load(load_f)
+
+    feature_dict = {
         user_id: {
             'x_train': x_train,
             'x_test': x_test,
@@ -239,6 +256,7 @@ def get_pic_vector(user_id):
             'y_test': y_test
         }
     }
+    feature_vector.update(feature_dict)
 
     with open(settings.FEATURE_VECTOR_PATH, "wb") as f:
         pickle.dump(feature_vector, f)
@@ -246,7 +264,7 @@ def get_pic_vector(user_id):
     with open(settings.ALGORITHM_JSON_PATH, "w") as f2:
         json.dump(algorithm_info, f2)
 
-    return None
+    return feature_dict[user_id]
 
 
 def execute_evaluate_algorithm(user_id, is_standard, algorithm_list):
@@ -258,8 +276,7 @@ def execute_evaluate_algorithm(user_id, is_standard, algorithm_list):
     :return: None
     """
 
-    with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
-        feature_vector = pickle.load(load_f)
+    feature_vector = get_feature_vector(user_id)
 
     with open(settings.ALGORITHM_JSON_PATH, "r") as load_f2:
         algorithm_info = json.load(load_f2)
@@ -292,8 +309,8 @@ def execute_evaluate_algorithm(user_id, is_standard, algorithm_list):
 
         # TODO:The nums of samples should big than kfold
         cv_results = cross_val_score(models[key],
-                                     feature_vector[user_id]['x_train'],
-                                     feature_vector[user_id]['y_train'],
+                                     feature_vector['x_train'],
+                                     feature_vector['y_train'],
                                      cv=kfold,
                                      scoring=scoring)
         results.append(cv_results)
@@ -324,10 +341,9 @@ def execute_adjust_svm(user_id, c, kernel, return_dict):
     :return: results
     """
 
-    with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
-        feature_vector = pickle.load(load_f)
+    feature_vector = get_feature_vector(user_id)
 
-    x_train, y_train = feature_vector[user_id]['x_train'], feature_vector[user_id]['y_train']
+    x_train, y_train = feature_vector['x_train'], feature_vector['y_train']
     scaler = StandardScaler().fit(x_train)
     rescaledX = scaler.transform(x_train).astype(float)
     param_grid = {
@@ -354,6 +370,49 @@ def execute_adjust_svm(user_id, c, kernel, return_dict):
     algorithm_info[user_id]['model_para'].update({
         'best_score': grid_result.best_score_,
         'best_params': grid_result.best_params_
+    })
+
+    with open(settings.ALGORITHM_JSON_PATH, "w") as f:
+        json.dump(algorithm_info, f)
+
+
+def execute_adjust_ensemble(user_id, C, kernel, ensemble_learning, n_estimators, return_dict):
+    feature_vector = get_pic_vector(str(user_id))
+
+    x_train, y_train = feature_vector['x_train'], feature_vector['y_train']
+
+    scaler = StandardScaler().fit(x_train)
+    rescaledX = scaler.transform(x_train)
+    param_grid = {'n_estimators': n_estimators}
+
+    cart = SVC(gamma='scale', C=C, kernel=kernel, probability=True)
+
+    if ensemble_learning == 'BaggingClassifier':
+        model = BaggingClassifier(base_estimator=cart, random_state=seed)
+    elif ensemble_learning == 'AdaBoostClassifier':
+        model = AdaBoostClassifier(base_estimator=cart, random_state=seed)
+    else:
+        return False
+
+    kfold = KFold(n_splits=num_folds, random_state=seed)
+    grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=scoring, cv=kfold)
+    grid_result = grid.fit(X=rescaledX, y=y_train)
+
+    cv_results = zip(grid_result.cv_results_['mean_test_score'],
+                     grid_result.cv_results_['std_test_score'],
+                     grid_result.cv_results_['params'])
+    return_dict['best_score'] = grid_result.best_score_
+    return_dict['best_params'] = grid_result.best_params_
+    return_dict['cv_results'] = cv_results
+
+    # save the best_score, best_params in algorithm_json
+    with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+        algorithm_info = json.load(load_f)
+
+    algorithm_info[str(user_id)]['ensemble_para'].update({
+        'ensemble_learning': ensemble_learning,
+        'n_estimators': grid_result.best_params_['n_estimators'],
+        'best_score': grid_result.best_score_,
     })
 
     with open(settings.ALGORITHM_JSON_PATH, "w") as f:
@@ -432,50 +491,6 @@ def execute_train_model(user_id, model_name, train_category_positive, train_cate
 
     with open(the_path, 'wb') as f:
         joblib.dump(svm_model, f)
-
-
-def execute_adjust_ensemble(user_id, C, kernel, ensemble_learning, n_estimators, return_dict):
-    with open(settings.FEATURE_VECTOR_PATH, "rb") as load_f:
-        feature_vector = pickle.load(load_f)
-
-    x_train, y_train = feature_vector[str(user_id)]['x_train'], feature_vector[str(user_id)]['y_train']
-
-    scaler = StandardScaler().fit(x_train)
-    rescaledX = scaler.transform(x_train)
-    param_grid = {'n_estimators': n_estimators}
-
-    cart = SVC(gamma='scale', C=C, kernel=kernel, probability=True)
-
-    if ensemble_learning == 'BaggingClassifier':
-        model = BaggingClassifier(base_estimator=cart, random_state=seed)
-    elif ensemble_learning == 'AdaBoostClassifier':
-        model = AdaBoostClassifier(base_estimator=cart, random_state=seed)
-    else:
-        return False
-
-    kfold = KFold(n_splits=num_folds, random_state=seed)
-    grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=scoring, cv=kfold)
-    grid_result = grid.fit(X=rescaledX, y=y_train)
-
-    cv_results = zip(grid_result.cv_results_['mean_test_score'],
-                     grid_result.cv_results_['std_test_score'],
-                     grid_result.cv_results_['params'])
-    return_dict['best_score'] = grid_result.best_score_
-    return_dict['best_params'] = grid_result.best_params_
-    return_dict['cv_results'] = cv_results
-
-    # save the best_score, best_params in algorithm_json
-    with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
-        algorithm_info = json.load(load_f)
-
-    algorithm_info[str(user_id)]['ensemble_para'].update({
-        'ensemble_learning': ensemble_learning,
-        'n_estimators': grid_result.best_params_['n_estimators'],
-        'best_score': grid_result.best_score_,
-    })
-
-    with open(settings.ALGORITHM_JSON_PATH, "w") as f:
-        json.dump(algorithm_info, f)
 
 
 def execute_cat_identification(user_id, model_name, show_probility, return_dict):

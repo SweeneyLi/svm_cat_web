@@ -63,7 +63,7 @@
                 {% if form.errors %}
                     <div class="alert alert-warning">{{ form.errors }}</div>
                 {% elif message %}
-                    <div class="alert alert-warning">{{ message }}</div>
+                    <div class="alert alert-warning">{{ message|safe }}</div>
                 {% endif %}
 
 

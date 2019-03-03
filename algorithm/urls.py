@@ -1,12 +1,11 @@
 from django.urls import path, re_path
 from . import views
 
-# namespace
 app_name = 'alogrithm'
 
 urlpatterns = [
 
-    re_path(r'^step/(?P<pk>\d+)/$', views.Step, name='step'),
+    re_path(r'^step/(?P<pk>\d+)/$', views.step, name='step'),
 
     path('prepare_data', views.PrepareDataView.as_view(), name='prepare_data'),
     path('hog_pic/', views.HOGPicView.as_view(), name='hog_pic'),

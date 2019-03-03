@@ -16,16 +16,28 @@ import shutil
 
 
 # turn step to specific url
-def Step(request, pk):
+def step(request, pk):
     pk = int(pk)
-    if 0 < pk < 7:
-        for _, value in step_info.items():
-            if value['step'] == pk:
-                return redirect(value['url'])
-    elif pk <= 0:
+    user_id = str(request.user.id)
+    if pk < 1:
         return redirect(reverse_lazy('picture:pic_upload'))
-    else:
+    elif pk > 7:
         return redirect(reverse_lazy('alogrithm:train_svm_model'))
+    else:
+
+        # judege the category
+        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+            algorithm_info = json.load(load_f)
+
+        if pk > 1 and algorithm_info[user_id]['data_para'] == {}:
+            # form = PrepareDataForm(user_id=pk)
+            message = 'You should set the test category positive and <br> ' \
+                      'test category positive in the first step firstly!'
+            return redirect(reverse_lazy('alogrithm:prepare_data') + "?message=" + message)
+        else:
+            for _, value in step_info.items():
+                if value['step'] == pk:
+                    return redirect(value['url'])
 
 
 # template
@@ -72,10 +84,11 @@ class PrepareDataView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-
+        message = request.GET.get('message', None)
         return render(request, 'algorithm/model_form.html',
                       {'form': form,
                        'url_info': step_info[self.view_name],
+                       'message': message
                        }
                       )
 
@@ -133,12 +146,18 @@ class HOGPicView(FormView):
     view_name = 'hogPic'
 
     def get(self, request, *args, **kwargs):
-        form = self.get_form()
-        return render(request, 'algorithm/model_form.html',
-                      {'form': form,
-                       'url_info': step_info[self.view_name],
-                       }
-                      )
+
+        user_id = str(request.user.id)
+        if not os.path.exists(saved_pic_path(user_id)):
+            message = "Please set the test picture in the first step firstly!"
+            return redirect(reverse_lazy('alogrithm:prepare_data') + "?message=" + message)
+        else:
+            form = self.get_form()
+            return render(request, 'algorithm/model_form.html',
+                          {'form': form,
+                           'url_info': step_info[self.view_name],
+                           }
+                          )
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -188,12 +207,6 @@ class EvaluateAlgorithmView(FormView):
 
     def get(self, request, *args, **kwargs):
         form = self.get_form()
-        # hog the picture to feature vector and sava as feature_vector.pkl
-        proc = mp.Process(target=get_pic_vector, args=(str(request.user.id)))
-        proc.daemon = True
-        proc.start()
-        proc.join()
-
         return render(request, 'algorithm/model_form.html',
                       {'form': form,
                        'url_info': step_info[self.view_name],
@@ -367,6 +380,7 @@ class ModelCreateView(CreateView):
                       )
 
     def form_valid(self, form):
+        # TODO: decide to delete pkl
         user_id = self.request.user.id
 
         # judge the same model_name

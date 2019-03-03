@@ -1,10 +1,10 @@
+from django.conf import settings
 from django import forms
 from picture.models import Picture
 from .models import SVMModel
 from django.db.models import Count
-from django.conf import settings
+
 import json
-import re
 
 select_attrs = {"class": "browser-default custom-select custom-select-lg mb-3"}
 
@@ -47,7 +47,7 @@ class PrepareDataForm(forms.Form):
         self.fields['test_category_positive'] = forms.ModelChoiceField(
             queryset=Picture.objects.filter(user_id=user_id).values('category').distinct().annotate(
                 num_category=Count('category')
-            ).filter(user_id=user_id),
+            ),
             empty_label="---------",
         )
         self.fields['test_category_negative'] = forms.ModelChoiceField(
