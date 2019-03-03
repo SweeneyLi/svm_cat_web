@@ -2,7 +2,7 @@ from django.urls import reverse, reverse_lazy
 
 url_dict = {
     'login': {
-        'title': 'Welcome to login ',
+        'title': 'Please Login',
         'next_name': 'Register',
         'next_url': reverse_lazy('user:register'),
         'pic_url': None,

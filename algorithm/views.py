@@ -1,6 +1,7 @@
-from django.shortcuts import render, reverse, redirect
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.conf import settings
 from django.views.generic import CreateView, ListView, DetailView, FormView, DeleteView, View
-from django.utils.safestring import mark_safe
 
 from system.url_conf import url_dict
 from .forms import *
@@ -135,8 +136,8 @@ class PrepareDataView(FormView):
             'validation_size': validation_size,
         })
 
-        with open(settings.ALGORITHM_JSON_PATH, 'w') as f:
-            json.dump(algorithm_info, f)
+        with open(settings.ALGORITHM_JSON_PATH, 'w', encoding='utf-8') as f:
+            json.dump(algorithm_info, f, ensure_ascii=False)
 
         return redirect('alogrithm:hog_pic')
 
@@ -318,21 +319,34 @@ class AdjustEnsembleLearningView(FormView):
         kernel = self.request.POST.get('kernel')
         n_estimators = eval(form.data['n_estimators'])
         ensemble_learning = form.data['ensemble_learning']
+        if ensemble_learning != '0':
+            manager = mp.Manager()
+            return_dict = manager.dict()
+            proc = mp.Process(target=execute_adjust_ensemble,
+                              args=(user_id, C, kernel, ensemble_learning, n_estimators, return_dict))
+            proc.daemon = True
+            proc.start()
+            proc.join()
 
-        manager = mp.Manager()
-        return_dict = manager.dict()
-        proc = mp.Process(target=execute_adjust_ensemble,
-                          args=(user_id, C, kernel, ensemble_learning, n_estimators, return_dict))
-        proc.daemon = True
-        proc.start()
-        proc.join()
+            return render(self.request, 'algorithm/model_form.html',
+                          {'form': form,
+                           'url_info': step_info[self.view_name],
+                           'results': return_dict,
+                           }
+                          )
+        else:
+            # save the best_score, best_params in algorithm_json
+            with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+                algorithm_info = json.load(load_f)
 
-        return render(self.request, 'algorithm/model_form.html',
-                      {'form': form,
-                       'url_info': step_info[self.view_name],
-                       'results': return_dict,
-                       }
-                      )
+            algorithm_info[str(user_id)]['ensemble_para'].update({
+                'ensemble_learning': 'None',
+                'n_estimators': 0,
+            })
+
+            with open(settings.ALGORITHM_JSON_PATH, "w") as f:
+                json.dump(algorithm_info, f)
+            return redirect(reverse_lazy('alogrithm:create_svm_model'))
 
 
 class ModelCreateView(CreateView):
@@ -564,7 +578,7 @@ class CatIdentificationView(FormView):
             return render(request, 'system/common_form.html',
                           {'form': form,
                            'url_info': url_dict[self.view_name],
-                           'message': 'The trained model could predict, please train it'})
+                           'message': 'The trained model could predict, please train it firstly.'})
         else:
             files = request.FILES.getlist('file')
             show_probility = request.POST.get('show_probility')
@@ -590,8 +604,25 @@ class CatIdentificationView(FormView):
             proc.start()
             proc.join()
 
+            shutil.rmtree(pre_pic_root)
             return render(request, 'system/common_form.html',
                           {'form': form,
-                           'result': return_dict,
+                           'predictions': return_dict['predictions'],
                            'url_info': url_dict[self.view_name]
                            })
+
+
+def download_predict(request):
+    from wsgiref.util import FileWrapper
+    import mimetypes
+
+    user_id = request.user.id
+    filename = predict_json_path(user_id)
+
+    download_name = "predict.json"
+    wrapper = FileWrapper(open(filename))
+    content_type = mimetypes.guess_type(filename)[0]
+    response = HttpResponse(wrapper, content_type=content_type)
+    response['Content-Length'] = os.path.getsize(filename)
+    response['Content-Disposition'] = "attachment; filename=%s" % download_name
+    return response

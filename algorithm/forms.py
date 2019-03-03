@@ -35,12 +35,12 @@ def is_tuple_positive(str):
 
 
 class PrepareDataForm(forms.Form):
-    test_pic = forms.ImageField(widget=forms.FileInput(attrs={
+    test_pic = forms.ImageField(label='Test Picture', widget=forms.FileInput(attrs={
         'class': 'custom-file-input'
     }))
     test_category_positive = forms.ModelChoiceField(Picture.objects.none())
     test_category_negative = forms.ModelChoiceField(Picture.objects.none())
-    validation_size = forms.FloatField(initial=0.2)
+    validation_size = forms.FloatField(label='Validation Size', initial=0.2)
 
     def __init__(self, user_id, *args, **kwargs):
         super(PrepareDataForm, self).__init__(*args, **kwargs)
@@ -88,7 +88,7 @@ class PrepareDataForm(forms.Form):
 
 
 class HOGPicForm(forms.Form):
-    pic_size = forms.CharField(initial='194,259')
+    pic_size = forms.CharField(label='Picture Size', initial='194,259')
     orientations = forms.IntegerField(initial=9)
     pixels_per_cell = forms.CharField(initial='16,16')
     cells_per_block = forms.CharField(initial='2,2')
@@ -115,7 +115,7 @@ class EvaluateAlgoritmForm(forms.Form):
                   ('CART', 'DecisionTreeClassifier'), ('NB', 'GaussianNB'))
 
     algorithm_list = forms.MultipleChoiceField(label='algorithm_list',
-                                               choices=algorithms, widget=forms.CheckboxSelectMultiple())
+                                               choices=algorithms, widget=forms.CheckboxSelectMultiple(), required=False)
 
 
 class SVMParameterForm(forms.Form):
@@ -146,11 +146,11 @@ class EnsembleParamsForm(forms.Form):
                                choices=kernel_list
                                )
 
-    ensemble_learning_list = (('AdaBoostClassifier', 'AdaBoostClassifier'), ('BaggingClassifier', 'BaggingClassifier'))
+    ensemble_learning_list = ((0, "Don't use it"), ('AdaBoostClassifier', 'AdaBoostClassifier'), ('BaggingClassifier', 'BaggingClassifier'))
 
-    ensemble_learning = forms.ChoiceField(label='ensemble_learning',
+    ensemble_learning = forms.ChoiceField(label='Ensemble learning',
                                           choices=ensemble_learning_list)
-    n_estimators = forms.CharField(label='n_estimators', initial='1,10')
+    n_estimators = forms.CharField(label='N estimators', initial='1,10')
 
     def __init__(self, user_id, *args, **kwargs):
         super(EnsembleParamsForm, self).__init__(*args, **kwargs)

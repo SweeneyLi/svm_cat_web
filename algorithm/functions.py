@@ -50,6 +50,8 @@ def report_str_format(report):
         result.append('<th>' + str_list[i] + '</th>')
     result.append('</tr>')
     for i in range(4, len(str_list)):
+        if str_list[i] == 'micro-avg':
+            result.append('<tr><th></th></tr>')
         if (i - 4) % 5 == 0:
             result.append('<tr>')
         result.append('<th>' + str_list[i] + '</th>')
@@ -160,7 +162,8 @@ def execute_hog_pic(pic_size, orientations, pixels_per_cell, cells_per_block, is
     ax1.axis('off')
     ax1.imshow(img, cmap=plt.cm.gray)
 
-    ax1.set_title('Input image: %s' % test_pic)
+    # ax1.set_title('Input image: %s' % test_pic)
+    ax1.set_title('Input image')
 
     # Rescale histogram for better display
     hog_image_rescaled = exposure.rescale_intensity(hog_image, in_range=(0, 10))
@@ -518,8 +521,12 @@ def execute_cat_identification(user_id, model_name, show_probility, return_dict)
 
     if show_probility:
         # TODO:0 or 1
-        predictions = (model.predict_proba(pic_vector))[:, 0]
+        predictions = (model.predict_proba(pic_vector))[:, 1]
     else:
         predictions = model.predict(pic_vector)
 
-    return_dict['predictions'] = predictions
+    prediction_dict = dict(zip(pic_list, predictions.tolist()))
+    return_dict['predictions'] = prediction_dict
+
+    with open(predict_json_path(user_id), 'w', encoding='utf-8') as f:
+        json.dump(prediction_dict, f, ensure_ascii=False)

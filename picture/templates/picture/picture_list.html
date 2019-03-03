@@ -29,11 +29,11 @@
                                 &nbsp;/&nbsp;
                                 {{ pic_info|length }} picture{{ pic_info|length| pluralize }}
 
-                                <button name="{{ category }}--{{ pic_info|length }} picture{{ pic_info|length| pluralize }} "
-                                        type="button" class="fas fa-folder-minus red-text mr-3"
+                                <a name="{{ category }}--{{ pic_info|length }} picture{{ pic_info|length| pluralize }} "
+                                        type="button" class="fas fa-folder-minus red-text mr-3 fa-1x"
                                         data-href="{% url 'picture:pic_delete' category %}" data-toggle="modal"
                                         data-target="#modalConfirmDelete">
-                                </button>
+                                </a>
 
                             </p>
                         </div>
@@ -89,12 +89,12 @@
                                         {#                                            <td style="font-size: 15px">{{ pic.upload_date| date:"Y-m-j" }}</td>#}
                                         <td style="font-size: 15px">{{ pic.upload_date }}</td>
                                         <td style="font-size: 15px">
-                                            <button type="button" class="fas fa-minus red-text"
+                                            <a  class="fas fa-minus red-text"
                                                     name="{{ pic.pic_name }}DeleteButton"
                                                     data-href="{% url 'picture:pic_delete' pic.id %}"
                                                     data-toggle="modal"
                                                     data-target="#modalConfirmDelete">
-                                            </button>
+                                            </a>
                                         </td>
                                     </tr>
                                 {% endfor %}
