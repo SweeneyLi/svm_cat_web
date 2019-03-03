@@ -72,11 +72,19 @@ class PrepareDataForm(forms.Form):
             self._errors = "Only jpg, ipeg and png files are allowed."
             return False
 
-        if self.data['test_category_negative'] == self.data['test_category_positive']:
-            self._errors = 'test_category_negative should diff from test_category_positive'
+        test_category_negative = self.data['test_category_negative']
+        test_category_positive = self.data['test_category_positive']
+        if test_category_positive == test_category_negative:
+            self._errors = 'test_category_negative should diff from test_category_positive.'
             return False
-        else:
-            return True
+        elif eval(test_category_positive)['num_category'] < 10:
+            self._errors = 'test_category_positive should have al least ten pictures.'
+            return False
+        elif eval(test_category_negative)['num_category'] < 10:
+            self._errors = 'test_category_negative should have al least ten pictures.'
+            return False
+
+        return True
 
 
 class HOGPicForm(forms.Form):
@@ -248,3 +256,11 @@ class CatIdentificationForm(forms.Form):
         self.fields['model_name'].widget.attrs.update(
             select_attrs
         )
+
+    def is_valid(self):
+        for file in self.files.getlist('file'):
+            ext = file.name.split('.')[-1].lower()
+            if ext not in ["jpg", "ipeg", "png"]:
+                self._errors = "Only jpg, ipeg and png files are allowed."
+                return False
+        return True

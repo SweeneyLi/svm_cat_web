@@ -19,9 +19,6 @@ import shutil
 def Step(request, pk):
     pk = int(pk)
     if 0 < pk < 7:
-
-        # TODO: 3,4,5 need judge
-
         for _, value in step_info.items():
             if value['step'] == pk:
                 return redirect(value['url'])
@@ -115,7 +112,6 @@ class PrepareDataView(FormView):
         # save the test_pic_name in json
         with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
             algorithm_info = json.load(load_f)
-
 
         algorithm_info[user_id]['pic_para'].update({'test_pic': pic_name})
         algorithm_info[user_id]['data_para'].update({
@@ -335,17 +331,6 @@ class ModelCreateView(CreateView):
               'n_estimators']
     view_name = 'createSVMModel'
 
-    def get(self, request, *args, **kwargs):
-        form = self.get_form()
-        return render(request, 'algorithm/model_form.html',
-                      {'form': form,
-                       'url_info': step_info[self.view_name],
-                       }
-                      )
-
-    def get_success_url(self):
-        return reverse_lazy('alogrithm:model_list')
-
     def get_form_kwargs(self):
         kwargs = super(ModelCreateView, self).get_form_kwargs()
 
@@ -372,6 +357,14 @@ class ModelCreateView(CreateView):
         kwargs['initial']['n_estimators'] = algorithm_info[user_id]['ensemble_para'].get('n_estimators', 0)
 
         return kwargs
+
+    def get(self, request, *args, **kwargs):
+        form = self.get_form()
+        return render(request, 'algorithm/model_form.html',
+                      {'form': form,
+                       'url_info': step_info[self.view_name],
+                       }
+                      )
 
     def form_valid(self, form):
         user_id = self.request.user.id
@@ -404,6 +397,9 @@ class ModelCreateView(CreateView):
             joblib.dump(svm_model, model_f)
 
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('alogrithm:model_list')
 
 
 class TrainSVMModelView(FormView):

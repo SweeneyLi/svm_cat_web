@@ -70,10 +70,10 @@
                                                 {{ pic.pic_name }}
                                             </a>
 
-{#                                            <button type="button" class="btn btn-primary" data-toggle="modal"#}
-{#                                                    data-target="#imgModal">#}
-{#                                                Launch demo modal#}
-{#                                            </button>#}
+                                            {#                                            <button type="button" class="btn btn-primary" data-toggle="modal"#}
+                                            {#                                                    data-target="#imgModal">#}
+                                            {#                                                Launch demo modal#}
+                                            {#                                            </button>#}
 
 
                                             {#                                                <div class="cart">#}
@@ -108,8 +108,8 @@
             </div>
 
         {% else %}
-            <div class="warning">
-                <h2 class="text-warning">No uploaded Picture!</h2>
+            <div class="alert alert-warning text-center">
+                <h2>No uploaded Picture!</h2>
             </div>
         {% endif %}
         <div class="footer">
@@ -165,10 +165,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div  class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center">
 
                         <img id="showImg" class=""
-                        style="max-width: 700px; height: auto">
+                             style="max-width: 700px; height: auto">
 
                     </div>
                 </div>

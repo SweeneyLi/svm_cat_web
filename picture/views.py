@@ -25,12 +25,6 @@ class PicListView(ListView):
             filter(user_id=self.request.user.id).order_by('category', '-upload_date')
 
 
-# class PicDetailView(DetailView):
-#     model = Picture
-#     Context_object_name = 'picture_detail'
-    # template_name = 'picture/picture_detail.html'
-
-
 class PicUploadView(FormView):
     form_class = FileUploadModelForm
     view_name = 'picUpload'
