@@ -365,24 +365,26 @@ class ModelCreateView(CreateView):
             algorithm_info = json.load(load_f)
         user_id = str(self.request.user.id)
 
-        kwargs['initial']['model_name'] = algorithm_info[user_id]['data_para'].get('category_positive',
-                                                                                   "svm") + '_model'
-        kwargs['initial']['pic_size'] = algorithm_info[user_id]['pic_para'].get('pic_size', "(194, 259)")
-        kwargs['initial']['orientations'] = algorithm_info[user_id]['pic_para'].get('orientations', 9)
-        kwargs['initial']['pixels_per_cell'] = algorithm_info[user_id]['pic_para'].get('pixels_per_cell', "(8, 8)")
-        kwargs['initial']['cells_per_block'] = algorithm_info[user_id]['pic_para'].get('cells_per_block', "(3, 3)")
-        kwargs['initial']['is_color'] = algorithm_info[user_id]['pic_para'].get('is_color', True)
-        kwargs['initial']['is_standard'] = algorithm_info[user_id]['data_para'].get('is_standard', True)
+        if algorithm_info.get(user_id, None) and algorithm_info[user_id].get('data_para'):
+            kwargs['initial']['model_name'] = algorithm_info[user_id]['data_para'].get('category_positive',
+                                                                                       "svm") + '_model'
+            kwargs['initial']['pic_size'] = algorithm_info[user_id]['pic_para'].get('pic_size', "(194, 259)")
+            kwargs['initial']['orientations'] = algorithm_info[user_id]['pic_para'].get('orientations', 9)
+            kwargs['initial']['pixels_per_cell'] = algorithm_info[user_id]['pic_para'].get('pixels_per_cell', "(8, 8)")
+            kwargs['initial']['cells_per_block'] = algorithm_info[user_id]['pic_para'].get('cells_per_block', "(3, 3)")
+            kwargs['initial']['is_color'] = algorithm_info[user_id]['pic_para'].get('is_color', True)
+            kwargs['initial']['is_standard'] = algorithm_info[user_id]['data_para'].get('is_standard', True)
 
-        model_best_params = algorithm_info[user_id]['model_para'].get('best_params',
-                                                                      {'C': 2.0, 'kernel': 'sigmoid'})
-        kwargs['initial']['C'] = model_best_params['C']
-        kwargs['initial']['kernel'] = model_best_params['kernel']
+            model_best_params = algorithm_info[user_id]['model_para'].get('best_params',
+                                                                          {'C': 2.0, 'kernel': 'sigmoid'})
+            kwargs['initial']['C'] = model_best_params['C']
+            kwargs['initial']['kernel'] = model_best_params['kernel']
 
-        kwargs['initial']['ensemble_learning'] = algorithm_info[user_id]['ensemble_para'].get('ensemble_learning',
-                                                                                              'None')
-        kwargs['initial']['n_estimators'] = algorithm_info[user_id]['ensemble_para'].get('n_estimators', 0)
-
+            kwargs['initial']['ensemble_learning'] = algorithm_info[user_id]['ensemble_para'].get('ensemble_learning',
+                                                                                                  'None')
+            kwargs['initial']['n_estimators'] = algorithm_info[user_id]['ensemble_para'].get('n_estimators', 0)
+        else:
+            print('The' + str(user_id) + 'user didn\'n have right json')
         return kwargs
 
     def get(self, request, *args, **kwargs):
@@ -503,6 +505,8 @@ class TrainSVMModelView(FormView):
                        'result': return_dict}
                       )
 
+    def __next__(self):
+        return redirect('alogrithm:cat_identification')
 
 class ModelListView(ListView):
     context_object_name = 'model_list'

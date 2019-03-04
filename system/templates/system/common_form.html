@@ -6,7 +6,6 @@
 {% block css %}
     <style>
 
-
     </style>
 {% endblock css %}
 {% block content %}
@@ -74,7 +73,7 @@
                         </div>
                         <hr>
                     {% endif %}
-                    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                    <form id="post-form" method="post" enctype="multipart/form-data">{% csrf_token %}
                         {% for field in form %}
 
                             {% if field|field_type == 'text' %}
@@ -153,11 +152,38 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade " id="loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog  text-center" role="document">
+            <img class="img-fluid rounded-circle hoverable" src="{% static '/img/loading.gif' %}"
+                 style="min-width: 200px">
+        </div>
+    </div>
+
+
+
 {% endblock %}
 
 {% block extra_js %}
     <script>
 
+        $("#post-form").on('submit', function () {
+            var form = $(this).closest("form");
+
+            $('#loader').modal('show');
+
+            $.ajax({
+                url: form.attr("data-validate-username-url"),
+                data: form.serialize(),
+                dataType: 'json',
+                success: function (data) {
+
+                }
+            });
+
+        });
     </script>
 {% endblock extra_js %}
 

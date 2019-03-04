@@ -67,7 +67,7 @@
                 {% endif %}
 
 
-                <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                <form id="post-form" method="post" enctype="multipart/form-data">{% csrf_token %}
                     {% for field in form %}
 
                         {#                            -{{ field|field_type }}-#}
@@ -185,6 +185,13 @@
 
     </div>
 
+    <div class="modal fade " id="loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog  text-center" role="document">
+            <img class="img-fluid rounded-circle hoverable" src="{% static '/img/loading.gif' %}"
+                 style="min-width: 200px">
+        </div>
+    </div>
 
 
 {% endblock %}
@@ -194,7 +201,23 @@
         document.getElementById("pag{{ url_info.step }}").className += " active";
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
-        })
+        });
+
+        $("#post-form").on('submit', function () {
+            var form = $(this).closest("form");
+
+            $('#loader').modal('show');
+
+            $.ajax({
+                url: form.attr("data-validate-username-url"),
+                data: form.serialize(),
+                dataType: 'json',
+                success: function (data) {
+
+                }
+            });
+
+        });
     </script>
 
 {% endblock extra_js %}
