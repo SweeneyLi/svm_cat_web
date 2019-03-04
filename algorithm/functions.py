@@ -310,7 +310,6 @@ def execute_evaluate_algorithm(user_id, is_standard, algorithm_list):
     for key in algorithm_list:
         kfold = KFold(n_splits=num_folds, random_state=seed)
 
-        # TODO:The nums of samples should big than kfold
         cv_results = cross_val_score(models[key],
                                      feature_vector['x_train'],
                                      feature_vector['y_train'],

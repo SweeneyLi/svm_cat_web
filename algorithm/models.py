@@ -32,7 +32,6 @@ class SVMModel(models.Model):
     n_estimators = models.IntegerField('n_estimators', default=0)
 
     def __str__(self):
-        # // TODO: Chinese
         return self.model_name
 
 

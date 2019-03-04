@@ -95,7 +95,6 @@ class HOGPicForm(forms.Form):
     is_color = forms.BooleanField(initial=True, required=False)
 
     def is_valid(self):
-        # TODO:judege
         for field in ['pic_size', 'pixels_per_cell', 'cells_per_block']:
             # if not re.match(r'^\(\d+,\d+\)$', self.data[field]):
             if not is_tuple_positive(self.data[field]):
