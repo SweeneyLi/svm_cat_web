@@ -60,7 +60,8 @@
 
         <div id="how-it-works" class="container-fluid content">
             <div class="container" style="padding-left: 0px;padding-right: 0px;">
-                <div class=" light-blue lighten-2 white-text " style=" margin: 0px 0px 5px 0px">
+                <div class=" light-blue lighten-2 white-text "
+                     style=" border-radius: 5px;padding: 10px; border: dotted 5px">
                     <h3 style="margin: 0px ;">Make your own model to identificate your cute cat!</h3>
                     <h4 style="margin: 0px">You can follow six steps to make you own model with svm to idenetify your
                         cat.
@@ -71,17 +72,19 @@
 
                 <ol class="list-unstyled row stylized">
                     <li class="col-md-4 col-sm-6">
-                        <a class="btn btn-default" href="{% url 'picture:pic_upload' %}"><h5>Upload photo</h5></a>
-                        <p>At leaset need to upload two categories, your want to identify and you want to discriminate</p>
-                            <img class="img-responsive" src="{% static 'img/index/index-upload.jpg' %}" alt="Upload"/>
+                        <a class="btn btn-default" href="{% url 'picture:pic_upload' %}">Upload photo</a>
+                        <p>At leaset need to upload two categories, your want to identify and you want to
+                            discriminate</p>
+                        <img class="img-responsive" src="{% static 'img/index/index-upload.jpg' %}" alt="Upload"/>
                     </li>
                     <li class="col-md-4 col-sm-6">
-                        <a class="btn btn-default " href="{% url 'alogrithm:step' 1 %}"> <h5>Choose parameter</h5></a>
+                        <a class="btn btn-default " href="{% url 'alogrithm:step' 1 %}"> Choose parameter</a>
                         <p>Follow my steps to locate the parameter fit your model</p>
                         <img class="img-responsive" src="{% static 'img/index/index-svm.png' %}" alt="svm"/>
                     </li>
                     <li class="col-md-4 col-sm-6">
-                        <a class="btn btn-default " href="{% url 'alogrithm:create_svm_model' %}"> <h5>Train & Identificate</h5></a>
+                        <a class="btn btn-default " href="{% url 'alogrithm:create_svm_model' %}"> Train &
+                            Identificate</a>
                         <p>Make the model by the parameter you created, and train it again and again.
                             Finally you can use it to idenetificate your cat.</p>
                         <img class="img-responsive" src="{% static 'img/index/index-T_F.jpg' %}" alt="T_F"/>

@@ -9,19 +9,21 @@
 {% block content %}
 
     <div class="container">
+
         <div class="mytitle">Picture List</div>
         <div id="ShowImg"></div>
         {% if picture_list %}
 
 
-            <div class="panel-group white" id="accordion">
+            <div class="panel-group" id="accordion">
 
                 {% regroup picture_list by category as pictures %}
                 {% for category, pic_info in pictures %}
 
-                    <div class="panel panel-info">
-                        <div class="panel-heading aqua-gradient">
-                            <p class="panel-title">
+                    <div class="panel panel-info" style="border: blue 10px">
+                        <div class="panel-heading rgba-blue-strong" style="border-radius: 100px">
+
+                            <p class="panel-title " style="">
                                 <a class="text-white h2" data-toggle="collapse" data-parent="#accordion"
                                    href="#collapse{{ category }}">
                                     &nbsp;{{ category }}
@@ -30,9 +32,9 @@
                                 {{ pic_info|length }} picture{{ pic_info|length| pluralize }}
 
                                 <a name="{{ category }}--{{ pic_info|length }} picture{{ pic_info|length| pluralize }} "
-                                        type="button" class="fas fa-folder-minus red-text mr-3 fa-1x"
-                                        data-href="{% url 'picture:pic_delete' category %}" data-toggle="modal"
-                                        data-target="#modalConfirmDelete">
+                                   type="button" class="fas fa-folder-minus red-text mr-3 fa-1x"
+                                   data-href="{% url 'picture:pic_delete' category %}" data-toggle="modal"
+                                   data-target="#modalConfirmDelete">
                                 </a>
 
                             </p>
@@ -89,11 +91,11 @@
                                         {#                                            <td style="font-size: 15px">{{ pic.upload_date| date:"Y-m-j" }}</td>#}
                                         <td style="font-size: 15px">{{ pic.upload_date }}</td>
                                         <td style="font-size: 15px">
-                                            <a  class="fas fa-minus red-text"
-                                                    name="{{ pic.pic_name }}DeleteButton"
-                                                    data-href="{% url 'picture:pic_delete' pic.id %}"
-                                                    data-toggle="modal"
-                                                    data-target="#modalConfirmDelete">
+                                            <a class="fas fa-minus red-text"
+                                               name="{{ pic.pic_name }}DeleteButton"
+                                               data-href="{% url 'picture:pic_delete' pic.id %}"
+                                               data-toggle="modal"
+                                               data-target="#modalConfirmDelete">
                                             </a>
                                         </td>
                                     </tr>
