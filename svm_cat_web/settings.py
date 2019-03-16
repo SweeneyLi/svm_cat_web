@@ -25,12 +25,12 @@ SECRET_KEY = '8%gpo5mepj-=7)3hu$(wf=li3k99x+$lp(f0pwr7l)5w8dxq^z'
 # SECURITY WARNING: don't run with debug turned on in production!
 
 # DEBUG = False
-#
-ALLOWED_HOSTS = ['*']
+# #
+# ALLOWED_HOSTS = ['*']
 #
 DEBUG = True
 
-# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -153,3 +153,4 @@ FEATURE_VECTOR_PATH = os.path.join(MEDIA_ROOT, 'algorithm', 'feature_vector.pkl'
 TIME_ZONE = 'Asia/Shanghai'
 
 USE_TZ = False
+

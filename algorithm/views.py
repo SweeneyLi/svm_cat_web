@@ -629,4 +629,5 @@ def download_predict(request):
     response = HttpResponse(wrapper, content_type=content_type)
     response['Content-Length'] = os.path.getsize(filename)
     response['Content-Disposition'] = "attachment; filename=%s" % download_name
+
     return response
