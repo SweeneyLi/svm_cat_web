@@ -1,7 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.conf import settings
-from django.views.generic import CreateView, ListView, DetailView, FormView, DeleteView, View
+from django.views.generic import CreateView, ListView, FormView, DeleteView, View
 
 from system.url_conf import url_dict
 from .forms import *
@@ -55,7 +54,7 @@ def step(request, pk):
 #                       {'form': form,
 #                        'step': 2,
 #                        'title': step_dict[2]['name'],
-#                        'remark': mark_safe('<button>1233</button>'),
+#                        'remark': ***,
 #                        'picture': None
 #                        })
 #

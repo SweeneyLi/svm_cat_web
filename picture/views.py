@@ -52,8 +52,6 @@ class PicUploadView(FormView):
     def form_valid(self, form, **kwargs):
         files = self.request.FILES.getlist('file')
         user_id = self.request.user.id
-
-        # TODO: safe
         category = self.request.POST['category']
 
         for f in files:

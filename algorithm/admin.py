@@ -4,6 +4,7 @@ from .models import SVMModel, ModelTrainLog
 
 @admin.register(SVMModel)
 class SVMModelAdmin(admin.ModelAdmin):
+    list_display_links = ('id', 'model_name')
     list_display = ('id', 'user_id', 'model_name', 'comment', 'train_num', 'update_time', 'recently_accuracy_score')
 
     search_fields = ('user_id', 'model_name')

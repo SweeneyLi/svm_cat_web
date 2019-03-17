@@ -72,23 +72,8 @@
                                                 {{ pic.pic_name }}
                                             </a>
 
-                                            {#                                            <button type="button" class="btn btn-primary" data-toggle="modal"#}
-                                            {#                                                    data-target="#imgModal">#}
-                                            {#                                                Launch demo modal#}
-                                            {#                                            </button>#}
-
-
-                                            {#                                                <div class="cart">#}
-                                            {#                                                    <a data-toggle="tooltip"#}
-                                            {#                                                       title="<img src='{{ pic.path.url }}' />"#}
-                                            {#                                                       onclick="ShowImg('{{ pic.path.url }}')">#}
-                                            {#                                                        {{ pic.pic_name }}#}
-                                            {#                                                    </a>#}
-                                            {#                                                </div>#}
-
                                         </td>
                                         <td style="font-size: 15px">{{ pic.pic_size }}</td>
-                                        {#                                            <td style="font-size: 15px">{{ pic.upload_date| date:"Y-m-j" }}</td>#}
                                         <td style="font-size: 15px">{{ pic.upload_date }}</td>
                                         <td style="font-size: 15px">
                                             <a class="fas fa-minus red-text"
@@ -152,10 +137,7 @@
     <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
 
-        <!-- Change class .modal-sm to change the size of the modal -->
         <div class="modal-dialog modal-lg " role="document">
-
-
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title w-100" id="myModalLabel">
@@ -215,7 +197,7 @@
             var href = $(e.relatedTarget).data('href');
             file_name = $(e.relatedTarget)[0].getAttribute('name').replace("DeleteButton", '');
             $(this).find('.btn-ok').attr('href', href);
-            $('.debug-url').html('Delete Files: <strong>' + file_name + '</strong>');
+            $('.debug-url').html('Delete : <strong>' + file_name + '</strong>');
         });
 
         // show the img modal
@@ -226,10 +208,6 @@
             $('#showImg').attr('src', href);
         });
 
-        // show the img
-        function ShowImg(imgPath) {
-            document.getElementById("fullHeightModalRight").innerHTML = "<img src=" + imgPath + ">";
-        }
 
     </script>
 

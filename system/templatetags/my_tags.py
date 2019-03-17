@@ -14,7 +14,7 @@ def num_to_English(num):
         2: 'Second',
         3: 'Third',
         4: 'Forth',
-        5: 'Fifrh',
+        5: 'Fifth',
         6: 'Sixth',
         7: 'Seventh'
     }

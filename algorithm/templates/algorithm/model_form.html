@@ -24,9 +24,11 @@
             </div>
             <div class="col-md-6 ">
                 {% if picture %}
-                    <div id="picture">
-                         <p><img class="img-fluid img-responsive center-block" src="{{ picture }}"/></p>
+                    <div class="text-center">
+                        <img class="img-fluid img-responsive mx-auto align-middle "
+                             src="{{ picture }}" style="min-width: 400px">
                     </div>
+
                 {% elif results %}
 
                     <div class="list-group">
@@ -55,9 +57,6 @@
 
 
                 {% else %}
-                    {#                    <div class="align-content-center">#}
-                    {#                        <img class="img-responsive " src="{% static 'img/LXH/jpg/7.jpg' %}">#}
-                    {#                    </div>#}
                     <div class="text-center">
                         <img class="img-fluid img-responsive mx-auto align-middle "
                              src="{{ url_info.pic_url|random_pic }}" style="min-width: 400px">
