@@ -11,6 +11,7 @@ from .models import UserProfile
 from system.url_conf import *
 
 import json
+import os
 
 
 class RegisterView(FormView):
@@ -49,8 +50,13 @@ class RegisterView(FormView):
         user_profile.save()
 
         # algorithm_info_json initial
-        with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
-            algorithm_info = json.load(load_f)
+        if not os.path.exists(settings.ALGORITHM_JSON_PATH):
+            with open(settings.ALGORITHM_JSON_PATH, "w") as f:
+                json.dump({}, f)
+            algorithm_info = {}
+        else:
+            with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
+                algorithm_info = json.load(load_f)
         user_id = user.id
         algorithm_info[user_id] = {}
 

@@ -29,6 +29,17 @@ def step(request, pk):
         with open(settings.ALGORITHM_JSON_PATH, "r") as load_f:
             algorithm_info = json.load(load_f)
 
+        if not algorithm_info.get(user_id, None):
+            # algorithm_info_json initial
+            algorithm_info[user_id] = {}
+            algorithm_info_keys = algorithm_info[user_id].keys()
+            for key in ['pic_para', 'data_para', 'model_para', 'ensemble_para']:
+                if key not in algorithm_info_keys:
+                    algorithm_info[user_id][key] = {}
+
+            with open(settings.ALGORITHM_JSON_PATH, 'w') as f:
+                json.dump(algorithm_info, f)
+
         if pk > 1 and algorithm_info[user_id]['data_para'] == {}:
             # form = PrepareDataForm(user_id=pk)
             message = 'You should set the test category positive and <br> ' \
