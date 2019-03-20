@@ -44,3 +44,9 @@ def random_pic(path):
         root_path = os.path.join((settings.STATICFILES_DIRS)[0], 'img', 'LXH', 'gif')
         len_num = len([name for name in os.listdir(root_path)])
         return os.path.join(settings.STATIC_URL, 'img', 'LXH', 'gif', 'gif_' + str(randint(1, len_num)) + '.gif')
+
+@register.filter()
+def test(value):
+    print(value)
+    print(type(print(value)))
+    return value

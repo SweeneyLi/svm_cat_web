@@ -6,6 +6,11 @@ class FileUploadModelForm(forms.Form):
     file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
 
     def is_valid(self):
+        for i in self.data['category']:
+            if not i.isalnum():
+                self._errors = "The name of category only conatin the number and letter ！"
+                return False
+
         for file in self.files.getlist('file'):
             ext = file.name.split('.')[-1].lower()
             if ext not in ["jpg", "jpeg", "png"]:

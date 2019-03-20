@@ -17,15 +17,17 @@
 
             <div class="panel-group" id="accordion">
 
+                {% load my_tags %}
+
                 {% regroup picture_list by category as pictures %}
                 {% for category, pic_info in pictures %}
-
                     <div class="panel panel-info" style="border: blue 10px">
                         <div class="panel-heading rgba-blue-strong" style="border-radius: 100px">
 
                             <p class="panel-title " style="">
                                 <a class="text-white h2" data-toggle="collapse" data-parent="#accordion"
                                    href="#collapse{{ category }}">
+
                                     &nbsp;{{ category }}
                                 </a>
                                 &nbsp;/&nbsp;
@@ -48,43 +50,43 @@
                                 <table id="{{ category }}DataTable"
                                        class="table  table-striped table-hover table-responsive-lg text-nowrap"
                                        cellspacing="0" width="100%">
-                                <caption>List of pictures</caption>
-                                <thead>
-                                <tr>
-                                    <th class="th-sm" scope="col" style="font-size: 15px">#</th>
-                                    <th class="th-sm" scope="col" style="font-size: 15px">Picture Name</th>
-                                    <th class="th-sm" scope="col" style="font-size: 15px">Picture Size</th>
-                                    <th class="th-sm" scope="col" style="font-size: 15px">Upload Date</th>
-                                    <th class="th-sm" scope="col" style="font-size: 15px">Delete</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for pic in pic_info|dictsort:"pic_size"|dictsortreversed:"upload_date" %}
+                                    <caption>List of pictures</caption>
+                                    <thead>
                                     <tr>
-                                        <th style="font-size: 15px" scope="row">{{ forloop.counter }}</th>
-                                        <td style="font-size: 15px">
-
-                                            <a name="{{ pic.pic_name }}ShowButton"
-                                               data-href="{{ pic.path.url }}"
-                                               data-toggle="modal"
-                                               data-target="#imgModal">
-                                                {{ pic.pic_name }}
-                                            </a>
-
-                                        </td>
-                                        <td style="font-size: 15px">{{ pic.pic_size }}</td>
-                                        <td style="font-size: 15px">{{ pic.upload_date }}</td>
-                                        <td style="font-size: 15px">
-                                            <a class="fas fa-minus red-text"
-                                               name="{{ pic.pic_name }}DeleteButton"
-                                               data-href="{% url 'picture:pic_delete' pic.id %}"
-                                               data-toggle="modal"
-                                               data-target="#modalConfirmDelete">
-                                            </a>
-                                        </td>
+                                        <th class="th-sm" scope="col" style="font-size: 15px">#</th>
+                                        <th class="th-sm" scope="col" style="font-size: 15px">Picture Name</th>
+                                        <th class="th-sm" scope="col" style="font-size: 15px">Picture Size</th>
+                                        <th class="th-sm" scope="col" style="font-size: 15px">Upload Date</th>
+                                        <th class="th-sm" scope="col" style="font-size: 15px">Delete</th>
                                     </tr>
-                                {% endfor %}
-                                </tbody>
+                                    </thead>
+                                    <tbody>
+                                    {% for pic in pic_info|dictsort:"pic_size"|dictsortreversed:"upload_date" %}
+                                        <tr>
+                                            <th style="font-size: 15px" scope="row">{{ forloop.counter }}</th>
+                                            <td style="font-size: 15px">
+
+                                                <a name="{{ pic.pic_name }}ShowButton"
+                                                   data-href="{{ pic.path.url }}"
+                                                   data-toggle="modal"
+                                                   data-target="#imgModal">
+                                                    {{ pic.pic_name }}
+                                                </a>
+
+                                            </td>
+                                            <td style="font-size: 15px">{{ pic.pic_size }}</td>
+                                            <td style="font-size: 15px">{{ pic.upload_date }}</td>
+                                            <td style="font-size: 15px">
+                                                <a class="fas fa-minus red-text"
+                                                   name="{{ pic.pic_name }}DeleteButton"
+                                                   data-href="{% url 'picture:pic_delete' pic.id %}"
+                                                   data-toggle="modal"
+                                                   data-target="#modalConfirmDelete">
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
                                 </table>
                                 </ul>
                             </div>

@@ -76,7 +76,7 @@
                     <form id="post-form" method="post" enctype="multipart/form-data">{% csrf_token %}
                         {% for field in form %}
 
-                            {% if field|field_type == 'text' or field|field_type == 'email'%}
+                            {% if field|field_type == 'text' or field|field_type == 'email' %}
 
                                 <div class="md-form input-group input-group-lg">
                                     {{ field.label_tag }}
@@ -132,7 +132,9 @@
                         {% endfor %}
                         <p>
                             <button type="reset" class="btn btn-outline-secondary waves-effect">Reset</button>
-                            <button type="submit" class="btn btn-outline-success waves-effect">Submit</button>
+                            <button type="button" onclick="checkform()" class="btn btn-outline-success waves-effect">
+                                Submit
+                            </button>
                         </p>
                     </form>
 
@@ -169,21 +171,69 @@
 {% block extra_js %}
     <script>
 
-        $("#post-form").on('submit', function () {
-            var form = $(this).closest("form");
-
-            $('#loader').modal('show');
-
-            $.ajax({
-                url: form.attr("data-validate-username-url"),
-                data: form.serialize(),
-                dataType: 'json',
-                success: function (data) {
-
+        function checkfile() {
+            var maxsize = 10 * 1024 * 1024;//10M
+            var errMsg_size = "The attachment files cannot exceed 10M ！！！";
+            var errMsg_num = "The num of files cannot exceed 100 ！！！";
+            var tipMsg = "Your browser does not support calculating the size of uploaded files. " +
+                "Make sure that the uploaded files do not exceed 2M. It is recommended to use IE, FireFox, and Chrome browsers.";
+            var browserCfg = {};
+            var ua = window.navigator.userAgent;
+            if (ua.indexOf("MSIE") >= 1) {
+                browserCfg.ie = true;
+            } else if (ua.indexOf("Firefox") >= 1) {
+                browserCfg.firefox = true;
+            } else if (ua.indexOf("Chrome") >= 1) {
+                browserCfg.chrome = true;
+            }
+            try {
+                var obj_file = document.getElementById("file-with-multi-file");
+                if (obj_file.value == "") {
+                    return "Please upload the file firstly.";
                 }
-            });
+                if (obj_file.files.length > 100) {
+                    return errMsg_num;
+                }
 
-        });
+                var filesize = 0;
+                if (browserCfg.firefox || browserCfg.chrome) {
+                    for (var i = obj_file.files.length - 1; i >= 0; i--) {
+                        filesize += obj_file.files[i].size;
+                    }
+                } else if (browserCfg.ie) {
+                    var obj_img = document.getElementById('tempimg');
+                    obj_img.dynsrc = obj_file.value;
+                    filesize = obj_img.fileSize;
+                } else {
+                    return tipMsg;
+                }
+                if (filesize == -1) {
+                    return tipMsg;
+                } else if (filesize > maxsize) {
+                    return errMsg_size + "The size of files you input is " + filesize / 1024 / 1024 + 'M';
+                } else {
+                    {#alert(filesize);#}
+                    return;
+                }
+            } catch (e) {
+                alert(e);
+            }
+        }
+
+        function checkform() {
+
+            if (document.getElementById('file-with-multi-file') != null) {
+                var error = checkfile();
+                if (error != null) {
+                    alert(error);
+                    return;
+                }
+            }
+            $('#loader').modal('show');
+            $('#post-form').submit();
+        }
+
+
     </script>
 {% endblock extra_js %}
 
