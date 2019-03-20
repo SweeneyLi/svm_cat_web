@@ -68,8 +68,8 @@ class PrepareDataForm(forms.Form):
 
         file = self.files.get('test_pic')
         ext = file.name.split('.')[-1].lower()
-        if ext not in ["jpg", "ipeg", "png"]:
-            self._errors = "Only jpg, ipeg and png files are allowed."
+        if ext not in ["jpg", "jpeg", "png"]:
+            self._errors = "Only jpg, jpeg and png files are allowed."
             return False
 
         test_category_negative = self.data['test_category_negative']
@@ -259,7 +259,7 @@ class CatIdentificationForm(forms.Form):
     def is_valid(self):
         for file in self.files.getlist('file'):
             ext = file.name.split('.')[-1].lower()
-            if ext not in ["jpg", "ipeg", "png"]:
-                self._errors = "Only jpg, ipeg and png files are allowed."
+            if ext not in ["jpg", "jpeg", "png"]:
+                self._errors = "Only jpg, jpeg and png files are allowed."
                 return False
         return True
