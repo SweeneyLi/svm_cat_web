@@ -18,18 +18,10 @@
         <div class="mytitle">Model_Details</div>
 
         <div class="row">
-            <div id="topTable">
+            <div id="topTable" style="width: 100%; text-align: center">
                 <table class="table table-striped table-bordered  table-hover table-responsive-lg text-nowrap"
                        cellspacing="0" width="100%">
                     <caption>Model Info</caption>
-                    {#                     <thead class=" rgba-cyan-slight brown-text">#}
-                    {#                    <tr>#}
-                    {#                        <th scope="col" style="font-size: 15px">Model info</th>#}
-                    {#                        <th scope="col" style="font-size: 15px"></th>#}
-                    {#                        <th scope="col" style="font-size: 15px">parameter</th>#}
-                    {#                        <th scope="col" style="font-size: 15px"></th>#}
-                    {#                    </tr>#}
-                    {#                     </thead>#}
                     <tbody>
                     <tr>
                         <th scope="col" class="rgba-cyan-slight brown-text" style="font-size: 15px">model_name:</th>
@@ -40,7 +32,7 @@
                                    data-href="{% url 'alogrithm:model_delete' model.id %}"
                                    data-toggle="modal"
                                    data-target="#modalConfirmDelete">
-                                    <i class="fas fa-backspace "></i>
+                                    <i class="fas fa-backspace red-text"></i>
                                 </a>
                             </p>
 
@@ -140,23 +132,24 @@
                     </tbody>
                 </table>
             {% else %}
-
-                <div class="warning">
-                    <h2 class="text-warning text-center">
+                <div class="warning" style="width: 100%; text-align: center">
+                    <h2 class="text-warning ">
                         This Model isn't trained.
                     </h2>
                 </div>
             {% endif %}
             </div>
-        </div>
-        <div class="col-md-12">
-            <p><a class="btn btn-block btn-lg btn-light-blue "
-                  href="{% url 'alogrithm:train_svm_model' %}">train model</a>
-            </p>
 
-            <a class="btn btn-block btn-lg btn-light-blue "
-               href="{% url 'alogrithm:create_svm_model' %}">create model</a>
+            <div class="">
+                <p><a class="btn btn-block btn-lg btn-light-blue "
+                      href="{% url 'alogrithm:train_svm_model' %}">train model</a>
+                </p>
+
+                <a class="btn btn-block btn-lg btn-light-blue "
+                   href="{% url 'alogrithm:create_svm_model' %}">create model</a>
+            </div>
         </div>
+
 
     </div>
 
