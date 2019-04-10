@@ -10,10 +10,9 @@
 
     <div class="container">
 
-        <div class="mytitle">Picture List</div>
+        <div class="mytitle"><!-- Picture List -->图片库</div>
         <div id="ShowImg"></div>
         {% if picture_list %}
-
 
             <div class="panel-group" id="accordion">
 
@@ -97,11 +96,11 @@
 
         {% else %}
             <div class="alert alert-warning text-center">
-                <h2>No uploaded Picture!</h2>
+                <h2><!-- No uploaded Picture! -->没有上传的图片！</h2>
             </div>
         {% endif %}
         <div class="footer">
-            <a class="btn btn-lg btn-light-blue btn-block" href="{% url 'picture:pic_upload' %}">Upload</a>
+            <a class="btn btn-lg btn-light-blue btn-block" href="{% url 'picture:pic_upload' %}"><!-- Upload -->上传图片</a>
         </div>
 
     </div>
@@ -116,7 +115,7 @@
             <div class="modal-content text-center">
                 <!--Header-->
                 <div class="modal-header d-flex justify-content-center">
-                    <p class="heading">Are you sure to delete?</p>
+                    <p class="heading"><!-- Are you sure to delete? -->确定删除吗？</p>
                 </div>
                 <!--Body-->
                 <div class="modal-body">
@@ -198,7 +197,7 @@
             var href = $(e.relatedTarget).data('href');
             file_name = $(e.relatedTarget)[0].getAttribute('name').replace("DeleteButton", '');
             $(this).find('.btn-ok').attr('href', href);
-            $('.debug-url').html('Delete : <strong>' + file_name + '</strong>');
+            $('.debug-url').html('删除 : <strong>' + file_name + '</strong>');
         });
 
         // show the img modal

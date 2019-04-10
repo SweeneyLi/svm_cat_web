@@ -6,14 +6,14 @@
 {% block content %}
     <div class="container">
         <div class="mytitle">
-            <p>model_list</p>
+            <p><!-- model_list -->模型库</p>
         </div>
         {% if model_list %}
 
             <table id="modelDataTable"
                    class="table  table-striped table-bordered  table-hover table-responsive-lg text-nowrap"
                    cellspacing="0" width="100%">
-                <caption>List of pictures</caption>
+                <caption><!-- List of models -->模型列表</caption>
                 <thead class=" rgba-cyan-slight brown-text">
                 <tr>
                     <th scope="col" style="font-size: 15px">#</th>
@@ -45,10 +45,10 @@
                                href="{% url 'alogrithm:model_detail' model.id %}"></a>
                             &nbsp;&nbsp;
                             <a class="fas fa-trash-alt fa-2x red-text"
-                                    name="{{ model.model_name }}DeleteButton"
-                                    data-href="{% url 'alogrithm:model_delete' model.id %}"
-                                    data-toggle="modal"
-                                    data-target="#modalConfirmDelete">
+                               name="{{ model.model_name }}DeleteButton"
+                               data-href="{% url 'alogrithm:model_delete' model.id %}"
+                               data-toggle="modal"
+                               data-target="#modalConfirmDelete">
                             </a>
 
                         </td>
@@ -57,7 +57,7 @@
             </table>
             <div>
                 <p><a class="btn btn-lg btn-light-blue btn-block"
-                      href="{% url 'alogrithm:train_svm_model' %}">train model</a></p>
+                      href="{% url 'alogrithm:train_svm_model' %}"><!-- train model -->训练模型</a></p>
             </div>
         {% else %}
             <div class="alert alert-warning text-center">
@@ -66,7 +66,7 @@
         {% endif %}
         <div class="footer">
             <a class="btn btn-lg btn-light-blue btn-block"
-               href="{% url 'alogrithm:create_svm_model' %}">create model</a>
+               href="{% url 'alogrithm:create_svm_model' %}"><!-- create model -->建立模型</a>
         </div>
     </div>
 
@@ -79,7 +79,7 @@
             <div class="modal-content text-center">
                 <!--Header-->
                 <div class="modal-header d-flex justify-content-center">
-                    <p class="heading">Are you sure to delete?</p>
+                    <p class="heading"><!-- Are you sure to delete? -->确定删除吗？</p>
                 </div>
                 <!--Body-->
                 <div class="modal-body">
@@ -122,10 +122,12 @@
 
         // show the delete modal
         $('#modalConfirmDelete').on('show.bs.modal', function (e) {
-            var href = $(e.relatedTarget).data('href');
-            file_name = $(e.relatedTarget)[0].getAttribute('name').replace("DeleteButton", '');
-            $(this).find('.btn-ok').attr('href', href);
-            $('.debug-url').html('Delete Model: <strong>' + file_name + '</strong>');
-        });
+                var href = $(e.relatedTarget).data('href');
+                file_name = $(e.relatedTarget)[0].getAttribute('name').replace("DeleteButton", '');
+                $(this).find('.btn-ok').attr('href', href);
+
+                $('.debug-url').html('删除模型: <strong>' + file_name + '</strong>');
+            }
+        );
     </script>
 {% endblock extra_js %}

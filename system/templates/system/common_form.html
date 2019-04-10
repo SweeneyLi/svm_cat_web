@@ -99,7 +99,7 @@
                             {% elif field|field_type == 'file' %}
                                 <div class="input-default-wrapper mt-5">
 
-                                    <span class="input-group-text mb-3" id="input2">Upload {{ field.label }}</span>
+                                    <span class="input-group-text mb-3" id="input2">上传 {{ field.label }}</span>
 
                                     <input type="file" id="file-with-multi-file" class="input-default-js" required
                                            name="{{ field.name }}"
@@ -107,9 +107,9 @@
                                            multiple>
 
                                     <label class="label-for-default-js rounded-right mb-3"
-                                           for="file-with-multi-file"><span class="span-choose-file">Choose file</span>
+                                           for="file-with-multi-file"><span class="span-choose-file"><!-- Choose file -->选择文件</span>
 
-                                        <div class="float-right span-browse">Browse</div>
+                                        <div class="float-right span-browse"><!-- Browse -->浏览</div>
 
                                     </label>
 
@@ -131,16 +131,17 @@
 
                         {% endfor %}
                         <p>
-                            <button type="reset" class="btn btn-outline-secondary waves-effect">Reset</button>
+                            <button type="reset" class="btn btn-outline-secondary waves-effect"><!-- reset -->重置
+                            </button>
                             <button type="button" onclick="checkform()" class="btn btn-outline-success waves-effect">
-                                Submit
+                                <!-- submit -->提交
                             </button>
                         </p>
                     </form>
 
                 </div>
             </div>
-            <div class="col-md-12 footer">
+            <div class="col-md-12 footer" style="padding: 5px">
                 <p>
                     <a class="btn btn-lg btn-light-blue btn-block"
                        href="{{ url_info.next_url }}">{{ url_info.next_name }}</a>

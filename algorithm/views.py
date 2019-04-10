@@ -368,6 +368,7 @@ class ModelCreateView(CreateView):
               'n_estimators']
     view_name = 'createSVMModel'
 
+
     def get_form_kwargs(self):
         kwargs = super(ModelCreateView, self).get_form_kwargs()
 
@@ -517,6 +518,7 @@ class TrainSVMModelView(FormView):
 
     def __next__(self):
         return redirect('alogrithm:cat_identification')
+
 
 class ModelListView(ListView):
     context_object_name = 'model_list'

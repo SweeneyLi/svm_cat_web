@@ -28,7 +28,7 @@
 
 <!--Navbar -->
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark default-color">
-    <a class="navbar-brand" href="{% url 'system:index' %}">Cat Identification</a>
+    <a class="navbar-brand" href="{% url 'system:index' %}"><!-- Cat Identification --> 猫咪识别系统</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
             aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -38,31 +38,36 @@
             <li class="nav-item active dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown"
                    aria-haspopup="true"
-                   aria-expanded="false">Six Steps
+                   aria-expanded="false"><!-- Six Steps -->操作步骤
                 </a>
                 <div class="dropdown-menu dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
                     <a class="dropdown-item" style="font-size: 12px"
-                       href="{% url 'alogrithm:step' 1 %}">Prepare Data</a>
-                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 2 %}">Hog Pic</a>
-                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 3 %}">Evaluate
-                        Algorithm</a>
-                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 4 %}">Adjust SVM</a>
-                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 5 %}">Adjust Ensemble
-                        Learning</a>
-                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 6 %}">Create SVM
-                        Model</a>
+                       href="{% url 'alogrithm:step' 1 %}">
+                        <!-- Prepare Data -->准备数据</a>
+                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 2 %}">
+                        <!-- Hog Pic -->处理图片</a>
+                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 3 %}">
+                        <!-- Evaluate Algorithm --> 评估算法
+                    </a>
+                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 4 %}">
+                        <!-- Adjust SVM --> SVM算法</a>
+                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 5 %}">
+                        <!-- Adjust Ensemble
+                        Learning -->集成算法</a>
+                    <a class="dropdown-item" style="font-size: 12px" href="{% url 'alogrithm:step' 6 %}"><!-- Create SVM
+                        Model -->建立模型</a>
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'alogrithm:create_svm_model' %}">Create Model
+                <a class="nav-link" href="{% url 'alogrithm:create_svm_model' %}"><!-- Create Model -->建立模型
                     <span class="sr-only">(current)</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'alogrithm:train_svm_model' %}">Train Model</a>
+                <a class="nav-link" href="{% url 'alogrithm:train_svm_model' %}"><!-- Train Model -->训练模型</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'alogrithm:cat_identification' %}"> Cat Identificate</a>
+                <a class="nav-link" href="{% url 'alogrithm:cat_identification' %}"> <!-- Cat Identificate -->猫咪识别</a>
             </li>
         </ul>
 
@@ -89,15 +94,18 @@
                     <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown"
                        aria-haspopup="true"
                        aria-expanded="false">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-user">  {{ user.username }}</i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-default"
                          aria-labelledby="navbarDropdownMenuLink-333">
-                        <a class="dropdown-item" href="{% url 'user:profile' %}">Profile</a>
-                        <a class="dropdown-item" href="{% url 'user:profile_update' %}">Profile Update</a>
-                        <a class="dropdown-item" href="{% url 'user:pwd_change' %}">Password Change</a>
-                        <a class="dropdown-item" href="{% url 'user:logout' %}">Logout</a>
+                        <a class="dropdown-item" href="{% url 'user:profile' %}"><!-- Profile -->我的信息</a>
+                        <a class="dropdown-item" href="{% url 'user:profile_update' %}"><!-- Profile Update -->信息更改</a>
+                        <a class="dropdown-item" href="{% url 'user:pwd_change' %}"><!-- Password Change -->密码更改</a>
+                        <a class="dropdown-item" href="{% url 'user:logout' %}"><!-- Logout -->登出</a>
                     </div>
+                </li>
+                <li>
+
                 </li>
             {% else %}
                 <li class="nav-item">

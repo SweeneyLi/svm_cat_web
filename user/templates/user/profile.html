@@ -24,20 +24,20 @@
             </div>
             <div class="col-md-6">
                 <ul class="list-group">
-                    <li class="list-group-item list-group-item-info text-primary h2">Account</li>
-                    <li class="list-group-item"><strong>Username&nbsp;:&nbsp;</strong>{{ user.username }} </li>
-                    <li class="list-group-item"><strong>Email&nbsp;:&nbsp;</strong>{{ user.email }} </li>
+                    <li class="list-group-item list-group-item-info text-primary h2"><!-- Account -->账号</li>
+                    <li class="list-group-item"><strong><!-- Username -->用户名&nbsp;:&nbsp;</strong>{{ user.username }} </li>
+                    <li class="list-group-item"><strong><!-- Email -->邮箱&nbsp;:&nbsp;</strong>{{ user.email }} </li>
 
                 </ul>
                 <ul class="list-group">
                     <li class="list-group-item list-group-item-info text-primary h2">Info</li>
-                    <li class="list-group-item"><strong>First Name&nbsp;:&nbsp;</strong> {{ user.first_name }}  </li>
-                    <li class="list-group-item"><strong>Last Name&nbsp;:&nbsp;</strong> {{ user.last_name }} </li>
-                    <li class="list-group-item"><strong>Organization: &nbsp;&nbsp;</strong>{{ user.profile.org }} </li>
-                    <li class="list-group-item"><strong>Telephone: &nbsp;&nbsp;</strong>{{ user.profile.telephone }}
+                    <li class="list-group-item"><strong><!-- First Name -->姓&nbsp;:&nbsp;</strong> {{ user.first_name }}  </li>
+                    <li class="list-group-item"><strong><!-- Last Name -->名字&nbsp;:&nbsp;</strong> {{ user.last_name }} </li>
+                    <li class="list-group-item"><strong><!-- Organization -->组织: &nbsp;&nbsp;</strong>{{ user.profile.org }} </li>
+                    <li class="list-group-item"><strong><!-- Telephone -->电话: &nbsp;&nbsp;</strong>{{ user.profile.telephone }}
                     </li>
-                    <li class="list-group-item"><strong>Last Login&nbsp;:&nbsp;</strong> {{ user.last_login }}</li>
-                    <li class="list-group-item"><strong>Date Joined&nbsp;:&nbsp;</strong> {{ user.date_joined }}</li>
+                    <li class="list-group-item"><strong><!-- Last Login -->上次登陆&nbsp;:&nbsp;</strong> {{ user.last_login }}</li>
+                    <li class="list-group-item"><strong><!-- Date Joined -->加入日期&nbsp;:&nbsp;</strong> {{ user.date_joined }}</li>
                 </ul>
             </div>
             <div class="col-md-6">
@@ -49,14 +49,14 @@
             <div class="col-md-12">
                 <div>
                     <p>
-                        <a class="btn btn-default btn-lg btn-block mb-2" href="{% url 'user:profile_update' %}">Profile
-                            Update</a>
+                        <a class="btn btn-default btn-lg btn-block mb-2" href="{% url 'user:profile_update' %}">
+                            <!-- Profile Update -->信息更改</a>
                     </p>
                     <p>
-                        <a class="btn btn-default btn-block" href="{% url 'user:pwd_change' %}">Change Password</a>
+                        <a class="btn btn-default btn-block" href="{% url 'user:pwd_change' %}"><!-- Change Password -->更改密码</a>
                     </p>
                     <p>
-                        <a class="btn btn-warning btn-block " href="{% url 'user:logout' %}">Logout</a>
+                        <a class="btn btn-warning btn-block " href="{% url 'user:logout' %}"><!-- Logout -->登出</a>
                     </p>
                 </div>
 

@@ -9,8 +9,8 @@
         }
 
         .container-fluid {
-            text-align: center; /*设置文本水平居中*/
-            overflow: hidden; /*防止内容超出容器或者产生自动换行*/
+            text-align: center;
+            overflow: hidden;
         }
 
         .img-responsive {
@@ -29,13 +29,13 @@
         }
 
         .bg {
-            /* The image used */
+
             background-image: url("/static/img/LXH/gif/gif_41.gif");
             text-align: center;
-            /* Full height */
+
             height: 100%;
             margin: 0px;
-            /* Center and scale the image nicely */
+
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
@@ -50,11 +50,12 @@
 
         <div id="header " class="container-fluid bg" style="min-height: 466px">
             <div id="content-in-header" class="text-center">
-                <h2 class="cyan-text">SVM-Based</br> Cat Identification</h2>
+                <h2 class="cyan-text"><!-- SVM-Based</br> Cat Identification -->
+                    基于 SVM的<br>猫咪识别系统</h2>
                 {#                <p class="text-default">Create your own model to locate cat</p>#}
-                <a class="btn btn-cyan" href="{% url 'picture:pic_upload' %}">Start</a>
-                <a class="btn btn-cyan" href="{% url 'alogrithm:train_svm_model' %}">Train model</a>
-                <a class="btn btn-cyan" href="{% url 'alogrithm:cat_identification' %}">Use model</a>
+                <a class="btn btn-cyan" href="{% url 'picture:pic_upload' %}"><!-- Start -->建立模型</a>
+                <a class="btn btn-cyan" href="{% url 'alogrithm:train_svm_model' %}"><!-- Train model -->训练模型</a>
+                <a class="btn btn-cyan" href="{% url 'alogrithm:cat_identification' %}"><!-- Use model -->猫咪识别</a>
             </div>
         </div>
 
@@ -62,9 +63,11 @@
             <div class="container" style="padding-left: 0px;padding-right: 0px;">
                 <div class=" light-blue lighten-2 white-text "
                      style=" border-radius: 5px;padding: 10px; border: dotted 5px">
-                    <h3 style="margin: 0px ;">Make your own model to identificate your cute cat!</h3>
-                    <h4 style="margin: 0px">You can follow six steps to make you own model with svm to idenetify your
-                        cat.</h4>
+                    <h3 style="margin: 0px ;">
+                        <!-- Make your own model to identificate your cute cat! -->建立属于你的猫咪模型</h3>
+                    <h4 style="margin: 0px">
+                        <!-- You can follow six steps to make you own model with svm to idenetify your cat. -->
+                        请按照系统提示建立模型识别你自己的猫咪</h4>
                 </div>
             </div>
 
@@ -72,21 +75,25 @@
 
                 <ol class="list-unstyled row stylized">
                     <li class="col-md-4 col-sm-6">
-                        <a class="btn btn-default" href="{% url 'picture:pic_upload' %}">Upload photo</a>
-                        <p>At leaset need to upload two categories, your want to identify and you want to
-                            discriminate</p>
+                        <a class="btn btn-default" href="{% url 'picture:pic_upload' %}">
+                            <!-- Upload photo -->上传图片</a>
+                        <p>
+                            <!-- At leaset need to upload two categories, your want to identify and you want to discriminate -->
+                            至少需要上传两类图片，想要识别和区分的图片</p>
                         <img class="img-responsive" src="{% static 'img/index/index-upload.jpg' %}" alt="Upload"/>
                     </li>
                     <li class="col-md-4 col-sm-6">
-                        <a class="btn btn-default " href="{% url 'alogrithm:step' 1 %}"> Choose parameter</a>
-                        <p>Follow my steps to locate the parameter fit your model</p>
+                        <a class="btn btn-default " href="{% url 'alogrithm:step' 1 %}"> <!-- Choose parameter -->
+                            调整模型参数</a>
+                        <p><!-- Follow my steps to locate the parameter fit your model -->跟随系统提示调整模型参数</p>
                         <img class="img-responsive" src="{% static 'img/index/index-svm.png' %}" alt="svm"/>
                     </li>
                     <li class="col-md-4 col-sm-6">
-                        <a class="btn btn-default " href="{% url 'alogrithm:create_svm_model' %}"> Train &
-                            Identificate</a>
-                        <p>Make the model by the parameter you created, and train it again and again.
-                            Finally you can use it to idenetificate your cat.</p>
+                        <a class="btn btn-default " href="{% url 'alogrithm:create_svm_model' %}">
+                            <!-- Train & Identificate --> 训练和使用模型</a>
+                        <p>
+                            <!-- Make the model by the parameter you created, and train it again and again. Finally you can use it to idenetificate your cat. -->
+                            建立模型，反复训练后，使用模型进行识别。</p>
                         <img class="img-responsive" src="{% static 'img/index/index-T_F.jpg' %}" alt="T_F"/>
                     </li>
                 </ol>
