@@ -21,7 +21,7 @@ class SVMModel(models.Model):
     pic_size = models.CharField(verbose_name='图片大小', max_length=50)
     orientations = models.IntegerField(verbose_name='bin的个数')
     pixels_per_cell = models.CharField(verbose_name='每个cell的像素数', max_length=50)
-    cells_per_block = models.CharField(verbose_name='每个BLOCK内cell大小', max_length=50)
+    cells_per_block = models.CharField(verbose_name='每个BLOCK内cell分布', max_length=50)
 
     create_time = models.DateTimeField('create_time', auto_now=True)
 

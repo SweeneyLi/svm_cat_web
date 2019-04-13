@@ -111,7 +111,7 @@ class HOGPicForm(forms.Form):
         label='每个cell的像素数',
         initial='16,16')
     cells_per_block = forms.CharField(
-        label='每个BLOCK内cell大小',
+        label='每个BLOCK内cell分布',
         initial='2,2'
     )
     is_color = forms.BooleanField(

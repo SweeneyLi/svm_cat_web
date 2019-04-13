@@ -8,15 +8,22 @@ register = template.Library()
 
 
 @register.filter()
-def num_to_English(num):
+def num_format(num):
     num_English_dict = {
-        1: 'First',
-        2: 'Second',
-        3: 'Third',
-        4: 'Forth',
-        5: 'Fifth',
-        6: 'Sixth',
-        7: 'Seventh'
+        1: '一',
+        2: '二',
+        3: '三',
+        4: '四',
+        5: '五',
+        6: '六',
+        7: '七'
+        # 1: 'First',
+        # 2: 'Second',
+        # 3: 'Third',
+        # 4: 'Forth',
+        # 5: 'Fifth',
+        # 6: 'Sixth',
+        # 7: 'Seventh'
     }
     return num_English_dict[int(num)]
 

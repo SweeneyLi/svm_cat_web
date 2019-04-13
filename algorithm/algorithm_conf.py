@@ -43,7 +43,7 @@ step_info = {
                       '''也就是说把所有的方向都转换为0°~180°内, 然后按照指定的orientation数量划分bins. 比如你选定的orientation= 9, 则bin一共有9个, 每20°一个:'''
                       '''[0°~20°, 20°~40°, 40°~60° 60°~80° 80°~100°, 100°~120°, 120°~140°, 140°~160°, 160°~180°]''',
             '每个cell的像素数': '每个cell的像素数, 是一个tuple类型数据,例如(20,20).',
-            '每个BLOCK内cell大小': '每个BLOCK内有多少个cell, tuple类型, 例如(2,2), 意思是将block均匀划分为2x2的块.',
+            '每个BLOCK内cell分布': '每个BLOCK内有多少个cell, tuple类型, 例如(2,2), 意思是将block均匀划分为2x2的块.',
             '是否选择颜色': '图片是否带颜色。',
             # 'Hog Picture': 'You can adjust the parameter of hog which the function of changing picture to feature vectors.',
             # 'The hog': 'Histogram of Oriented Gradients. '

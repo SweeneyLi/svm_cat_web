@@ -21,7 +21,7 @@ def step(request, pk):
     user_id = str(request.user.id)
     if pk < 1:
         return redirect(reverse_lazy('picture:pic_upload'))
-    elif pk > 7:
+    elif pk > 6:
         return redirect(reverse_lazy('alogrithm:train_svm_model'))
     else:
 
@@ -42,8 +42,9 @@ def step(request, pk):
 
         if pk > 1 and algorithm_info[user_id]['data_para'] == {}:
             # form = PrepareDataForm(user_id=pk)
-            message = 'You should set the test category positive and <br> ' \
-                      'test category positive in the first step firstly!'
+            # message = 'You should set the test category positive and <br> ' \
+            #           'test category positive in the first step firstly!'
+            message = '请在第一步中选择测试数据集！'
             return redirect(reverse_lazy('alogrithm:prepare_data') + "?message=" + message)
         else:
             for _, value in step_info.items():
@@ -160,7 +161,8 @@ class HOGPicView(FormView):
 
         user_id = str(request.user.id)
         if not os.path.exists(saved_pic_path(user_id)):
-            message = "Please set the test picture in the first step firstly!"
+            message = "请先在第一步中选择测试图片！"
+            # message = "Please set the test picture in the first step firstly!"
             return redirect(reverse_lazy('alogrithm:prepare_data') + "?message=" + message)
         else:
             form = self.get_form()
@@ -368,7 +370,6 @@ class ModelCreateView(CreateView):
               'n_estimators']
     view_name = 'createSVMModel'
 
-
     def get_form_kwargs(self):
         kwargs = super(ModelCreateView, self).get_form_kwargs()
 
@@ -415,7 +416,8 @@ class ModelCreateView(CreateView):
             return render(self.request, 'algorithm/model_form.html',
                           {'form': form,
                            'url_info': step_info[self.view_name],
-                           'message': "The model_name is created!"
+                           # 'message': "The model_name is created!"
+                           'message': "此模型名称已被使用！"
                            }
                           )
 
@@ -594,7 +596,9 @@ class CatIdentificationView(FormView):
             return render(request, 'system/common_form.html',
                           {'form': form,
                            'url_info': url_dict[self.view_name],
-                           'message': 'The trained model could predict, please train it firstly.'})
+                           'message': '请先训练模型再进行预测！'
+                            # 'message': 'The trained model could predict, please train it firstly.'
+                           })
         else:
             files = request.FILES.getlist('file')
             show_probility = request.POST.get('show_probility')
