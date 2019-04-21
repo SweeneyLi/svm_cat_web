@@ -41,6 +41,7 @@
             background-size: cover;
         }
 
+
     </style>
 {% endblock css %}
 {% block content %}
@@ -86,7 +87,7 @@
                         <a class="btn btn-default " href="{% url 'alogrithm:step' 1 %}"> <!-- Choose parameter -->
                             调整模型参数</a>
                         <p><!-- Follow my steps to locate the parameter fit your model -->跟随系统提示调整模型参数</p>
-                        <img class="img-responsive" src="{% static 'img/index/index-svm.png' %}" alt="svm"/>
+                        <img class="img-responsive " src="{% static 'img/index/index-svm.png' %}" alt="svm"/>
                     </li>
                     <li class="col-md-4 col-sm-6">
                         <a class="btn btn-default " href="{% url 'alogrithm:create_svm_model' %}">

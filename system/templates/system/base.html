@@ -21,14 +21,19 @@
     <!-- Mine Css -->
     <link href="{% static 'css/global.css' %}" rel="stylesheet"/>
 
-    {% block css %}{% endblock %}
+    {% block css %}
+
+    {% endblock %}
 </head>
 <body>
 
 
 <!--Navbar -->
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark default-color">
-    <a class="navbar-brand" href="{% url 'system:index' %}"><!-- Cat Identification --> 猫咪识别系统</a>
+    <a class="navbar-brand" href="{% url 'system:index' %}">
+{#        <!-- Cat Identification --> 猫咪识别系统#}
+        <i class="fas fa-2x fa-cat imgRotate"></i>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
             aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -87,7 +92,8 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link waves-effect waves-light" href="{% url 'alogrithm:model_list' %}">
-                        <i class="fas fa-cat"></i>
+                        <i class="fas fa-dice-d6"></i>
+                        {#                        <i class="fas fa-cat "></i>#}
                     </a>
                 </li>
                 <li class="nav-item dropdown">

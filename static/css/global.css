@@ -23,3 +23,20 @@ body {
     margin-right: 0px;
     border-radius: 100px
 }
+
+@-webkit-keyframes rotation {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+.imgRotate {
+    -webkit-transform: rotate(360deg);
+    animation: rotation 10s linear infinite;
+    -moz-animation: rotation 10s linear infinite;
+    -webkit-animation: rotation 10s linear infinite;
+    -o-animation: rotation 10s linear infinite;
+}
