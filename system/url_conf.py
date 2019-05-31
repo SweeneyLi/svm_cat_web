@@ -9,7 +9,7 @@ url_dict = {
     },
     'profileUpdate': {
         'title': '信息更改',  # 'Profile Update',
-        'next_name': '',  # 'My Profile',
+        'next_name': '个人信息',  # 'My Profile',
         'next_url': reverse_lazy('user:profile'),
         'pic_url': None,
     },

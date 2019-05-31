@@ -589,6 +589,15 @@ class CatIdentificationView(FormView):
     def post(self, request, *args, **kwargs):
         form = self.get_form(reset=True)
         user_id = self.request.user.id
+
+        if request.POST['model_name'] == '':
+            return render(request, 'system/common_form.html',
+                          {'form': form,
+                           'url_info': url_dict[self.view_name],
+                           'message': '请选择模型！'
+                           # 'message': 'The trained model could predict, please train it firstly.'
+                           })
+
         model_name = eval(request.POST['model_name'])['model_name']
 
         model_db = SVMModel.objects.get(user_id=user_id, model_name=model_name)
